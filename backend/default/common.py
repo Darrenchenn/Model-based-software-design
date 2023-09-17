@@ -1,21 +1,23 @@
 #Write down all the tool functions here.
 
 #all pictures types
-picType=0
-picTypeIcon = 1
-picTypeIllustration = 2
-picTypeSocialMedia = 3
+PICTYPE=0
+PICTYPEICON = 1
+PICTYPEILLUSTRATION = 2
+PICTYPESOCIALMEDIA = 3
+
+#request class defination.
 
 
 
 
-
+#some tool functions.
 def matchType(x):
     return {
-        'icon':picTypeIcon,
-        'illustration':picTypeIllustration,
-        'socialmedia':picTypeSocialMedia
-    }.get(x,picType)
+        'icon':PICTYPEICON,
+        'illustration':PICTYPEILLUSTRATION,
+        'socialmedia':PICTYPESOCIALMEDIA
+    }.get(x,PICTYPE)
 
 
 def parametersCheck():

@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from creator import generatePics,generateText
+from default import creator
+
 
 # Create your views here.
 
 
 
-def GeneratePics(type,prompt):
-    return generatePics(type,prompt)
+def GeneratePics(req):
+    return creator.picsGenerationResponse.generatePics(req)
 
-def GenerateText(request):
-    return generateText(request)
+def GenerateText(req):
+    return creator.picsGenerationResponse.generateText(req)
