@@ -22,6 +22,11 @@ from default import views
 urlpatterns = [
     #path('admin/', admin.site.urls),
 
+    #basic features
+    path('login/', views.login),
+
     #features
-    path('creator/', views.GeneratePics),
+    path('creator/', views.generatePics),
+    path('news/', views.newsList),
+    path('server/', views.serverTest),
 ]

@@ -9,6 +9,9 @@ PICTYPESOCIALMEDIA = 3
 #request class defination.
 
 
+#parse parameters from the front-end.
+def parseParameters(req):
+    return req
 
 
 #some tool functions.

@@ -1,6 +1,7 @@
 #Write down all the function here.
 from default import common
 from django.http import HttpResponse
+from django.shortcuts import render
 
 
 
@@ -9,7 +10,7 @@ class picsGenerationResponse:
         self.type = type
 
     def generatePics(req):
-        return HttpResponse("welcome.")
+        return render(req,"test.html")
 
 
 
