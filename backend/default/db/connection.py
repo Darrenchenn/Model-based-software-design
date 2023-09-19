@@ -1,27 +1,8 @@
-from pymongo.mongo_client import MongoClient
-from pymongo.server_api import ServerApi
+#Do not use these functions directly,encrypted a new layer to call these functions in "metadata" directory.
+import db_handle
 
-
-
-def get_db_handle(db_name, host, port, username, password):
-    if db_name == ""|host==""|port==""|username==""|password=="":
-        return error("parameters can not be empty")
-
-    client = MongoClient(host=host,
-                         port=int(port),
-                         username=username,
-                         password=password
-                         )
-    db_handle = client['db_name']
-    return db_handle, client
-
-def get_db_handle_by_url(db_name,connection_string):
-    if db_name == "" or connection_string=="":
-        return error("db_name or connection_string can not be empty")
-
-    client = MongoClient(connection_string)
-    db_handle = client[db_name]
-    return db_handle,client
+def get_connection(connection_name):
+    return connection(db_handle.get_default_db_handle(),connection_name)
 
 
 class connection:
@@ -34,6 +15,7 @@ class connection:
 
     def create_collection(self,collection_name):
         return self.db_handle[collection_name].create_collection()
+
     def list_collection(self):
         return self.db_handle.list_collection_names()
 
@@ -91,10 +73,10 @@ class connection:
 #    "available" : "Y",
 #    "category" : "type 2 diabetes"
 #}
-#db,c = get_db_handle_by_url("Cluster0","mongodb+srv://c1125105680:chen9611@cluster0.zluvrrd.mongodb.net/?retryWrites=true&w=majority")
+#db,c = get_default_db_handle()
 #
 #a = connection(db,"test")
 #print(a.list_collection())
-
+#
 #db_insert_many(get_db_connection_by_name(db,"test"),[medicine_1,medicine_2])
 
