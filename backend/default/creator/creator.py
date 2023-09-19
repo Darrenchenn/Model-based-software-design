@@ -5,20 +5,9 @@ from django.shortcuts import render
 
 
 
-class picsGenerationResponse:
-    def __init__(self):
-        self.type = type
 
-    def generatePics(req):
-        return render(req,"test.html")
+def generatePics(req):
+    return render(req,"test.html")
 
 
 
-
-
-class textGenerationResponse:
-    def __init__(self):
-        self.type = type
-
-    def generateText(req):
-        return HttpResponse("welcome.")
