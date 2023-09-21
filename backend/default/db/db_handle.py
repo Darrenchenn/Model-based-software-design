@@ -1,16 +1,17 @@
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 
-db_url_default = "mongodb+srv://c1125105680:chen9611@cluster0.zluvrrd.mongodb.net/?retryWrites=true&w=majority"
-db_name_default = "Cluster0"
+#todo:these statements should be defined in config file.
+db_default_url = "mongodb+srv://c1125105680:chen9611@cluster0.zluvrrd.mongodb.net/?retryWrites=true&w=majority"
+db_default_name = "Cluster0"
 
-
+#Mongo DB handle functions starts here.
 def get_default_db_handle():
-    if db_url_default == "" or db_name_default=="":
+    if db_default_url == "" or db_default_name== "":
         return error("db_name or connection_string can not be empty")
 
-    client = MongoClient(db_url_default)
-    db_handle = client[db_name_default]
+    client = MongoClient(db_default_url)
+    db_handle = client[db_default_name]
     return db_handle,client
 
 

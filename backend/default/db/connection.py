@@ -1,8 +1,10 @@
 #Do not use these functions directly,encrypted a new layer to call these functions in "metadata" directory.
 import db_handle
 
+db_instance = db_handle.get_default_db_handle()
+
 def get_connection(connection_name):
-    return connection(db_handle.get_default_db_handle(),connection_name)
+    return connection(db_instance,connection_name)
 
 
 class connection:

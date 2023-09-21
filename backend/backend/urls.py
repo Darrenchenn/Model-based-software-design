@@ -23,7 +23,6 @@ urlpatterns = [
     #path('admin/', admin.site.urls),
 
     #basic features
-
     #features
     path('creator/', views.generatePics),
 ]
