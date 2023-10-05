@@ -1,0 +1,166 @@
+<mxfile host="app.diagrams.net" modified="2023-10-05T01:14:58.989Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/118.0" etag="vqzFgbYWcIH9lVyzPVar" version="22.0.2" type="google">
+  <diagram name="Page-1" id="58cdce13-f638-feb5-8d6f-7d28b1aa9fa0">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1100" pageHeight="850" background="none" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-22" value="AI Model Update" style="shape=umlFrame;whiteSpace=wrap;html=1;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;strokeWidth=1;fontFamily=Verdana;fontSize=12;align=center;width=140;height=25;movable=0;resizable=0;rotatable=0;deletable=0;editable=0;locked=1;connectable=0;" vertex="1" parent="1">
+          <mxGeometry x="20" y="880" width="1060" height="745" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-23" value="" style="ellipse;html=1;shape=startState;fillColor=#000000;strokeColor=#ff0000;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;direction=south;" vertex="1" parent="1">
+          <mxGeometry x="130" y="980" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-80" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-26" target="TNLon5xo_7HW2Fs5exNf-48">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="640" y="920" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="660" y="1215" />
+              <mxPoint x="660" y="920" />
+              <mxPoint x="556" y="920" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-26" value="Display update page" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1185" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-29" target="TNLon5xo_7HW2Fs5exNf-48">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="540" y="925" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-29" target="TNLon5xo_7HW2Fs5exNf-32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-29" value="Check the authority" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="965" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-32" target="TNLon5xo_7HW2Fs5exNf-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-62" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.887;exitY=0.008;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitPerimeter=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-32" target="TNLon5xo_7HW2Fs5exNf-48">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="545" y="1045" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-32" value="Secondary User Verification" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1045" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-34" target="TNLon5xo_7HW2Fs5exNf-48">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-34" value="Model update success" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="860" y="1145" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-47" style="edgeStyle=orthogonalEdgeStyle;html=1;labelBackgroundColor=none;endArrow=open;endSize=8;strokeColor=#ff0000;fontFamily=Verdana;fontSize=12;align=left;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-23" target="TNLon5xo_7HW2Fs5exNf-29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-48" value="" style="ellipse;html=1;shape=endState;fillColor=#000000;strokeColor=#ff0000;rounded=1;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="530" y="885" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-49" value="Unauthorised, exit" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="395" y="950" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-50" value="Authorised" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="320" y="1045" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-52" value="Upload new model" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1270" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-53" value="&lt;div&gt;Upload fail or upload unavailable model,&amp;nbsp;&lt;/div&gt;&lt;div&gt;causing return to update page&lt;br&gt;&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="530" y="1265" width="240" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-54" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-26">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="470" y="1320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-55" value="Verification success" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="380" y="1130" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-56" value="&lt;div&gt;Verification&lt;/div&gt;&lt;div&gt;&amp;nbsp;fail&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="550" y="1090" width="80" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-57" value="&lt;div&gt;Deployment fail or&amp;nbsp;&lt;/div&gt;&lt;div&gt;other system failure&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="710" y="1105" width="130" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-58" value="Exit" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="920" y="995" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-60" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="560" y="1059.97" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="600" y="1089.97" />
+              <mxPoint x="600" y="1059.97" />
+            </Array>
+            <mxPoint x="560" y="1089.97" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-63" value="&lt;div&gt;More than five times failure&amp;nbsp;&lt;/div&gt;&lt;div&gt;lead to exit&lt;/div&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="390" y="995" width="170" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-65" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-64" target="TNLon5xo_7HW2Fs5exNf-26">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-66" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-64">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="500.1578947368421" y="1450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-64" value="Check the availability of new model" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-69" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-67">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="680" y="1480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-67" value="Replace the existing model with the new one" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="440" y="1450" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-68" value="Pass the check" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="400" y="1400" width="100" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-72" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-70">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="710" y="1450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-74" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-70" target="TNLon5xo_7HW2Fs5exNf-34">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-77" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-70">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="830" y="1080" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-70" value="Display the progress regularly" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="680" y="1450" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-73" value="Update per second" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="680" y="1400" width="120" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-79" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="TNLon5xo_7HW2Fs5exNf-78" target="TNLon5xo_7HW2Fs5exNf-26">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="700" y="1240" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="710" y="1050" />
+              <mxPoint x="710" y="1230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-78" value="&lt;div&gt;Display failure log&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;arcSize=24;fillColor=#ffffc0;strokeColor=#ff0000;shadow=0;comic=0;labelBackgroundColor=none;fontFamily=Verdana;fontSize=12;fontColor=#000000;align=center;" vertex="1" parent="1">
+          <mxGeometry x="770" y="1020" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-81" value="Exit" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="560" y="1185" width="40" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="TNLon5xo_7HW2Fs5exNf-82" value="All procedures are done" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="910" y="1305" width="150" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
