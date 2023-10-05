@@ -161,3 +161,4 @@ cython_debug/
 
 # MAC (added by roy)
 .DS_Store
+.*
