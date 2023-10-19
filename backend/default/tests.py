@@ -1,5 +1,11 @@
 # Create your tests here.
 from creator.chatgpt import chatgpt
 
-chatgpt.create_api_model("user", "帮我翻译成法语")
-print(chatgpt.get_response("帮我翻译成法语"))
+system = input("system is :")
+gpt = chatgpt.ChatGpt(system)
+
+while True:
+    prompt = input("prompt is :")
+    if prompt == "q":
+        break
+    print(gpt.talk(prompt))

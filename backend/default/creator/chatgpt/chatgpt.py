@@ -2,7 +2,6 @@
 import openai
 
 global_model = "gpt-3.5-turbo-0613"
-current_model_list = {}
 
 
 def get_api_key():
@@ -22,24 +21,39 @@ def get_model():
     return global_model
 
 
-def create_api_model(role, msg):
-    openai.api_key = get_api_key()
-    current_model_list[msg] = openai.ChatCompletion.create(
-        model=get_model(),
-        messages=[{"role": role, "content": msg}]
-    )
+class ChatGpt:
+    def __init__(self, system):
+        self.api_key = get_api_key()
+        self.message = []
+        self.system = system
+        self.assistant = ""
+        openai.api_key = get_api_key()
 
-    # todo: add created ChatCompletion to database.
+        if self.system != "":
+            self.message.append({"role": "system", "content": self.system})
 
+    def query(self, msg):
+        self.message.append({"role": "user", "content": msg})
+        model = openai.ChatCompletion.create(
+            model=get_model(),
+            messages=self.message
+        )
+        self.assistant = model['choices'][0]['message']['content']
+        return self.assistant
 
-def delete_api_model(msg):
-    # todo:delete ChatCompletion from database.
-    del current_model_list[msg]
+        # todo: add created ChatCompletion to database.
 
+    def talk(self, msg):
+        if self.assistant != "":
+            self.message.append({"role": "assistant", "content": self.assistant})
+        if msg != "":
+            self.message.append({"role": "user", "content": msg})
+        model = openai.ChatCompletion.create(
+            model=get_model(),
+            messages=self.message
+        )
 
-def get_api_model(msg):
-    return current_model_list[msg]
+        self.assistant = model['choices'][0]['message']['content']
+        return self.assistant
 
-
-def get_response(msg):
-    return get_api_model(msg)['choices'][0]['message']['content']
+        # todo: add created ChatCompletion to database.
