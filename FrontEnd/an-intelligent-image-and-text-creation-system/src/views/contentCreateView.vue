@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 const contentTypeInput = ref('illustration')
 const promptInput = ref('')
@@ -8,10 +8,7 @@ const heightInput = ref(720)
 const widthInput = ref(720)
 const keyInput = ref('')
 
-const isSocialMediaPostSelected = computed(() => {
-  if (contentTypeInput.value === 'socialMediaPost') return true
-  else return false
-})
+const textOutput = ref('')
 
 const onClickCreateBtn = () => {}
 </script>
@@ -143,7 +140,7 @@ const onClickCreateBtn = () => {}
               <img src="../assets/image/IMG_3116.JPG" class="img-fluid" />
             </div>
             <!-- Output Text (if social media post is selected) -->
-            <div v-if="isSocialMediaPostSelected" class="col-12 border mb-3">...</div>
+            <div v-if="textOutput !== ''" class="col-12 border mb-3">...</div>
           </div>
         </div>
       </div>
