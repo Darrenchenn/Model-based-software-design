@@ -62,6 +62,10 @@ class Collection:
 
     def find(self, data):
         return self.db_instance[self.name].find(data)
+    
+    # Default page is 0, Default page size is 10
+    def find_all_by_page(self, page:int=0, page_size:int=10):
+        return self.db_instance[self.name].find().skip((page) * page_size).limit(page_size)
 
 # medicine_1 = {
 #    "medicine_id": "t01",
