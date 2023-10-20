@@ -16,9 +16,17 @@ def generate_noval_text(request):
 
 def generate_image(request):
     body = json.loads(request.body)
-    key = body["api_key"]
-    prompt = body["prompt"]
-    width = body["width"]
-    height = body["height"]
-    sd = stablediffusioncreator.StableDiffusion(key, prompt, width, height)
+    api_key = ""
+    prompt = ""
+    width = ""
+    height = ""
+    if "api_key" in body:
+        api_key = body["api_key"]
+    if "prompt" in body:
+        prompt = body["prompt"]
+    if "width" in body:
+        width = body["width"]
+    if "height" in body:
+        height = body["height"]
+    sd = stablediffusioncreator.StableDiffusion(api_key, prompt, width, height)
     return HttpResponse(sd.text_to_pic())
