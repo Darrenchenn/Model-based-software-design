@@ -1,12 +1,9 @@
 # products storage functions
 import uuid
 
-import pymongo
 from pymongo.results import InsertOneResult
 
-from default.db import connection
-
-product_collection_name = "products"
+from default.db import collectionnames, collection
 
 
 class Product:
@@ -18,19 +15,9 @@ class Product:
 
 
 def insert_product(product: Product) -> InsertOneResult:
-    c = connection.get_db_instance(product_collection_name)
-
-    product_document = {
-        "uuid": product.uuid,
-        "responsible_supervisor": product.responsible_supervisor,
-    }
-
-    try:
-        result = c.insert_one(product_document)
-    except pymongo.errors.OperationFailure:
-        return None
+    if collection.is_collection_exist(collectionnames.collection_products):
+        # todo: do insertion
     else:
-        return result
+        collection.create_collection(collectionnames.collection_products)
+        # todo: do insertion
 
-
-insert_product()

@@ -1,4 +1,4 @@
-from default.db import connection
+from default.db import collection
 
 
 class user:
@@ -6,7 +6,7 @@ class user:
         self.uuid = uuid
 
     def create_user(self, connection_name, username, password, email=None):
-        c = connection.get_connection(connection_name)
+        c = collection.get_connection(connection_name)
         # let's create two documents
         user = {
             "user_uuid": "RR000123456",

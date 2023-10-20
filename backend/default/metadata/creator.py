@@ -1,8 +1,7 @@
 from backend.default.metadata.user import User
 
-from default.db import connection
-
 user_collection_name = "users"
+
 
 class Creator(User):
     def __init__(self, username, password=None, user_type=None, contact_info=None, liked_templates=None):
@@ -10,7 +9,7 @@ class Creator(User):
         self.liked_template = liked_templates if liked_templates else []
 
 
-def add_liked_template(user:User, template_id:str):
+def add_liked_template(user: User, template_id: str):
     c = connection.get_collection(user_collection_name)
     result = c.find_one({"username": user.username})
 
@@ -24,7 +23,7 @@ def add_liked_template(user:User, template_id:str):
     return result
 
 
-def get_liked_template(user:User):
+def get_liked_template(user: User):
     c = connection.get_collection(user_collection_name)
     result = c.find_one({"username": user.username})
     if result:
@@ -34,7 +33,6 @@ def get_liked_template(user:User):
         return liked_templates
     else:
         return []
-
 
     def get_product_save(self, product_name):
         # TODO: 根据产品名称返回ProductSave对象

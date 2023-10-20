@@ -12,12 +12,19 @@ def create_collection(name):
     db_instance.create_collection(name)
 
 
+def is_collection_exist(name):
+    if name in get_collection_instance(name).list_collection():
+        return True
+    else:
+        return False
+
+
 class Collection:
     def __init__(self, db_instance, name):
         self.name = name
         self.db_instance = db_instance
 
-    def get_connection(self):
+    def get_collection(self):
         return self.db_instance[self.name]
 
     def list_collection(self):

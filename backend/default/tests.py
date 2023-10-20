@@ -11,10 +11,10 @@
 #     print(gpt.talk(prompt))
 
 
-from default.db import connection
+from default.db import collection
 
-connection.create_collection("new_one")
-conn = connection.get_collection_instance("test")
+# collection.create_collection("new_one")
+conn = collection.get_collection_instance("new_one")
 print(conn.list_collection())
 conn.insert_one({
     "name": "test",
