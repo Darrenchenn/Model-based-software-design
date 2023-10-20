@@ -1,13 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { isAuthenticate } from '../script/helperFunction.js'
 import LoginView from '../views/loginView.vue'
 import HomeView from '../views/homeView.vue'
+// import ContentCreate from '../views/contentCreateView.vue'
+// import ViewCreateHistory from '../views/creatorHistoryView.vue'
 import IndexView from '../views/indexView.vue'
-
-const isAuthentication = () => {
-  // return false
-  if (localStorage.getItem('userName') === null) return false
-  else return true
-}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,15 +14,16 @@ const router = createRouter({
       name: 'Index',
       component: IndexView,
       beforeEnter: (to, from) => {
-        if (isAuthentication()) return { name: 'Home' }
+        if (isAuthenticate()) return { name: 'Home' }
       }
     },
     {
       path: '/login',
       name: 'Login',
+      meta: { hideNavBar: true },
       component: LoginView,
       beforeEnter: (to, from) => {
-        if (isAuthentication()) return { name: 'Home' }
+        if (isAuthenticate()) return { name: 'Home' }
       }
     },
     {
@@ -37,7 +35,7 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, _) => {
-  if (!isAuthentication() && to.name !== 'Login') {
+  if (!isAuthenticate() && to.name !== 'Login') {
     return { name: 'Login' }
   }
 })

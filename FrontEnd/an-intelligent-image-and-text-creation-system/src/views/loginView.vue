@@ -34,6 +34,7 @@ const signUpBtnClass = computed(() => {
 const onClickSubmitBtn = () => {
   // To-Do 連結後端登入/註冊
   localStorage.setItem('userName', 'example user name')
+  localStorage.setItem('identity', identitySelect.value)
   router.push('/home')
 }
 </script>
