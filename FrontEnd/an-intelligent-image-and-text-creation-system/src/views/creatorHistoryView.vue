@@ -4,7 +4,6 @@ import { computed, onMounted, ref } from 'vue'
 const creationHistory = ref(null)
 
 const isFetchingCreationHistory = computed(() => {
-  // return false
   return creationHistory.value === null ? true : false
 })
 
@@ -57,28 +56,48 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="container-fluid mx-5 px-5">
-    <div class="row mx-5 px-5">
-      <div class="col-12 display-4 my-3">History</div>
-      <div class="col-12" v-if="isFetchingCreationHistory"></div>
-      <div class="col-12 fs-4" v-else-if="creationHistory.length === 0">
-        <div>Oops! Look like you don't have any creation yet!</div>
-        <div>Go create some!</div>
-      </div>
-      <div
-        v-for="history in creationHistory"
-        v-bind:key="history.id"
-        class="col-12 border border-warning rounded mb-4 ps-0"
-        id="historyItem"
-      >
-        <img :src="history.imgSrc" />
+  <div class="container-fluid">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-6 container-fluid row">
+        <div class="col-12 display-4 my-3">History</div>
+        <div class="col-12 mt-3 text-center" v-if="isFetchingCreationHistory">
+          <div class="mb-3 fs-4">Retrieving history...</div>
+          <div class="spinner-border text-warning" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+        <div class="col-12 fs-4" v-else-if="creationHistory.length === 0">
+          <div>Oops! Look like you don't have any creation yet!</div>
+          <div>Go create some!</div>
+        </div>
+        <div
+          v-else
+          v-for="history in creationHistory"
+          v-bind:key="history.id"
+          class="container col-12 border border-warning rounded mb-4 ps-0"
+          id="hideOverflow"
+        >
+          <div class="row" id="fullHeight">
+            <div class="col-4 align-self-center">
+              <img :src="history.imgSrc" />
+            </div>
+            <div class="col-8 pt-2">Title: {{ history.title }}</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
+#hideOverflow {
+  overflow: hidden;
+}
+#fullHeight {
+  height: 200px;
+}
 img {
+  overflow: hidden;
   max-height: 200px;
   max-width: 200px;
   height: auto;

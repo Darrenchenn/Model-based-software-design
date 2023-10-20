@@ -1,5 +1,8 @@
 <script setup>
+import axios from 'axios'
 import { ref } from 'vue'
+
+const serverAddress = import.meta.env.VITE_serverAddress
 
 const contentTypeInput = ref('illustration')
 const promptInput = ref('')
@@ -8,9 +11,56 @@ const heightInput = ref(720)
 const widthInput = ref(720)
 const keyInput = ref('')
 
+const imgOutput = ref('')
 const textOutput = ref('')
 
-const onClickCreateBtn = () => {}
+const onClickCreateBtn = () => {
+  if (!promptInput.value || !keyInput.value) {
+    alert('prompt or key input empty!')
+    return
+  }
+
+  axios
+    .post(serverAddress + '/sd_creator/', {
+      prompt: promptInput.value,
+      // prompt: 'studying at university of sydney at friday night',
+      api_key: keyInput.value,
+      // api_key: 'd1hcN8m8Pm0dUy80WUGZ574PviR0gZXfBH2ddXywr9rTlLBmCq3XetMhroHi'
+      width: String(widthInput.value),
+      height: String(heightInput.value)
+    })
+    .then((res) => {
+      console.log(res.data)
+      console.log(res.status)
+      console.log(res.statusText)
+      console.log(res.headers)
+      console.log(res.config)
+      return res
+    })
+    .then((res) => {
+      // console.log(JSON.stringify(res))
+      // return res.json()
+      imgOutput.value = res.data.output[0]
+    })
+    .then()
+    .catch((err) => {
+      console.log(err)
+    })
+
+  // axios.get(serverAddress + '/creator/?prompt=a story about surviving a war')
+
+  // fetch('http://40.76.249.160:8000/sd_creator/', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({
+  //     prompt: 'studying at university of sydney at friday night',
+  //     api_key: 'd1hcN8m8Pm0dUy80WUGZ574PviR0gZXfBH2ddXywr9rTlLBmCq3XetMhroHi'
+  //   })
+  // })
+  //   .then((res) => res.json())
+  //   .then((res) => console.log(res))
+  //   .catch((err) => console.log(err))
+}
 </script>
 
 <template>
@@ -137,10 +187,11 @@ const onClickCreateBtn = () => {}
           <div class="row">
             <!-- Output Image -->
             <div class="col-12 border text-center mb-3 px-0">
-              <img src="../assets/image/IMG_3116.JPG" class="img-fluid" />
+              <div v-if="!imgOutput" id="placeHolder"></div>
+              <img v-else class="img-fluid" :src="imgOutput" />
             </div>
             <!-- Output Text (if social media post is selected) -->
-            <div v-if="textOutput !== ''" class="col-12 border mb-3">...</div>
+            <div v-if="textOutput" class="col-12 border mb-3">{{ textOutput }}</div>
           </div>
         </div>
       </div>
@@ -149,6 +200,10 @@ const onClickCreateBtn = () => {}
 </template>
 
 <style scoped>
+#placeHolder {
+  width: 100%;
+  height: 500px;
+}
 #submitBtn {
   width: 100%;
 }
