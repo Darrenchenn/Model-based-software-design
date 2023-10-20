@@ -21,4 +21,5 @@ from default import views
 
 urlpatterns = [
     path('creator/', views.generate_noval_text),
+    path('sd_creator/', views.generate_image),
 ]
