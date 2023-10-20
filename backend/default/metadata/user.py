@@ -7,6 +7,14 @@ from default.db import connection
 
 user_collection_name = "users"
 
+class ContactInfo:
+    """The contact information of a user.
+    Parameters:
+    wechat_id (str): The user's WeChat ID.
+    email (str): The user's email address."""
+    def __init__(self, wechat_id:str=None, email:str=None):
+        self.wechat_id = wechat_id
+        self.email = email
 
 class User:
     """A user of the application.
@@ -16,7 +24,7 @@ class User:
     user_type (str): The user's type. Could be None.
     contact_info (ContactInfo): The user's contact information. Could be None."""
 
-    def __init__(self, username, password=None, user_type=None, contact_info=None):
+    def __init__(self, username, password=None, user_type=None, contact_info:ContactInfo=None):
         self.uuid = uuid.uuid4().hex
         self.username = username
         self.password = password
@@ -35,105 +43,100 @@ class User:
     def __hash__(self):
         return hash(self.uuid)
 
-    def insert_user(self, password=None, wechat_id=None, email=None) -> InsertOneResult:
-        c = connection.get_collection(user_collection_name)
 
-        contact_info = {
-            "wechat_id": wechat_id,
-            "email": email
-        }
+def insert_user(user:User) -> InsertOneResult:
+    c = connection.get_collection(user_collection_name)
 
-        user_document = {
-            "uuid": self.uuid,
-            "username": self.username,
-            "password": self.password,
-            "contact_info": contact_info,
-            "user_type": self.user_type
-        }
+    user_document = {
+        "uuid": user.uuid,
+        "username": user.username,
+        "password": user.password,
+        "contact_info": user.contact_info,
+        "user_type": user.user_type
+    }
 
-        try:
-            result = c.insert_one(user_document)
-        except pymongo.errors.OperationFailure:
-            print(
-                "An authentication error was received. Are you sure your database user is authorized to perform write "
-                "operations?")
-        else:
-            return result
+    try:
+        result = c.insert_one(user_document)
+    except pymongo.errors.OperationFailure:
+        print(
+            "An authentication error was received. Are you sure your database user is authorized to perform write "
+            "operations?")
+    else:
+        return result
 
-    def find_user(self):
-        c = connection.get_collection(user_collection_name)
+def find_user(user:User):
+    c = connection.get_collection(user_collection_name)
 
-        user_document = {
-            "username": self.username
-        }
-        try:
-            result = c.find_one(user_document)
-        except pymongo.errors.OperationFailure:
-            print(
-                "An authentication error was received. Are you sure your database user is authorized to perform write "
-                "operations?")
-        else:
-            if result:
-                return result
-            else:
-                return None
+    user_document = {
+        "username": user.username
+    }
 
-    def update_user(self, password=None, wechat_id=None, email=None):
-        c = connection.get_collection(user_collection_name)
-
-        user_document = {
-            "username": self.username
-        }
-
+    try:
         result = c.find_one(user_document)
-
-        print(result.keys())
-
-        if password is None:
-            password = result["password"]
-
-        contact_info = result.get("contact_info", {})
-
-        if wechat_id is None:
-            wechat_id = contact_info.get("wechat_id")
-
-        if email is None:
-            email = contact_info.get("email")
-
-        contact_info = {
-            "wechat_id": wechat_id,
-            "email": email
-        }
-
-        new_values = {
-            "$set": {
-                "password": password,
-                "contact_info": contact_info
-            }
-        }
-
-        try:
-            result = c.update_one(user_document, new_values)
-        except pymongo.errors.OperationFailure:
-            print(
-                "An authentication error was received. Are you sure your database user is authorized to perform write "
-                "operations?")
-        else:
-            print("Successfully updated user with username: %s" % self.username)
+    except pymongo.errors.OperationFailure:
+        print(
+            "An authentication error was received. Are you sure your database user is authorized to perform write "
+            "operations?")
+    else:
+        if result:
             return result
-
-    def delete_user(self):
-        c = connection.get_collection(user_collection_name)
-
-        user_document = {
-            "username": self.username
-        }
-
-        try:
-            result = c.delete_one(user_document)
-        except pymongo.errors.OperationFailure:
-            print(
-                "An authentication error was received. Are you sure your database user is authorized to perform write "
-                "operations?")
         else:
-            return result
+            return None
+
+def update_user(user:User):
+    c = connection.get_collection(user_collection_name)
+
+    user_document = {
+        "username": user.username
+    }
+    result = c.find_one(user_document)
+
+    print(result.keys())
+
+    if user.password is None:
+        password = result.get("password")
+    if user.user_type is None:
+        user_type = result.get("user_type")
+
+    contact_info = result.get("contact_info", {})
+    if user.contact_info.wechat_id is None:
+        wechat_id = contact_info.get("wechat_id")
+    if user.contact_info.email is None:
+        email = contact_info.get("email")
+
+    contact_info = {
+        "wechat_id": wechat_id,
+        "email": email
+    }
+
+    new_values = {
+        "$set": {
+            "password": password,
+            "user_type": user_type,
+            "contact_info": contact_info
+        }
+    }
+
+    try:
+        result = c.update_one(user_document, new_values)
+    except pymongo.errors.OperationFailure:
+        print(
+            "An authentication error was received. Are you sure your database user is authorized to perform write "
+            "operations?")
+    else:
+        print("Successfully updated user with username: %s" % user.username)
+        return result
+
+def delete_user(user:User):
+    c = connection.get_collection(user_collection_name)
+    user_document = {
+        "username": user.username
+    }
+    try:
+        result = c.delete_one(user_document)
+    except pymongo.errors.OperationFailure:
+        print(
+            "An authentication error was received. Are you sure your database user is authorized to perform write "
+            "operations?")
+    else:
+        return result
