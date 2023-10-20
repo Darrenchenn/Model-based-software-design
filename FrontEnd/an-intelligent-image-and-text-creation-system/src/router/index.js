@@ -2,8 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { isAuthenticate } from '../script/helperFunction.js'
 import LoginView from '../views/loginView.vue'
 import HomeView from '../views/homeView.vue'
-// import ContentCreate from '../views/contentCreateView.vue'
-// import ViewCreateHistory from '../views/creatorHistoryView.vue'
+import ContentCreate from '../views/contentCreateView.vue'
+import ViewCreateHistory from '../views/creatorHistoryView.vue'
+import AccountView from '../views/accountView.vue'
 import IndexView from '../views/indexView.vue'
 
 const router = createRouter({
@@ -30,6 +31,21 @@ const router = createRouter({
       path: '/home',
       name: 'Home',
       component: HomeView
+    },
+    {
+      path: '/content_create',
+      name: 'Content Create',
+      component: ContentCreate
+    },
+    {
+      path: '/view_create_history',
+      name: 'View Create History',
+      component: ViewCreateHistory
+    },
+    {
+      path: '/account',
+      name: 'Account',
+      component: AccountView
     }
   ]
 })
