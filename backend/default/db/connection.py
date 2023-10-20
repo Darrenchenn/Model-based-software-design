@@ -3,16 +3,16 @@ import db_handle
 
 db_instance = db_handle.get_default_db_handle()
 
-def get_connection(connection_name):
-    return connection(db_instance,connection_name)
+def get_collection(collection_name):
+    return collection(db_instance,collection_name)
 
 
-class connection:
+class collection:
     def __init__(self,db_handle,name):
         self.name = name
         self.db_handle = db_handle
 
-    def get_connection(self):
+    def get_collection(self):
         return self.db_handle[self.name]
 
     def create_collection(self,collection_name):
