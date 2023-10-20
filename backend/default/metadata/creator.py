@@ -1,6 +1,8 @@
 from backend.default.metadata.user import User
+from db import collection
 
-user_collection_name = "users"
+from db.collectionnames import collection_users
+
 
 
 class Creator(User):
@@ -9,22 +11,22 @@ class Creator(User):
         self.liked_template = liked_templates if liked_templates else []
 
 
-def add_liked_template(user: User, template_id: str):
-    c = connection.get_collection(user_collection_name)
+def add_liked_template(user: User, template_uuid: str):
+    c = collection.get_collection_instance(collection_users)
     result = c.find_one({"username": user.username})
 
     if result:
         liked_templates = result.get("liked_templates")
         if not liked_templates:
             liked_templates = []
-        liked_templates.append(template_id)
+        liked_templates.append(template_uuid)
         result = c.update_one({"username": user.username}, {"$set": {"liked_templates": liked_templates}})
 
     return result
 
 
 def get_liked_template(user: User):
-    c = connection.get_collection(user_collection_name)
+    c = collection.get_collection_instance(collection_users)
     result = c.find_one({"username": user.username})
     if result:
         liked_templates = result.get("liked_templates")
@@ -33,7 +35,19 @@ def get_liked_template(user: User):
         return liked_templates
     else:
         return []
+    
+def delete_liked_template(user: User, template_uuid: str):
+    c = collection.get_collection_instance(collection_users)
+    result = c.find_one({"username": user.username})
+    if result:
+        liked_templates = result.get("liked_templates")
+        if not liked_templates:
+            liked_templates = []
+            return None
+        liked_templates.remove(template_uuid)
+        result = c.update_one({"username": user.username}, {"$set": {"liked_templates": liked_templates}})
+    return result
 
-    def get_product_save(self, product_name):
-        # TODO: 根据产品名称返回ProductSave对象
-        pass
+def get_product_save(self, product_name):
+    # TODO: 根据产品名称返回ProductSave对象
+    pass
