@@ -2,8 +2,8 @@
 
 <template>
   <div class="container-fluid">
-    <div id="loadingScreen" class="row justify-content-center align-items-center">
-      <div class="text-center">
+    <div id="fullScreen" class="row justify-content-center align-items-center">
+      <div>
         <div class="display-1 text-center text-warning">AutoPen</div>
         <div class="spinner-border text-primary text-warning mt-5" role="status">
           <span class="visually-hidden">Loading...</span>
@@ -14,7 +14,7 @@
 </template>
 
 <style scoped>
-#loadingScreen {
+#fullScreen {
   height: 100vh;
   width: 100vw;
 }

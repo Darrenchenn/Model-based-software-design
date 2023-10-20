@@ -4,9 +4,9 @@ import HomeView from '../views/homeView.vue'
 import IndexView from '../views/indexView.vue'
 
 const isAuthentication = () => {
-  return false
-  // if (localStorage.getItem('userName') === null) return false
-  // else return true
+  // return false
+  if (localStorage.getItem('userName') === null) return false
+  else return true
 }
 
 const router = createRouter({
