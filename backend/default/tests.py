@@ -1,5 +1,5 @@
 # Create your tests here.
-from creator.chatgpt import chatgpt
+from default.creator import chatgpt
 
 system = input("system is :")
 gpt = chatgpt.ChatGpt(system)

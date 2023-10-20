@@ -1,16 +1,26 @@
-<script setup>
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-onMounted(() => {
-  router.replace({ path: '/login' })
-})
-</script>
+<script setup></script>
 
 <template>
-  <div>Placeholder for index view</div>
+  <div class="container-fluid">
+    <div id="fullScreen" class="row justify-content-center align-items-center">
+      <div>
+        <div class="display-1 text-center text-warning">AutoPen</div>
+        <div class="spinner-border text-primary text-warning mt-5" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+#fullScreen {
+  height: 100vh;
+  width: 100vw;
+}
+
+.spinner-border {
+  width: 5rem;
+  height: 5rem;
+}
+</style>
