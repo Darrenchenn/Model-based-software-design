@@ -57,11 +57,5 @@ def delete_template(template: Template):
 def get_all_template_by_page(page: int, page_size: int):
     c = collection.get_collection_instance(collection_templates)
     # Can be iterated by for loop
-    result = c.find_all_by_page(page, page_size)
-    if result:
-        content = result.get("content")
-        if not content:
-            content = []
-        return content
-    else:
-        return []
+    result = c.find_all_by_page({}, page, page_size)
+    return result
