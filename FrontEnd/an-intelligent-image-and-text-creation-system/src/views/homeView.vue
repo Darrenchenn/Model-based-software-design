@@ -1,7 +1,9 @@
-<script setup></script>
+<script setup>
+const userName = localStorage.getItem('userName')
+</script>
 
 <template>
-  <div>Placeholder for home view</div>
+  <div class="display-5">Welcome Back, {{ userName }}!</div>
 </template>
 
 <style scoped></style>
