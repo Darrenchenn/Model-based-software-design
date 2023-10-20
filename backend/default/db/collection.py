@@ -42,11 +42,11 @@ class Collection:
     def delete_many(self, data):
         return self.db_instance[self.name].delete_many(data)
 
-    def update_one(self, data):
-        return self.db_instance[self.name].update_one(data)
+    def update_one(self, data, new_data):
+        return self.db_instance[self.name].update_one(data, new_data)
 
-    def update_many(self, data):
-        return self.db_instance[self.name].update_many(data)
+    def update_many(self, data, new_data):
+        return self.db_instance[self.name].update_many(data, new_data)
 
     def find_one(self, data):
         return self.db_instance[self.name].find_one(data)

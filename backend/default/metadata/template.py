@@ -3,9 +3,8 @@ import uuid
 import pymongo
 from pymongo.results import InsertOneResult
 
-user_collection_name = "users"
-
-template_collection_name = "templates"
+from db import collection
+from db.collectionnames import collection_templates, collection_users
 
 
 class Template:
@@ -16,7 +15,7 @@ class Template:
 
 
 def insert_template(template: Template) -> InsertOneResult:
-    c = connection.get_collection(user_collection_name)
+    c = collection.get_collection_instance(collection_templates)
 
     template_document = {
         "uuid": template.uuid,
@@ -24,7 +23,6 @@ def insert_template(template: Template) -> InsertOneResult:
     }
 
     try:
-        c = connection.get_collection(template_collection_name)
         result = c.insert_one(template_document)
     except pymongo.errors.OperationFailure:
         return None
@@ -33,7 +31,7 @@ def insert_template(template: Template) -> InsertOneResult:
 
 
 def get_template(template: Template):
-    c = connection.get_collection(template_collection_name)
+    c = collection.get_collection_instance(collection_templates)
     result = c.find_one({"uuid": template.uuid})
     if result:
         content = result.get("content")
@@ -45,19 +43,19 @@ def get_template(template: Template):
 
 
 def update_template(template: Template):
-    c = connection.get_collection(template_collection_name)
+    c = collection.get_collection_instance(collection_templates)
     result = c.update_one({"uuid": template.uuid}, {"$set": {"content": template.content}})
     return result
 
 
 def delete_template(template: Template):
-    c = connection.get_collection(template_collection_name)
+    c = collection.get_collection_instance(collection_templates)
     result = c.delete_one({"uuid": template.uuid})
     return result
 
 
 def get_all_template_by_page(page: int, page_size: int):
-    c = connection.get_collection(template_collection_name)
+    c = collection.get_collection_instance(collection_templates)
     result = c.find().skip((page - 1) * page_size).limit(page_size)
     if result:
         content = result.get("content")
