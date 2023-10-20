@@ -1,41 +1,30 @@
-import base64
-import os
 import requests
+import json
 
-response = requests.post(
-    "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/image-to-image",
-    headers={
-        "Accept": "application/json",
-        "Authorization": f"sk-PhUg2MfgN7uzBBjfphagK67DyObPapjFroWk5QrqeNEmXj3S"
-    },
-    files={
-        "init_image": open("./out/txt2img_762581829.png", "rb")
-    },
-    data={
-        "init_image_mode": "IMAGE_STRENGTH",
-		"image_strength": 0.35,
-		"steps": 40,
-		"width": 1024,
-		"height": 1024,
-		"seed": 0,
-		"cfg_scale": 5,
-		"samples": 1,
-		"text_prompts[0][text]": 'A catoon icon',
-		"text_prompts[0][weight]": 1,
-		"text_prompts[1][text]": 'blurry, bad',
-		"text_prompts[1][weight]": -1,
-    }
-)
+url = "https://stablediffusionapi.com/api/v3/img2img"
 
-if response.status_code != 200:
-    raise Exception("Non-200 response: " + str(response.text))
+payload = json.dumps({
+  "key": "S0h4uqwZncHLFvsvL3YbQqFxjFIenEvWInz3y5DJ6QwYm9TQLg",
+  "prompt": "a cat sitting on a bench",
+  "negative_prompt": None,
+  "init_image": "https://raw.githubusercontent.com/CompVis/stable-diffusion/main/data/inpainting_examples/overture-creations-5sI6fQgYIuo.png",
+  "width": "512",
+  "height": "512",
+  "samples": "1",
+  "num_inference_steps": "30",
+  "safety_checker": "no",
+  "enhance_prompt": "yes",
+  "guidance_scale": 7.5,
+  "strength": 0.7,
+  "seed": None,
+  "webhook": None,
+  "track_id": None
+})
 
-data = response.json()
+headers = {
+  'Content-Type': 'application/json'
+}
 
-# make sure the out directory exists
-if not os.path.exists("./out"):
-    os.makedirs("./out")
+response = requests.request("POST", url, headers=headers, data=payload)
 
-for i, image in enumerate(data["artifacts"]):
-    with open(f'./out/img2img_{image["seed"]}.png', "wb") as f:
-        f.write(base64.b64decode(image["base64"]))
+print(response.text)

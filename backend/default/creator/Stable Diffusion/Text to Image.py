@@ -1,52 +1,32 @@
-import base64
 import requests
-import os
+import json
 
-url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image"
+url = "https://stablediffusionapi.com/api/v3/text2img"
 
-body = {
-  "steps": 40,
-  "width": 1024,
-  "height": 1024,
-  "seed": 0,
-  "cfg_scale": 5,
-  "samples": 1,
-  "text_prompts": [
-    {
-      # Description of the Image
-      "text": "A beauty",
-      "weight": 1
-    },
-    {
-      # Negative prompt means that which contents you want to avoid to generation
-      "text": "blurry, bad",
-      "weight": -1
-    }
-  ],
-}
+payload = json.dumps({
+  "key": "S0h4uqwZncHLFvsvL3YbQqFxjFIenEvWInz3y5DJ6QwYm9TQLgs3wtcBsRMt",
+  "prompt": "ultra realistic close up portrait ((beautiful pale cyberpunk female with heavy black eyeliner))",
+  "negative_prompt": None,
+  "width": "512",
+  "height": "512",
+  "samples": "1",
+  "num_inference_steps": "20",
+  "seed": None,
+  "guidance_scale": 7.5,
+  "safety_checker": "yes",
+  "multi_lingual": "no",
+  "panorama": "no",
+  "self_attention": "no",
+  "upscale": "no",
+  "embeddings_model": None,
+  "webhook": None,
+  "track_id": None
+})
 
 headers = {
-  "Accept": "application/json",
-  "Content-Type": "application/json",
-  #API Keys
-  "Authorization": "sk-PhUg2MfgN7uzBBjfphagK67DyObPapjFroWk5QrqeNEmXj3S",
+  'Content-Type': 'application/json'
 }
 
-response = requests.post(
-  url,
-  headers=headers,
-  json=body,
-)
+response = requests.request("POST", url, headers=headers, data=payload)
 
-if response.status_code != 200:
-    raise Exception("Non-200 response: " + str(response.text))
-
-data = response.json()
-
-# make sure the out directory exists
-if not os.path.exists("./out"):
-    os.makedirs("./out")
-
-for i, image in enumerate(data["artifacts"]):
-    with open(f'./out/txt2img_{image["seed"]}.png', "wb") as f:
-        f.write(base64.b64decode(image["base64"]))
+print(response.text)
