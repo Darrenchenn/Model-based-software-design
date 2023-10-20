@@ -24,10 +24,10 @@ class User:
         self.contact_info = contact_info
 
     def __str__(self):
-        return "User: %s" % (self.username)
+        return "User: %s" % self.username
 
     def __repr__(self):
-        return "User: %s" % (self.username)
+        return "User: %s" % self.username
 
     def __eq__(self, other):
         return self.username == other.username

@@ -4,9 +4,10 @@ from default.common import http
 
 
 class StableDiffusion:
-    def __init__(self, prompt, width, height):
+    def __init__(self, key, prompt, width, height):
         self.method = "POST"
         self.url = "https://api.stable-diffusion.com/api/v1/generate"
+        self.key = key
         self.prompt = prompt
         if width != "":
             self.width = width
@@ -19,7 +20,7 @@ class StableDiffusion:
 
         self.height = height
         self.payload = json.dumps({
-            "key": "S0h4uqwZncHLFvsvL3YbQqFxjFIenEvWInz3y5DJ6QwYm9TQLgs3wtcBsRMt",
+            "key": self.key,
             "prompt": self.prompt,
             "negative_prompt": None,
             "width": self.width,
