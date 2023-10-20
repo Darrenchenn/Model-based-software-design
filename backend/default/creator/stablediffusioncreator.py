@@ -6,7 +6,7 @@ from default.common import http
 class StableDiffusion:
     def __init__(self, key, prompt, width, height):
         self.method = "POST"
-        self.url = "https://api.stable-diffusion.com/api/v1/generate"
+        self.url = "https://stablediffusionapi.com/api/v3/text2img"
         self.key = key
         self.prompt = prompt
         if width != "":
