@@ -1,15 +1,42 @@
-class StableDiffusion:
-    def __init__(self):
-        self.model = None
-        self.model_name = None
-        self.model_path = None
-        self.model_config = None
-        self.model_config_path = None
-        self.model_config_dict = None
-        self.model_config_dict_path = None
-        self.model_config_dict_name = None
-        self.model_config_dict_type = None
-        self.model_config_dict_type_path = None
+import json
 
-    def connect(self):
-        return
+from default.common import http
+
+
+class StableDiffusion:
+    def __init__(self, prompt, width, height):
+        self.method = "POST"
+        self.url = "https://api.stable-diffusion.com/api/v1/generate"
+        self.prompt = prompt
+        if width != "":
+            self.width = width
+        else:
+            self.width = "512"
+        if height != "":
+            self.height = height
+        else:
+            self.height = "512"
+
+        self.height = height
+        self.payload = json.dumps({
+            "key": "S0h4uqwZncHLFvsvL3YbQqFxjFIenEvWInz3y5DJ6QwYm9TQLgs3wtcBsRMt",
+            "prompt": self.prompt,
+            "negative_prompt": None,
+            "width": self.width,
+            "height": self.height,
+            "samples": "1",
+            "num_inference_steps": "20",
+            "seed": None,
+            "guidance_scale": 7.5,
+            "safety_checker": "yes",
+            "multi_lingual": "no",
+            "panorama": "no",
+            "self_attention": "no",
+            "upscale": "no",
+            "embeddings_model": None,
+            "webhook": None,
+            "track_id": None
+        })
+
+    def text_to_pic(self):
+        return http.request(self.url, self.method, self.payload)
