@@ -14,12 +14,12 @@ body = {
   "text_prompts": [
     {
       # Description of the Image
-      "text": "A painting of a cat",
+      "text": "A beauty",
       "weight": 1
     },
     {
       # Negative prompt means that which contents you want to avoid to generation
-      "text": "",
+      "text": "blurry, bad",
       "weight": -1
     }
   ],
@@ -28,7 +28,8 @@ body = {
 headers = {
   "Accept": "application/json",
   "Content-Type": "application/json",
-  "Authorization": "Bearer YOUR_API_KEY",
+  #API Keys
+  "Authorization": "sk-PhUg2MfgN7uzBBjfphagK67DyObPapjFroWk5QrqeNEmXj3S",
 }
 
 response = requests.post(
