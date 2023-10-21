@@ -292,7 +292,7 @@ const onClickFinishCreateBtn = () => {
               </div>
             </form>
             <!-- Create Button -->
-            <div class="col-4 mb-4">
+            <div class="col-4 mb-5">
               <button
                 :disabled="isFetchingResult"
                 @click="onClickCreateBtn"
@@ -325,7 +325,8 @@ const onClickFinishCreateBtn = () => {
               </button>
             </div>
             <!-- History -->
-            <div v-if="history.length !== 0" class="h3 col-12 mb-3 px-0">History</div>
+            <hr v-if="history.length !== 0" class="col-12 mb-2 px-0" />
+            <div v-if="history.length !== 0" class="h2 col-12 mb-3 px-0">History</div>
             <div
               v-for="historyContent in history"
               v-bind:key="historyContent.id"
@@ -340,10 +341,62 @@ const onClickFinishCreateBtn = () => {
               />
               <!-- Modal -->
               <div class="modal fade" :id="'id_' + String(historyContent.id)" tabindex="-1">
-                <div class="modal-dialog modal-lg">
+                <div class="modal-dialog modal-xl">
                   <div class="modal-content container-fluid px-0">
                     <div class="modal-body row">
-                      <img class="col-8 img-fluid" :src="historyContent.output[0]" />
+                      <div class="col-7 text-center">
+                        <img class="img-fluid" :src="historyContent.output[0]" />
+                      </div>
+                      <div class="col-5 container-fluid">
+                        <div class="row">
+                          <div class="col-12 mb-3">
+                            <label for="historyPrompt" class="form-label">Prompt</label>
+                            <textarea
+                              class="form-control"
+                              id="historyPrompt"
+                              :value="historyContent.meta.prompt"
+                              rows="5"
+                              disabled
+                              readonly
+                            >
+                            </textarea>
+                          </div>
+                          <div class="col-12 mb-3">
+                            <label for="historyNegativePrompt" class="form-label"
+                              >Negative Prompt</label
+                            >
+                            <textarea
+                              class="form-control"
+                              id="historyNegativePrompt"
+                              :value="historyContent.meta.negative_prompt"
+                              rows="5"
+                              disabled
+                              readonly
+                            >
+                            </textarea>
+                          </div>
+                          <div class="col-6 mb-3">
+                            <label for="historyHeight" class="form-label">Height</label>
+                            <input
+                              class="form-control"
+                              id="historyHeight"
+                              :value="historyContent.meta.H"
+                              disabled
+                              readonly
+                            />
+                          </div>
+                          <div class="col-6 mb-3">
+                            <label for="historyWidth" class="form-label">Width</label>
+                            <input
+                              class="form-control"
+                              id="historyWidth"
+                              :value="historyContent.meta.W"
+                              disabled
+                              readonly
+                            />
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div class="modal-footer">
                       <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal">
@@ -361,6 +414,7 @@ const onClickFinishCreateBtn = () => {
       <div class="col-12 col-lg-6">
         <div class="container-fluid">
           <div class="row">
+            <div class="col-12 px-0 h2">Canvas</div>
             <!-- Output Image -->
             <div class="col-12 border text-center mb-3 px-0">
               <div
