@@ -11,23 +11,43 @@ class Creator(User):
         self.liked_template = liked_templates if liked_templates else []
 
 
-def add_liked_template(user: User, template_uuid: str):
+def add_liked_template_by_user_uuid(user_uuid: str, template_uuid: str):
     c = collection.get_collection_instance(collection_users)
-    result = c.find_one({"username": user.username})
-
+    result = c.find_one({"uuid": user_uuid})
     if result:
         liked_templates = result.get("liked_templates")
         if not liked_templates:
             liked_templates = []
         liked_templates.append(template_uuid)
-        result = c.update_one({"username": user.username}, {"$set": {"liked_templates": liked_templates}})
+        result = c.update_one({"uuid": user_uuid}, {"$set": {"liked_templates": liked_templates}})
+    return result
 
+def add_liked_template_by_username(username: str, template_uuid: str):
+    c = collection.get_collection_instance(collection_users)
+    result = c.find_one({"username": username})
+    if result:
+        liked_templates = result.get("liked_templates")
+        if not liked_templates:
+            liked_templates = []
+        liked_templates.append(template_uuid)
+        result = c.update_one({"username": username}, {"$set": {"liked_templates": liked_templates}})
     return result
 
 
-def get_liked_template(user: User):
+def get_liked_template_by_username(username: str):
     c = collection.get_collection_instance(collection_users)
-    result = c.find_one({"username": user.username})
+    result = c.find_one({"username": username})
+    if result:
+        liked_templates = result.get("liked_templates")
+        if not liked_templates:
+            liked_templates = []
+        return liked_templates
+    else:
+        return []
+    
+def get_liked_template_by_user_uuid(uuid: str):
+    c = collection.get_collection_instance(collection_users)
+    result = c.find_one({"uuid": uuid})
     if result:
         liked_templates = result.get("liked_templates")
         if not liked_templates:

@@ -15,9 +15,16 @@ class ContactInfo:
         self.wechat_id = wechat_id
         self.email = email
 
+    def to_dict(self):
+        return {
+            "wechat_id": self.wechat_id,
+            "email": self.email
+        }
+
 class User:
     """A user of the application.
     Parameters:
+    uuid (str): The user's unique identifier.
     username (str): The user's username. This is the user's unique identifier.
     password (str): The user's password. Could be None if you want to search for a user.
     user_type (str): The user's type. Could be None if you want to search for a user.
@@ -28,7 +35,8 @@ class User:
         self.username = username
         self.password = password
         self.user_type = user_type
-        self.contact_info = contact_info
+        if contact_info is None:
+            self.contact_info = ContactInfo().to_dict()
 
 def insert_user(user:User)->InsertOneResult:
     c = collection.get_collection_instance(collection_users)
@@ -37,16 +45,17 @@ def insert_user(user:User)->InsertOneResult:
     result = c.find_one({"username": user.username})
     if result:
         return None
+    
+    # Could not insert a user without a password.
+    if user.password is None:
+        return None
 
     user_document = {
         "uuid": user.uuid,
         "username": user.username,
         "password": user.password,
         "user_type": user.user_type,
-        "contact_info": {
-            "wechat_id": user.contact_info.wechat_id,
-            "email": user.contact_info.email
-        }
+        "contact_info": user.contact_info
     }
 
     try:
@@ -81,29 +90,52 @@ def get_user_by_uuid(uuid:str):
         return result
 
 def update_user(user:User) -> UpdateResult:
+    c = collection.get_collection_instance(collection_users)
     user_document = {
         "username": user.username,
     }
-    c = collection.get_collection_instance(collection_users)
-    result = c.find_one(user_document)
-    if result:
-        password = result.get("password")
-        user_type = result.get("user_type")
-        contact_info = result.get("contact_info")
-    else:
-        return None
-    new_values = {
+    original_user = c.find_one(user_document)
+    if user.password is None:
+        user.password = original_user.get("password")
+    if user.user_type is None:
+        user.user_type = original_user.get("user_type")
+    if user.contact_info is ContactInfo:
+        user.contact_info = original_user.get("contact_info")
+    new_user_document = {
         "$set": {
-            "password": password,
-            "user_type": user_type,
-            "contact_info": contact_info
+            "password": user.password,
+            "user_type": user.user_type,
+            "contact_info": user.contact_info
         }
     }
     try:
-        result = c.update_one(user_document, new_values)
+        result = c.update_one(user_document, new_user_document)
     except pymongo.errors.OperationFailure:
         return None
     else:
         return result
 
+def delete_user_by_username(username:str):
+    user_document = {
+        "username": username,
+    }
+    c = collection.get_collection_instance(collection_users)
+    try:
+        result = c.delete_one(user_document)
+    except pymongo.errors.OperationFailure:
+        return None
+    else:
+        return result
+    
+def delete_user_by_uuid(uuid:str):
+    user_document = {
+        "uuid": uuid,
+    }
+    c = collection.get_collection_instance(collection_users)
+    try:
+        result = c.delete_one(user_document)
+    except pymongo.errors.OperationFailure:
+        return None
+    else:
+        return result
 
