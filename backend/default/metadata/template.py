@@ -3,8 +3,8 @@ import uuid
 import pymongo
 from pymongo.results import InsertOneResult
 
-from db import collection
-from db.collectionnames import collection_templates, collection_users
+from default.db import collection
+from default.db.collectionnames import collection_templates
 
 
 class Template:

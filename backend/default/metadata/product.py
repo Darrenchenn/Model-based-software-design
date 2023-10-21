@@ -1,15 +1,15 @@
 # products storage functions
 import uuid
-import pymongo
 
+import pymongo
 from pymongo.results import InsertOneResult, DeleteResult
 
-from db import collectionnames, collection
+from default.db import collectionnames, collection
 
 
 class Product:
 
-    def __init__(self, creator: str, responsible_supervisor: str = None, content:str=None) -> None:
+    def __init__(self, creator: str, responsible_supervisor: str = None, content: str = None) -> None:
         self.uuid = uuid.uuid4().hex
         self.creator = creator
         self.responsible_supervisor = responsible_supervisor
@@ -30,8 +30,9 @@ def insert_product(product: Product) -> InsertOneResult:
         return None
     else:
         return result
-    
-def get_product_by_uuid(uuid:str):
+
+
+def get_product_by_uuid(uuid: str):
     product_document = {
         "uuid": uuid,
     }
@@ -42,8 +43,9 @@ def get_product_by_uuid(uuid:str):
         return None
     else:
         return result
-    
-def get_product_by_creator_and_page(creator:str, page:int, page_size:int):
+
+
+def get_product_by_creator_and_page(creator: str, page: int, page_size: int):
     product_document = {
         "creator": creator,
     }
@@ -55,8 +57,9 @@ def get_product_by_creator_and_page(creator:str, page:int, page_size:int):
         return None
     else:
         return result
-    
-def get_product_by_supervisor_and_page(supervisor:str, page:int, page_size:int):
+
+
+def get_product_by_supervisor_and_page(supervisor: str, page: int, page_size: int):
     product_document = {
         "responsible_supervisor": supervisor,
     }
@@ -68,11 +71,13 @@ def get_product_by_supervisor_and_page(supervisor:str, page:int, page_size:int):
         return None
     else:
         return result
-    
-def update_product(new_product:Product):
+
+
+def update_product(new_product: Product):
     product_document = {
         "uuid": new_product.uuid,
     }
+
     c = collection.get_collection_instance(collectionnames.collection_products)
     original_product = get_product_by_uuid(new_product.uuid)
 
@@ -82,14 +87,15 @@ def update_product(new_product:Product):
         new_product.content = original_product.get("content")
     try:
         result = c.update_one(product_document,
-                               {"$set": {"responsible_supervisor": new_product.responsible_supervisor
-                                         , "content": new_product.content}})
+                              {"$set": {"responsible_supervisor": new_product.responsible_supervisor
+                                  , "content": new_product.content}})
     except pymongo.errors.OperationFailure:
         return None
-    else:    
+    else:
         return result
 
-def delete_product_by_uuid(uuid:str)->DeleteResult:
+
+def delete_product_by_uuid(uuid: str) -> DeleteResult:
     product_document = {
         "uuid": uuid,
     }
@@ -100,8 +106,9 @@ def delete_product_by_uuid(uuid:str)->DeleteResult:
         return None
     else:
         return result
-    
-def delete_product_by_creator(creator:str)->DeleteResult:
+
+
+def delete_product_by_creator(creator: str) -> DeleteResult:
     product_document = {
         "creator": creator,
     }

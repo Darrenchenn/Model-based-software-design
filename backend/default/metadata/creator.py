@@ -1,8 +1,7 @@
 from backend.default.metadata.user import User
-from db import collection
+from default.db import collection
 
-from db.collectionnames import collection_users
-
+from default.db.collectionnames import collection_users
 
 
 class Creator(User):
@@ -55,7 +54,8 @@ def get_liked_template_by_user_uuid(uuid: str):
         return liked_templates
     else:
         return []
-    
+
+
 def delete_liked_template(user: User, template_uuid: str):
     c = collection.get_collection_instance(collection_users)
     result = c.find_one({"username": user.username})
@@ -67,6 +67,7 @@ def delete_liked_template(user: User, template_uuid: str):
         liked_templates.remove(template_uuid)
         result = c.update_one({"username": user.username}, {"$set": {"liked_templates": liked_templates}})
     return result
+
 
 def get_product_save(self, product_name):
     # TODO: 根据产品名称返回ProductSave对象

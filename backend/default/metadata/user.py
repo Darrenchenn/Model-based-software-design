@@ -3,15 +3,18 @@ import uuid
 import pymongo
 from pymongo.results import InsertOneResult
 from pymongo.results import UpdateResult
-from db import collection
-from db.collectionnames import collection_users
+
+from default.db import collection
+from default.db.collectionnames import collection_users
+
 
 class ContactInfo:
     """The contact information of a user.
     Parameters:
     wechat_id (str): The user's WeChat ID.
     email (str): The user's email."""
-    def __init__(self, wechat_id:str=None, email:str=None):
+
+    def __init__(self, wechat_id: str = None, email: str = None):
         self.wechat_id = wechat_id
         self.email = email
 
@@ -20,6 +23,7 @@ class ContactInfo:
             "wechat_id": self.wechat_id,
             "email": self.email
         }
+
 
 class User:
     """A user of the application.
@@ -30,7 +34,7 @@ class User:
     user_type (str): The user's type. Could be None if you want to search for a user.
     contact_info (ContactInfo): The user's contact information. Could be None if you want to search for a user."""
 
-    def __init__(self, username, password=None, user_type=None, contact_info:ContactInfo=None):
+    def __init__(self, username, password=None, user_type=None, contact_info: ContactInfo = None):
         self.uuid = uuid.uuid4().hex
         self.username = username
         self.password = password
@@ -38,14 +42,15 @@ class User:
         if contact_info is None:
             self.contact_info = ContactInfo().to_dict()
 
-def insert_user(user:User)->InsertOneResult:
+
+def insert_user(user: User) -> InsertOneResult:
     c = collection.get_collection_instance(collection_users)
 
     # Username is the unique identifier of a user.
     result = c.find_one({"username": user.username})
     if result:
         return None
-    
+
     # Could not insert a user without a password.
     if user.password is None:
         return None
@@ -64,8 +69,9 @@ def insert_user(user:User)->InsertOneResult:
         return None
     else:
         return result
-    
-def get_user_by_username(username:str):
+
+
+def get_user_by_username(username: str):
     user_document = {
         "username": username,
     }
@@ -76,8 +82,9 @@ def get_user_by_username(username:str):
         return None
     else:
         return result
-    
-def get_user_by_uuid(uuid:str):
+
+
+def get_user_by_uuid(uuid: str):
     user_document = {
         "uuid": uuid,
     }
@@ -89,8 +96,10 @@ def get_user_by_uuid(uuid:str):
     else:
         return result
 
-def update_user(user:User) -> UpdateResult:
+
+def update_user(user: User) -> UpdateResult:
     c = collection.get_collection_instance(collection_users)
+
     user_document = {
         "username": user.username,
     }
@@ -115,7 +124,8 @@ def update_user(user:User) -> UpdateResult:
     else:
         return result
 
-def delete_user_by_username(username:str):
+
+def delete_user_by_username(username: str):
     user_document = {
         "username": username,
     }
@@ -126,8 +136,9 @@ def delete_user_by_username(username:str):
         return None
     else:
         return result
-    
-def delete_user_by_uuid(uuid:str):
+
+
+def delete_user_by_uuid(uuid: str):
     user_document = {
         "uuid": uuid,
     }
@@ -138,4 +149,3 @@ def delete_user_by_uuid(uuid:str):
         return None
     else:
         return result
-
