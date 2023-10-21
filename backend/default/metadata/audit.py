@@ -16,6 +16,15 @@ class Audit:
         self.creator = creator
         self.responsible_supervisor = responsible_supervisor
 
+    def to_dict(self):
+        return {
+            "uuid": self.uuid,
+            "result": self.result,
+            "comment": self.comment,
+            "creator": self.creator,
+            "responsible_supervisor": self.responsible_supervisor,
+        }
+
 
 def insert_audit(audit: Audit) -> InsertOneResult:
     c = collection.get_collection_instance(collection_audits)

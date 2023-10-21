@@ -15,6 +15,14 @@ class Product:
         self.responsible_supervisor = responsible_supervisor
         self.content = content
 
+    def to_dict(self):
+        return {
+            "uuid": self.uuid,
+            "creator": self.creator,
+            "responsible_supervisor": self.responsible_supervisor,
+            "content": self.content,
+        }
+
 
 def insert_product(product: Product) -> InsertOneResult:
     c = collection.get_collection_instance(collectionnames.collection_products)

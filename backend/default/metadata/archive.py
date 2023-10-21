@@ -1,21 +1,28 @@
 # storage functions of archives.
 
 
+import json
+import bson.json_util as json_util
 import uuid
 import pymongo
 from pymongo.results import InsertOneResult
 from backend.default.db import collection, collectionnames
+from backend.default.metadata.audit import Audit
 
 
 class Archive:
 
-    # content: map<object, object> (Product, Audit)
-    def __init__(self, content: dict[object, object] = {}) -> None:
+    # content: map<string, object> (product_uuid, Audit)
+    def __init__(self, content: dict = {}) -> None:
         self.uuid = uuid.uuid4().hex
         self.content = content
 
 def insert_archive(archive: Archive) -> InsertOneResult:
     c = collection.get_collection_instance(collectionnames.collection_archives)
+
+    for key, value in archive.content.items():
+        if isinstance(value, Audit):
+            archive.content[key] = value.to_dict()
 
     archive_document = {
         "uuid": archive.uuid,
