@@ -1,6 +1,6 @@
 import json
 
-from default.common import http
+from default.common import http, error
 
 
 class StableDiffusion:
@@ -40,4 +40,6 @@ class StableDiffusion:
         })
 
     def text_to_pic(self):
+        if self.key == "":
+            return error.Error("Please enter your API key").new()
         return http.request(self.url, self.method, self.payload)
