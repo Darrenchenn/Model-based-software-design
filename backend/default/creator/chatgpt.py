@@ -36,7 +36,7 @@ class ChatGpt:
         self.message.append({"role": "user", "content": msg})
         model = openai.ChatCompletion.create(
             model=get_model(),
-            messages=self.message
+            messages=self.message,
         )
         self.assistant = model['choices'][0]['message']['content']
         return self.assistant
