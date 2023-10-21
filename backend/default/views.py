@@ -6,7 +6,7 @@ logger = logging.getLogger('django')
 
 from django.http import HttpResponse
 
-from default.creator import chatgpt, stablediffusioncreator
+from default.creator import chatgpt, stablediffusion
 from default.common import error
 
 noval_system_prompt = "you are a noval writer."
@@ -29,5 +29,5 @@ def generate_image(request):
     width = body["width"] if "width" in body else ""
     height = body["height"] if "height" in body else ""
 
-    sd = stablediffusioncreator.StableDiffusion(api_key, prompt, width, height)
+    sd = stablediffusion.StableDiffusion(api_key, prompt, width, height)
     return HttpResponse(sd.text_to_pic())

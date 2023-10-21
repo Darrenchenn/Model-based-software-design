@@ -1,6 +1,9 @@
 import json
+import logging
 
 from default.common import http, error
+
+logger = logging.getLogger('django')
 
 
 class StableDiffusion:
@@ -42,4 +45,5 @@ class StableDiffusion:
     def text_to_pic(self):
         if self.key == "":
             return error.Error("Please enter your API key").new()
+        logger.info(self.payload)
         return http.request(self.url, self.method, self.payload)
