@@ -9,14 +9,13 @@ from django.http import HttpResponse
 from default.creator import chatgpt, stablediffusion
 from default.common import error
 
-noval_system_prompt = "you are a noval writer."
-
 
 def generate_noval_text(request):
     if request.method == "POST":
         error.Error("request method is wrong").http_response_new()
     prompt = request.GET.get("prompt")
-    gpt = chatgpt.ChatGpt(noval_system_prompt)
+    system = request.GET.get("system") if request.GET.get("system") is not None else ""
+    gpt = chatgpt.ChatGpt(system)
     return HttpResponse(gpt.talk(prompt))
 
 
