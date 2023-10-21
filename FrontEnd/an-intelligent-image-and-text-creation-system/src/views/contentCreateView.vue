@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios'
-import { ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 const serverAddress = import.meta.env.VITE_serverAddress
 
@@ -13,53 +13,158 @@ const keyInput = ref('')
 
 const imgOutput = ref('')
 const textOutput = ref('')
+const history = ref([])
+
+const isFetchingResult = ref(false)
+const isInputInvalid = computed(() => {
+  if (promptInput.value && heightInput.value && widthInput.value && keyInput.value) return false
+  else return true
+})
+const showValidationFeedback = ref(false)
+
+onMounted(() => {
+  const placeHolder = {
+    content_type: 'illustration',
+    status: 'success',
+    generationTime: 1.3200268745422363,
+    id: 12202888,
+    output: [
+      'https://pub-8b49af329fae499aa563997f5d4068a4.r2.dev/generations/e5cd86d3-7305-47fc-82c1-7d1a3b130fa4-0.png'
+    ],
+    meta: {
+      H: 512,
+      W: 512,
+      enable_attention_slicing: 'true',
+      file_prefix: 'e5cd86d3-7305-47fc-82c1-7d1a3b130fa4',
+      guidance_scale: 7.5,
+      model: 'runwayml/stable-diffusion-v1-5',
+      n_samples: 1,
+      negative_prompt:
+        ' ((out of frame)), ((extra fingers)), mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), (((tiling))), ((naked)), ((tile)), ((fleshpile)), ((ugly)), (((abstract))), blurry, ((bad anatomy)), ((bad proportions)), ((extra limbs)), cloned face, glitchy, ((extra breasts)), ((double torso)), ((extra arms)), ((extra hands)), ((mangled fingers)), ((missing breasts)), (missing lips), ((ugly face)), ((fat)), ((extra legs))',
+      outdir: 'out',
+      prompt:
+        'ultra realistic close up portrait ((beautiful pale cyberpunk female with heavy black eyeliner)) DSLR photography, sharp focus, Unreal Engine 5, Octane Render, Redshift, ((cinematic lighting)), f/1.4, ISO 200, 1/160s, 8K, RAW, unedited, symmetrical balance, in-frame',
+      revision: 'fp16',
+      safetychecker: 'no',
+      seed: 3499575229,
+      steps: 20,
+      vae: 'stabilityai/sd-vae-ft-mse'
+    }
+  }
+  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
+  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
+  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
+  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
+  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
+  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
+  history.value[0].id = 12202888
+  history.value[0].id = 'hahahehe'
+  history.value[0].content_type = 'illustration'
+  history.value[0].output[0] =
+    'https://pub-8b49af329fae499aa563997f5d4068a4.r2.dev/generations/e5cd86d3-7305-47fc-82c1-7d1a3b130fa4-0.png'
+  history.value[1].id = 1
+  history.value[1].content_type = 'socialMediaPost'
+  history.value[1].output[0] =
+    'https://i.pinimg.com/originals/0b/94/33/0b943300e968ba78fb55c6dc16b70631.jpg'
+  history.value[2].id = 2
+  history.value[2].content_type = 'icon'
+  history.value[2].output[0] =
+    'https://i.pinimg.com/originals/95/74/f4/9574f450742dccfac04c15d71d1f638a.jpg'
+  history.value[3].id = 3
+  history.value[3].content_type = 'icon'
+  history.value[3].output[0] =
+    'https://pbs.twimg.com/media/F2XgDoWaYAE5xKP?format=jpg&name=4096x4096'
+  history.value[4].id = 4
+  history.value[4].content_type = 'poster'
+  history.value[4].output[0] =
+    'https://i.pinimg.com/originals/c3/35/ef/c335ef807fa5693f1c05952759ed2436.jpg'
+  history.value[5].id = 5
+  history.value[5].content_type = 'poster'
+  history.value[5].output[0] =
+    'https://i.pinimg.com/originals/10/41/52/104152ece82da03225e57a510dcf2b4b.jpg'
+})
+
+const addCurrentOutputToHistory = () => {
+  history.value.push(imgOutput.value)
+  imgOutput.value = ''
+  textOutput.value = ''
+}
 
 const onClickCreateBtn = () => {
-  if (!promptInput.value || !keyInput.value) {
-    alert('prompt or key input empty!')
+  const contentType = contentTypeInput.value
+
+  if (isFetchingResult.value) return
+  if (isInputInvalid.value) {
+    showValidationFeedback.value = true
     return
   }
 
-  axios
-    .post(serverAddress + '/sd_creator/', {
-      prompt: promptInput.value,
-      // prompt: 'studying at university of sydney at friday night',
-      api_key: keyInput.value,
-      // api_key: 'd1hcN8m8Pm0dUy80WUGZ574PviR0gZXfBH2ddXywr9rTlLBmCq3XetMhroHi'
-      width: String(widthInput.value),
-      height: String(heightInput.value)
-    })
-    .then((res) => {
-      console.log(res.data)
-      console.log(res.status)
-      console.log(res.statusText)
-      console.log(res.headers)
-      console.log(res.config)
-      return res
-    })
-    .then((res) => {
-      // console.log(JSON.stringify(res))
-      // return res.json()
-      imgOutput.value = res.data.output[0]
-    })
-    .then()
-    .catch((err) => {
-      console.log(err)
-    })
-
+  // Novel writing (GChatGPT)
   // axios.get(serverAddress + '/creator/?prompt=a story about surviving a war')
+  // api_key: 'd1hcN8m8Pm0dUy80WUGZ574PviR0gZXfBH2ddXywr9rTlLBmCq3XetMhroHi
+  // prompt: 'studying at university of sydney at friday night'
 
-  // fetch('http://40.76.249.160:8000/sd_creator/', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({
-  //     prompt: 'studying at university of sydney at friday night',
-  //     api_key: 'd1hcN8m8Pm0dUy80WUGZ574PviR0gZXfBH2ddXywr9rTlLBmCq3XetMhroHi'
-  //   })
-  // })
-  //   .then((res) => res.json())
-  //   .then((res) => console.log(res))
-  //   .catch((err) => console.log(err))
+  try {
+    addCurrentOutputToHistory()
+    isFetchingResult.value = true
+    showValidationFeedback.value = false
+    axios
+      .post(serverAddress + '/sd_creator/', {
+        prompt: String(promptInput.value),
+        api_key: String(keyInput.value),
+        width: String(widthInput.value),
+        height: String(heightInput.value)
+      })
+      .then((res) => res.data)
+      .then((res) => {
+        imgOutput.value = res
+        imgOutput.value['content_type'] = contentType
+        // console.log(JSON.stringify(res))
+      })
+  } catch (err) {
+    console.log(err)
+  } finally {
+    isFetchingResult.value = false
+  }
+}
+
+const onClickModifyBtn = () => {
+  if (isFetchingResult.value) return
+  if (isInputInvalid.value) {
+    showValidationFeedback.value = true
+    return
+  }
+
+  try {
+    addCurrentOutputToHistory()
+    isFetchingResult.value = true
+    showValidationFeedback.value = false
+    // To do: get modify content api
+    // axios
+    //   .post(serverAddress + '/sd_creator/', {
+    //     prompt: String(promptInput.value),
+    //     api_key: String(keyInput.value),
+    //     width: String(widthInput.value),
+    //     height: String(heightInput.value)
+    //   })
+    //   .then((res) => res.data)
+    //   .then((res) => {
+    //     imgOutput.value = res.output[0]
+    //   })
+  } catch (err) {
+    console.log(err)
+  } finally {
+    isFetchingResult.value = false
+  }
+}
+
+const onClickFinishCreateBtn = () => {
+  if (isFetchingResult.value) return
+  if (isInputInvalid.value) {
+    showValidationFeedback.value = true
+    return
+  }
+  // To do: submit content to server
 }
 </script>
 
@@ -119,66 +224,137 @@ const onClickCreateBtn = () => {
                 Social Media Post
               </label>
             </div>
-            <!-- Input prompt -->
-            <div class="form-floating mb-3 col-12 p-0">
-              <textarea
-                v-model="promptInput"
-                class="form-control"
-                placeholder="Prompt"
-                id="promptInput"
-              ></textarea>
-              <label for="promptInput">Describe your requirements*</label>
-            </div>
-            <!-- Negative input prompt -->
-            <div class="form-floating mb-3 col-12 p-0">
-              <textarea
-                v-model="negativePromptInput"
-                class="form-control"
-                placeholder="Negative Prompt"
-                id="negativePromptInput"
-              ></textarea>
-              <label for="promptInput">What you don't want in the content</label>
-            </div>
-            <!-- Height -->
-            <div class="form-floating mb-3 ps-0 col-6">
-              <input
-                v-model="heightInput"
-                type="number"
-                class="form-control"
-                id="heightInput"
-                placeholder="Height"
-              />
-              <label for="heightInput">Height* (in pixels)</label>
-            </div>
-            <!-- Width -->
-            <div class="form-floating mb-3 pe-0 col-6">
-              <input
-                v-model="widthInput"
-                type="number"
-                class="form-control"
-                id="widthInput"
-                placeholder="name@example.com"
-              />
-              <label class="ms-2" for="widthInput">Width* (in pixels)</label>
-            </div>
-            <!-- Key (for developer) -->
-            <div class="form-floating mb-3 col-12 p-0">
-              <input
-                v-model="keyInput"
-                type="text"
-                class="form-control"
-                id="Key"
-                placeholder="name@example.com"
-              />
-              <label for="Key">Key*</label>
-            </div>
-            <!-- Submit Button -->
-            <div class="mb-3 col-3 p-0 mb-3">
-              <button @click="onClickCreateBtn" class="btn btn-outline-warning" id="submitBtn">
-                Create
+            <form
+              class="col-12 container-fluid row needs-validation"
+              :class="showValidationFeedback ? 'was-validated' : ''"
+              novalidate
+            >
+              <!-- Input prompt -->
+              <div class="form-floating col-12 mb-3 p-0">
+                <textarea
+                  v-model="promptInput"
+                  class="form-control"
+                  placeholder="Prompt"
+                  id="promptInput"
+                  required
+                ></textarea>
+                <label for="promptInput">Describe your requirements*</label>
+                <div class="invalid-feedback">Prompt is required!</div>
+              </div>
+              <!-- Negative input prompt -->
+              <div class="form-floating mb-3 col-12 p-0">
+                <textarea
+                  v-model="negativePromptInput"
+                  class="form-control"
+                  placeholder="Negative Prompt"
+                  id="negativePromptInput"
+                ></textarea>
+                <label for="promptInput">What you don't want in the content</label>
+              </div>
+              <!-- Height -->
+              <div class="form-floating mb-3 ps-0 col-6">
+                <input
+                  v-model="heightInput"
+                  type="number"
+                  class="form-control"
+                  id="heightInput"
+                  placeholder="Height"
+                  required
+                />
+                <label for="heightInput">Height* (in pixels)</label>
+                <div class="invalid-feedback">Height is required!</div>
+              </div>
+              <!-- Width -->
+              <div class="form-floating mb-3 pe-0 col-6">
+                <input
+                  v-model="widthInput"
+                  type="number"
+                  class="form-control"
+                  id="widthInput"
+                  placeholder="name@example.com"
+                  required
+                />
+                <label class="ms-2" for="widthInput">Width* (in pixels)</label>
+                <div class="invalid-feedback">Width is required!</div>
+              </div>
+              <!-- Key (for developer) -->
+              <div class="form-floating mb-3 col-12 p-0">
+                <input
+                  v-model="keyInput"
+                  type="text"
+                  class="form-control"
+                  id="Key"
+                  placeholder="afwegwerbiuebr"
+                  required
+                />
+                <label for="Key">Key*</label>
+                <div class="invalid-feedback">Key is required!</div>
+              </div>
+            </form>
+            <!-- Create Button -->
+            <div class="col-4 mb-4">
+              <button
+                :disabled="isFetchingResult"
+                @click="onClickCreateBtn"
+                class="btn btn-outline-warning"
+                id="btnInheritWidth"
+              >
+                {{ imgOutput ? 'Create new content' : 'Create' }}
               </button>
             </div>
-            <div class="col-12 mb-3 px-0">To-do: History</div>
+            <!-- Modify existing content button -->
+            <div v-if="imgOutput" class="col-4">
+              <button
+                :disabled="isFetchingResult"
+                @click="onClickModifyBtn"
+                class="btn btn-outline-warning"
+                id="btnInheritWidth"
+              >
+                Modify Content
+              </button>
+            </div>
+            <!-- Finish create button -->
+            <div v-if="imgOutput" class="col-4">
+              <button
+                :disabled="isFetchingResult"
+                @click="onClickFinishCreateBtn"
+                class="btn btn-warning"
+                id="btnInheritWidth"
+              >
+                Finish create
+              </button>
+            </div>
+            <!-- History -->
+            <div v-if="history.length !== 0" class="h3 col-12 mb-3 px-0">History</div>
+            <div
+              v-for="historyContent in history"
+              v-bind:key="historyContent.id"
+              class="col-4 mb-3"
+            >
+              <img
+                id="imgBtn"
+                class="img-fluid p-0 rounded-0"
+                :src="historyContent.output[0]"
+                data-bs-toggle="modal"
+                :data-bs-target="'#id_' + String(historyContent.id)"
+              />
+              <!-- Modal -->
+              <div class="modal fade" :id="'id_' + String(historyContent.id)" tabindex="-1">
+                <div class="modal-dialog modal-lg">
+                  <div class="modal-content container-fluid px-0">
+                    <div class="modal-body row">
+                      <img class="col-8 img-fluid" :src="historyContent.output[0]" />
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal">
+                        Close
+                      </button>
+                      <button type="button" class="btn btn-warning">Save changes</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -187,8 +363,20 @@ const onClickCreateBtn = () => {
           <div class="row">
             <!-- Output Image -->
             <div class="col-12 border text-center mb-3 px-0">
-              <div v-if="!imgOutput" id="placeHolder"></div>
-              <img v-else class="img-fluid" :src="imgOutput" />
+              <div
+                v-if="!imgOutput"
+                class="d-flex align-content-center justify-content-center"
+                id="placeHolder"
+              >
+                <div
+                  v-if="isFetchingResult"
+                  class="align-self-center spinner-border text-warning"
+                  role="status"
+                >
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+              <img v-else class="img-fluid" :src="imgOutput.output[0]" />
             </div>
             <!-- Output Text (if social media post is selected) -->
             <div v-if="textOutput" class="col-12 border mb-3">{{ textOutput }}</div>
@@ -204,10 +392,13 @@ const onClickCreateBtn = () => {
   width: 100%;
   height: 500px;
 }
-#submitBtn {
-  width: 100%;
+#imgBtn:hover {
+  cursor: pointer;
 }
-#submitBtn:hover {
+.btn-outline-warning:hover {
   color: white;
+}
+#btnInheritWidth {
+  width: 100%;
 }
 </style>
