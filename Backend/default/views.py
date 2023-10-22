@@ -4,7 +4,7 @@ import logging
 
 logger = logging.getLogger('django')
 
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 
 from default.creator import chatgpt, stablediffusion
 from default.common import error
@@ -15,7 +15,9 @@ from default.products import product_service
 # creator interfaces
 def generate_noval_text(request):
     if request.method == "POST":
-        error.Error("request method is wrong").http_response_new()
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new("request method is wrong"),
+        }))
     logger.info(request.GET)  # print request parameters which is easy for debugging.
     prompt = request.GET.get("prompt")
     system = request.GET.get("system") if request.GET.get("system") is not None else ""
@@ -25,7 +27,9 @@ def generate_noval_text(request):
 
 def generate_image(request):
     if request.method == "GET":
-        error.Error("request method is wrong").http_response_new()
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new("request method is wrong"),
+        }))
     logger.info(request.POST)
     body = json.loads(request.body)
     api_key = body["api_key"] if "api_key" in body else ""
@@ -46,7 +50,9 @@ def generate_image(request):
 
 def forward_wechat(request):
     if request.method == "POST":
-        error.Error("request method is wrong").http_response_new()
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new("request method is wrong"),
+        }))
     logger.info(request.GET)
     username = request.GET.get("username")
     title = request.GET.get("title")
@@ -61,7 +67,9 @@ def forward_wechat(request):
 
 def get_product(request):
     if request.method != "GET":
-        return HttpResponse(error.Error("request method is wrong").http_response_new())
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new("request method is wrong"),
+        }))
     logger.info(request.GET)
     uuid = request.GET.get("uuid")
     creator = request.GET.get("creator")
@@ -105,7 +113,9 @@ def get_product(request):
 
 def insert_product(request):
     if request.method != "POST":
-        return HttpResponse(error.Error("request method is wrong").http_response_new())
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new("request method is wrong"),
+        }))
     logger.info(request.POST)
     body = json.loads(request.body)
     result = product_service.insert_product(body)
