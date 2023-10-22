@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 
 const creationHistory = ref(null)
 
@@ -34,6 +35,7 @@ onMounted(() => {
       contentType: 'poster',
       imgSrc: 'https://pbs.twimg.com/media/F2XgDoWaYAE5xKP?format=jpg&name=4096x4096',
       isAudited: true,
+      supervisor: 'example supervisor 1',
       auditResult: true,
       auditComment: ''
     },
@@ -44,6 +46,7 @@ onMounted(() => {
       contentType: 'poster',
       imgSrc: 'https://i.pinimg.com/originals/c3/35/ef/c335ef807fa5693f1c05952759ed2436.jpg',
       isAudited: true,
+      supervisor: 'example supervisor 2',
       auditResult: false,
       auditComment: 'Your content sucks'
     },
@@ -75,10 +78,11 @@ onMounted(() => {
           <div>Oops! Look like you don't have any creation yet!</div>
           <div>Go create some!</div>
         </div>
-        <div
+        <RouterLink
           v-else
           v-for="history in creationHistory"
           v-bind:key="history.id"
+          :to="`/view_create_history/${history.id}`"
           class="container col-12 border border-warning rounded mb-4 ps-0"
           id="hideOverflow"
         >
@@ -97,23 +101,23 @@ onMounted(() => {
                 <!-- if not audit -->
                 <span
                   v-if="!history.isAudited"
-                  class="h5 border border-secondary-subtle rounded text-secondary py-2 px-3"
+                  class="h5 bg-secondary-subtle text-white rounded text-secondary py-2 px-3"
                   >Not audited</span
                 >
                 <!-- if audit success -->
                 <span
                   v-else-if="history.isAudited && history.auditResult"
-                  class="h5 border border-success rounded text-success py-2 px-3"
+                  class="h5 bg-success text-white rounded text-success py-2 px-3"
                   >Pass
                 </span>
                 <!-- if audit fail -->
-                <span v-else class="h5 border border-danger rounded text-danger py-2 px-3"
+                <span v-else class="h5 bg-danger text-white rounded text-danger py-2 px-3"
                   >Fail</span
                 >
               </div>
             </div>
           </div>
-        </div>
+        </RouterLink>
       </div>
     </div>
   </div>
@@ -132,5 +136,9 @@ img {
   max-width: 200px;
   height: auto;
   width: auto;
+}
+a {
+  text-decoration: none;
+  color: black;
 }
 </style>

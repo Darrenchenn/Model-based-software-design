@@ -336,7 +336,7 @@ const onClickConfirmCreate = () => {
           </div>
         </div>
       </div>
-      <div class="col-12 col-lg-6 mb-3">
+      <div class="col-12 col-lg-6 mb-3 border-end border-warning">
         <div class="container-fluid p">
           <div class="row">
             <!-- Select which type of content -->
@@ -490,8 +490,12 @@ const onClickConfirmCreate = () => {
               </button>
             </div>
             <!-- History -->
-            <hr v-if="history.length !== 0" class="col-12 mb-2 px-0" />
-            <div v-if="history.length !== 0" class="h2 col-12 mb-3 px-0">History</div>
+            <div
+              v-if="history.length !== 0"
+              class="h2 col-12 border-top border-warning mb-3 pt-3 px-0"
+            >
+              History
+            </div>
             <div
               v-for="historyContent in history"
               v-bind:key="historyContent.id"
@@ -599,6 +603,7 @@ const onClickConfirmCreate = () => {
       <div class="col-12 col-lg-6">
         <div class="container-fluid">
           <div class="row">
+            <!-- Canvas -->
             <div class="col-12 px-0 h2">Canvas</div>
             <!-- Output Image -->
             <div class="col-12 border text-center mb-3 px-0">
