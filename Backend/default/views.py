@@ -45,41 +45,39 @@ def generate_image(request):
 # products interfaces
 
 
-def get_product_by_uuid(request):
+def get_product(request):
     if request.method != "GET":
         return HttpResponse(error.Error("request method is wrong").http_response_new())
     logger.info(request.GET)
     uuid = request.GET.get("uuid")
-    if uuid is None:
-        return HttpResponse(error.Error("uuid is None").http_response_new())
-    result = product.get_product_by_uuid(uuid)
-    if isinstance(result, error.Error):
-        return HttpResponse(result.http_response_new())
-    json_result = {
-        "uuid": result["uuid"],
-        "creator": result["creator"],
-        "responsible_supervisor": result["responsible_supervisor"],
-    }
-    return HttpResponse(json.dumps(json_result))
-
-
-def get_product_by_creator(request):
-    if request.method != "GET":
-        return HttpResponse(error.Error("request method is wrong").http_response_new())
-    logger.info(request.GET)
     creator = request.GET.get("creator")
-    page = request.GET.get("page")
-    page_size = request.GET.get("page_size")
-    if creator is None:
-        return HttpResponse(error.Error("Parameters wrong").http_response_new())
+    responsible_supervisor = request.GET.get("responsible_supervisor")
+    page = int(request.GET.get("page"))
+    page_size = int(request.GET.get("page_size"))
+    if uuid is not None and uuid is not '':
+        result = product.get_product_by_uuid(uuid)
+        if isinstance(result, error.Error):
+            return HttpResponse(result.http_response_new())
+        json_result = {
+            "uuid": result["uuid"],
+            "creator": result["creator"],
+            "responsible_supervisor": result["responsible_supervisor"],
+        }
+        return HttpResponse(json.dumps(json_result))
     if page is None:
         page = 0
     if page_size is None:
         page_size = 10
-    result = product.get_product_by_creator_and_page(creator, page, page_size)
+    if creator is None or creator == '':
+        creator = None
+    if responsible_supervisor is None or responsible_supervisor == '':
+        responsible_supervisor = None
+    result = product.get_product_by_page(creator, responsible_supervisor, page, page_size)
     if isinstance(result, error.Error):
         return HttpResponse(result.http_response_new())
     json_result = []
+    if result is None:
+        return HttpResponse(json.dumps(json_result))
     for i in result:
         json_result.append({
             "uuid": i["uuid"],
@@ -89,30 +87,17 @@ def get_product_by_creator(request):
     return HttpResponse(json.dumps(json_result))
 
 
-def get_product_by_supervisor(request):
-    if request.method != "GET":
+def insert_product(request):
+    if request.method != "POST":
         return HttpResponse(error.Error("request method is wrong").http_response_new())
-    logger.info(request.GET)
-    supervisor = request.GET.get("supervisor")
-    page = request.GET.get("page")
-    page_size = request.GET.get("page_size")
-    if supervisor is None:
-        return HttpResponse(error.Error("Parameters wrong").http_response_new())
-    if page is None:
-        page = 0
-    if page_size is None:
-        page_size = 10
-    result = product.get_product_by_supervisor_and_page(supervisor, page, page_size)
+    logger.info(request.POST)
+    body = json.loads(request.body)
+    result = product.insert_product(body)
     if isinstance(result, error.Error):
         return HttpResponse(result.http_response_new())
-    json_result = []
-    for i in result:
-        json_result.append({
-            "uuid": i["uuid"],
-            "creator": i["creator"],
-            "responsible_supervisor": i["responsible_supervisor"],
-        })
-    return HttpResponse(json.dumps(json_result))
+    return HttpResponse()
+
+
 # message interfaces
 
 # archive interfaces

@@ -25,9 +25,8 @@ urlpatterns = [
     path('sd_creator/', views.generate_image),
 
     # products interfaces urls
-    path('get_product_by_uuid/', views.get_product_by_uuid),
-    path('get_product_by_creator/', views.get_product_by_creator),
-    path('get_product_by_supervisor/', views.get_product_by_supervisor),
+    path('get_product/', views.get_product),
+    path('insert_product/', views.insert_product),
 
     # user interfaces urls
 ]

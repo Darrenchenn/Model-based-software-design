@@ -27,13 +27,13 @@ class Product:
         }
 
 
-def insert_product(product: Product) -> InsertOneResult:
+def insert_product(json_body: dict) -> InsertOneResult:
     c = collection.get_collection_instance(collection_products)
 
     product_document = {
-        "uuid": product.uuid,
-        "creator": product.creator,
-        "responsible_supervisor": product.responsible_supervisor,
+        "uuid": uuid.uuid4().hex,
+        "creator": json_body["creator"],
+        "responsible_supervisor": json_body["responsible_supervisor"],
     }
     try:
         result = c.insert_one(product_document)
@@ -58,25 +58,15 @@ def get_product_by_uuid(uuid: str):
         return error
 
 
-def get_product_by_creator_and_page(creator: str, page: int, page_size: int):
-    product_document = {
-        "creator": creator,
-    }
-    c = collection.get_collection_instance(collection_products)
-    try:
-        # Can be iterated by for loop
-        result = c.find_by_page(product_document, page, page_size)
-        return result
-    except Exception as e:
-        error = Error(f"An unexpected error occurred: {str(e)}")
-        error.new()
-        return error
-
-
-def get_product_by_supervisor_and_page(supervisor: str, page: int, page_size: int):
-    product_document = {
-        "responsible_supervisor": supervisor,
-    }
+def get_product_by_page(creator: str, responsible_supervisor: str, page: int, page_size: int):
+    if creator is None:
+        product_document = {
+            "responsible_supervisor": responsible_supervisor,
+        }
+    if responsible_supervisor is None:
+        product_document = {
+            "creator": creator,
+        }
     c = collection.get_collection_instance(collection_products)
     try:
         # Can be iterated by for loop
