@@ -4,6 +4,7 @@ import LoginView from '../views/loginView.vue'
 import HomeView from '../views/homeView.vue'
 import ContentCreate from '../views/contentCreateView.vue'
 import ViewCreateHistory from '../views/creatorHistoryView.vue'
+import CreateHistoryDetail from '../views/creatorHistoryDetailView.vue'
 import AccountView from '../views/accountView.vue'
 import IndexView from '../views/indexView.vue'
 
@@ -41,6 +42,10 @@ const router = createRouter({
       path: '/view_create_history',
       name: 'View Create History',
       component: ViewCreateHistory
+    },
+    {
+      path: '/view_create_history/:id',
+      component: CreateHistoryDetail
     },
     {
       path: '/account',
