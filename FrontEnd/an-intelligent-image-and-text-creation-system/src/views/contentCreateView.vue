@@ -4,6 +4,8 @@ import { computed, onMounted, ref } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 
 const serverAddress = import.meta.env.VITE_serverAddress
+const finishCreateBtn = ref(null)
+const contentTitleInputElement = ref(null)
 
 const contentTypeInput = ref('illustration')
 const promptInput = ref('')
@@ -11,17 +13,19 @@ const negativePromptInput = ref('')
 const heightInput = ref(520)
 const widthInput = ref(520)
 const keyInput = ref('')
+const contentTitleInput = ref('')
 
 const imgOutput = ref('')
 const textOutput = ref('')
 const history = ref([])
 
 const isFetchingResult = ref(false)
-const isInputInvalid = computed(() => {
+const isCreateInputInvalid = computed(() => {
   if (promptInput.value && heightInput.value && widthInput.value && keyInput.value) return false
   else return true
 })
-const showValidationFeedback = ref(false)
+const showCreateValidationFeedback = ref(false)
+const showTitleValidationFeedback = ref(false)
 
 onBeforeRouteLeave((to, from) => {
   if (!imgOutput.value && !textOutput.value && history.value.length === 0) return true
@@ -113,8 +117,8 @@ const onClickCreateBtn = () => {
   const contentType = contentTypeInput.value
 
   if (isFetchingResult.value) return
-  if (isInputInvalid.value) {
-    showValidationFeedback.value = true
+  if (isCreateInputInvalid.value) {
+    showCreateValidationFeedback.value = true
     return
   }
 
@@ -126,7 +130,7 @@ const onClickCreateBtn = () => {
   try {
     addCurrentOutputToHistory()
     isFetchingResult.value = true
-    showValidationFeedback.value = false
+    showCreateValidationFeedback.value = false
     axios
       .post(serverAddress + '/sd_creator/', {
         api_key: String(keyInput.value),
@@ -151,15 +155,15 @@ const onClickModifyBtn = () => {
   const contentType = contentTypeInput.value
 
   if (isFetchingResult.value) return
-  if (isInputInvalid.value) {
-    showValidationFeedback.value = true
+  if (isCreateInputInvalid.value) {
+    showCreateValidationFeedback.value = true
     return
   }
 
   try {
     addCurrentOutputToHistory()
     isFetchingResult.value = true
-    showValidationFeedback.value = false
+    showCreateValidationFeedback.value = false
     axios
       .post(serverAddress + '/sd_creator/', {
         api_key: String(keyInput.value),
@@ -183,13 +187,155 @@ const onClickModifyBtn = () => {
 
 const onClickFinishCreateBtn = () => {
   if (isFetchingResult.value) return
+  finishCreateBtn.value.click()
+}
+
+const onClickConfirmCreate = () => {
+  if (!contentTitleInput.value) {
+    // console.log(`contentTitleInput.value = ${contentTitleInput.value}`)
+    // console.log('invliad!')
+    showTitleValidationFeedback.value = true
+    contentTitleInputElement.value.focus()
+    return
+  }
+
   // To do: submit content to server
+  // To do: navigate to history page
 }
 </script>
 
 <template>
   <div class="container-fluid pt-4">
     <div class="row px-3">
+      <!-- Finish Create Button -->
+      <button
+        v-if="imgOutput"
+        ref="finishCreateBtn"
+        type="button"
+        class="btn btn-primary d-none"
+        data-bs-toggle="modal"
+        data-bs-target="#finishCreateStaticBackdrop"
+      >
+        Launch static backdrop modal
+      </button>
+      <!-- Finish Create Modal -->
+      <div
+        v-if="imgOutput"
+        class="modal fade"
+        id="finishCreateStaticBackdrop"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+      >
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="staticBackdropLabel">Finish create confirmation</h1>
+              <button
+                @click="(contentTitleInput = ''), (showTitleValidationFeedback = false)"
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body row">
+              <div class="col-7 text-center">
+                <img class="img-fluid" :src="imgOutput.output[0]" />
+              </div>
+              <div class="col-5 container-fluid">
+                <div class="row">
+                  <div
+                    class="col-12 mb-3 needs-validation"
+                    :class="showTitleValidationFeedback ? 'was-validated' : ''"
+                    novalidate
+                  >
+                    <label for="contentTitleInputElement" class="form-label">Content Title</label>
+                    <input
+                      ref="contentTitleInputElement"
+                      v-model="contentTitleInput"
+                      type="text"
+                      class="form-control"
+                      id="contentTitleInputElement"
+                      required
+                    />
+                    <div class="invalid-feedback">Title is required!</div>
+                  </div>
+                  <div class="col-12 mb-3">
+                    <label for="historyContentType" class="form-label">Content Type</label>
+                    <input
+                      class="form-control"
+                      id="historyContentType "
+                      :value="
+                        imgOutput.content_type[0].toUpperCase() + imgOutput.content_type.slice(1)
+                      "
+                      disabled
+                      readonly
+                    />
+                  </div>
+                  <div class="col-12 mb-3">
+                    <label for="historyPrompt" class="form-label">Prompt</label>
+                    <textarea
+                      class="form-control"
+                      id="historyPrompt"
+                      :value="imgOutput.meta.prompt"
+                      rows="5"
+                      disabled
+                      readonly
+                    >
+                    </textarea>
+                  </div>
+                  <div class="col-12 mb-3">
+                    <label for="historyNegativePrompt" class="form-label">Negative Prompt</label>
+                    <textarea
+                      class="form-control"
+                      id="historyNegativePrompt"
+                      :value="imgOutput.meta.negative_prompt"
+                      rows="5"
+                      disabled
+                      readonly
+                    >
+                    </textarea>
+                  </div>
+                  <div class="col-6 mb-3">
+                    <label for="historyHeight" class="form-label">Height</label>
+                    <input
+                      class="form-control"
+                      id="historyHeight"
+                      :value="imgOutput.meta.H"
+                      disabled
+                      readonly
+                    />
+                  </div>
+                  <div class="col-6 mb-3">
+                    <label for="historyWidth" class="form-label">Width</label>
+                    <input
+                      class="form-control"
+                      id="historyWidth"
+                      :value="imgOutput.meta.W"
+                      disabled
+                      readonly
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                @click="(contentTitleInput = ''), (showTitleValidationFeedback = false)"
+                type="button"
+                class="btn btn-outline-warning"
+                data-bs-dismiss="modal"
+              >
+                Back
+              </button>
+              <button @click="onClickConfirmCreate" type="button" class="btn btn-warning">
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
       <div class="col-12 col-lg-6 mb-3">
         <div class="container-fluid p">
           <div class="row">
@@ -245,7 +391,7 @@ const onClickFinishCreateBtn = () => {
             </div>
             <form
               class="col-12 container-fluid row needs-validation"
-              :class="showValidationFeedback ? 'was-validated' : ''"
+              :class="showCreateValidationFeedback ? 'was-validated' : ''"
               novalidate
             >
               <!-- Input prompt -->
