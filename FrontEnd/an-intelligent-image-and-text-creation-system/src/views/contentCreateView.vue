@@ -1,14 +1,15 @@
 <script setup>
 import axios from 'axios'
 import { computed, onMounted, ref } from 'vue'
+import { onBeforeRouteLeave } from 'vue-router'
 
 const serverAddress = import.meta.env.VITE_serverAddress
 
 const contentTypeInput = ref('illustration')
 const promptInput = ref('')
 const negativePromptInput = ref('')
-const heightInput = ref(720)
-const widthInput = ref(720)
+const heightInput = ref(520)
+const widthInput = ref(520)
 const keyInput = ref('')
 
 const imgOutput = ref('')
@@ -22,15 +23,20 @@ const isInputInvalid = computed(() => {
 })
 const showValidationFeedback = ref(false)
 
+onBeforeRouteLeave((to, from) => {
+  if (!imgOutput.value && !textOutput.value && history.value.length === 0) return true
+
+  const answer = window.confirm('The canvas and all history will be discarded! Continue?')
+  if (!answer) return false
+})
+
 onMounted(() => {
   const placeHolder = {
     content_type: 'illustration',
     status: 'success',
     generationTime: 1.3200268745422363,
     id: 12202888,
-    output: [
-      'https://pub-8b49af329fae499aa563997f5d4068a4.r2.dev/generations/e5cd86d3-7305-47fc-82c1-7d1a3b130fa4-0.png'
-    ],
+    output: ['https://pbs.twimg.com/media/Fa7BgJ7VsAIELjd?format=jpg&name=large'],
     meta: {
       H: 512,
       W: 512,
@@ -58,7 +64,6 @@ onMounted(() => {
   history.value.push(JSON.parse(JSON.stringify(placeHolder)))
   history.value.push(JSON.parse(JSON.stringify(placeHolder)))
   history.value[0].id = 12202888
-  history.value[0].id = 'hahahehe'
   history.value[0].content_type = 'illustration'
   history.value[0].output[0] =
     'https://pub-8b49af329fae499aa563997f5d4068a4.r2.dev/generations/e5cd86d3-7305-47fc-82c1-7d1a3b130fa4-0.png'
@@ -82,12 +87,26 @@ onMounted(() => {
   history.value[5].content_type = 'poster'
   history.value[5].output[0] =
     'https://i.pinimg.com/originals/10/41/52/104152ece82da03225e57a510dcf2b4b.jpg'
+  imgOutput.value = JSON.parse(JSON.stringify(placeHolder))
+  imgOutput.value.id = 6
 })
 
 const addCurrentOutputToHistory = () => {
   history.value.push(imgOutput.value)
   imgOutput.value = ''
   textOutput.value = ''
+}
+
+const moveHistoryToCanvas = (id) => {
+  addCurrentOutputToHistory()
+  imgOutput.value = history.value.filter((historyItem) => historyItem.id === id)[0]
+  contentTypeInput.value = imgOutput.value.content_type
+  promptInput.value = imgOutput.value.meta.prompt
+  negativePromptInput.value = imgOutput.value.meta.negative_prompt
+  heightInput.value = imgOutput.value.meta.H
+  widthInput.value = imgOutput.value.meta.W
+  history.value = history.value.filter((historyItem) => historyItem.id !== id)
+  // To:do add textOutput history to textOutput
 }
 
 const onClickCreateBtn = () => {
@@ -110,8 +129,8 @@ const onClickCreateBtn = () => {
     showValidationFeedback.value = false
     axios
       .post(serverAddress + '/sd_creator/', {
-        prompt: String(promptInput.value),
         api_key: String(keyInput.value),
+        prompt: String(promptInput.value),
         width: String(widthInput.value),
         height: String(heightInput.value)
       })
@@ -129,6 +148,8 @@ const onClickCreateBtn = () => {
 }
 
 const onClickModifyBtn = () => {
+  const contentType = contentTypeInput.value
+
   if (isFetchingResult.value) return
   if (isInputInvalid.value) {
     showValidationFeedback.value = true
@@ -139,18 +160,20 @@ const onClickModifyBtn = () => {
     addCurrentOutputToHistory()
     isFetchingResult.value = true
     showValidationFeedback.value = false
-    // To do: get modify content api
-    // axios
-    //   .post(serverAddress + '/sd_creator/', {
-    //     prompt: String(promptInput.value),
-    //     api_key: String(keyInput.value),
-    //     width: String(widthInput.value),
-    //     height: String(heightInput.value)
-    //   })
-    //   .then((res) => res.data)
-    //   .then((res) => {
-    //     imgOutput.value = res.output[0]
-    //   })
+    axios
+      .post(serverAddress + '/sd_creator/', {
+        api_key: String(keyInput.value),
+        prompt: String(promptInput.value),
+        width: String(widthInput.value),
+        height: String(heightInput.value),
+        init_image: String(imgOutput.value.output[0])
+      })
+      .then((res) => res.data)
+      .then((res) => {
+        imgOutput.value = res
+        imgOutput.value['content_type'] = contentType
+        // console.log(JSON.stringify(res))
+      })
   } catch (err) {
     console.log(err)
   } finally {
@@ -160,10 +183,6 @@ const onClickModifyBtn = () => {
 
 const onClickFinishCreateBtn = () => {
   if (isFetchingResult.value) return
-  if (isInputInvalid.value) {
-    showValidationFeedback.value = true
-    return
-  }
   // To do: submit content to server
 }
 </script>
@@ -350,6 +369,19 @@ const onClickFinishCreateBtn = () => {
                       <div class="col-5 container-fluid">
                         <div class="row">
                           <div class="col-12 mb-3">
+                            <label for="historyContentType" class="form-label">Content Type</label>
+                            <input
+                              class="form-control"
+                              id="historyContentType "
+                              :value="
+                                historyContent.content_type[0].toUpperCase() +
+                                historyContent.content_type.slice(1)
+                              "
+                              disabled
+                              readonly
+                            />
+                          </div>
+                          <div class="col-12 mb-3">
                             <label for="historyPrompt" class="form-label">Prompt</label>
                             <textarea
                               class="form-control"
@@ -402,7 +434,14 @@ const onClickFinishCreateBtn = () => {
                       <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal">
                         Close
                       </button>
-                      <button type="button" class="btn btn-warning">Save changes</button>
+                      <button
+                        @click="moveHistoryToCanvas(historyContent.id)"
+                        type="button"
+                        class="btn btn-warning"
+                        data-bs-dismiss="modal"
+                      >
+                        Move to canvas
+                      </button>
                     </div>
                   </div>
                 </div>
