@@ -6,6 +6,8 @@ from pymongo.results import InsertOneResult
 from Backend.default.db import collection
 from Backend.default.db import collectionnames
 
+from Backend.default.common.error import Error
+
 
 class Message:
     """Message metadata class.
@@ -35,10 +37,11 @@ def insert_message(message: Message) -> InsertOneResult:
 
     try:
         result = c.insert_one(message_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_message_by_uuid(uuid: str):
@@ -48,10 +51,11 @@ def get_message_by_uuid(uuid: str):
     c = collection.get_collection_instance(collectionnames.collection_messages)
     try:
         result = c.find_one(message_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_message_by_username_and_page(username: str, page: int, page_size: int):
@@ -62,7 +66,8 @@ def get_message_by_username_and_page(username: str, page: int, page_size: int):
     try:
         # Can be iterated by for loop
         result = c.find_all_by_page(message_document, page, page_size)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error

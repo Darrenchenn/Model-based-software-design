@@ -1,7 +1,8 @@
 from Backend.default.metadata.user import User
-from default.db import collection
+from Backend.default.db import collection
+from Backend.default.db.collectionnames import collection_users
 
-from default.db.collectionnames import collection_users
+from Backend.default.common.error import Error
 
 
 class Creator(User):

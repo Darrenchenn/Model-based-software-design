@@ -3,8 +3,10 @@ import uuid
 import pymongo
 from pymongo.results import InsertOneResult
 
-from default.db import collection
-from default.db.collectionnames import collection_templates
+from Backend.default.db import collection
+from Backend.default.db.collectionnames import collection_templates
+
+from Backend.default.common.error import Error
 
 
 class Template:
@@ -24,50 +26,77 @@ def insert_template(template: Template) -> InsertOneResult:
 
     try:
         result = c.insert_one(template_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_template(template: Template):
     c = collection.get_collection_instance(collection_templates)
-    result = c.find_one({"uuid": template.uuid})
-    if result:
-        content = result.get("content")
-        if not content:
-            content = []
-        return content
-    else:
-        return []
+    try:
+        result = c.find_one({"uuid": template.uuid})
+        if result:
+            content = result.get("content")
+            if not content:
+                content = []
+            return content
+        else:
+            return []
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
+
 
 
 def update_template(template: Template):
     c = collection.get_collection_instance(collection_templates)
-    result = c.update_one({"uuid": template.uuid}, {"$set": {"content": template.content}})
-    return result
+    try:
+        result = c.update_one({"uuid": template.uuid}, {"$set": {"content": template.content}})
+        return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def delete_template_by_uuid(uuid: str):
     c = collection.get_collection_instance(collection_templates)
-    result = c.delete_one({"uuid": uuid})
-    return result
+    try:
+        result = c.delete_one({"uuid": uuid})
+        return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_all_template_by_page(page: int, page_size: int):
     c = collection.get_collection_instance(collection_templates)
+    try:
     # Can be iterated by for loop
-    result = c.find_all_by_page({}, page, page_size)
-    return result
+        result = c.find_all_by_page({}, page, page_size)
+        return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_content_by_uuid(uuid: str):
     c = collection.get_collection_instance(collection_templates)
-    result = c.find_one({"uuid": uuid})
-    if result:
-        content = result.get("content")
-        if not content:
-            content = []
-        return content
-    else:
-        return []
+    try:
+        result = c.find_one({"uuid": uuid})
+        if result:
+            content = result.get("content")
+            if not content:
+                content = []
+            return content
+        else:
+            return []
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error

@@ -6,6 +6,8 @@ from pymongo.results import InsertOneResult
 from Backend.default.db import collection
 from Backend.default.db.collectionnames import collection_audits
 
+from Backend.default.common.error import Error
+
 
 class Audit:
 
@@ -40,10 +42,11 @@ def insert_audit(audit: Audit) -> InsertOneResult:
 
     try:
         result = c.insert_one(audit_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_audit_by_uuid(uuid: str):
@@ -53,10 +56,11 @@ def get_audit_by_uuid(uuid: str):
     c = collection.get_collection_instance(collection_audits)
     try:
         result = c.find_one(audit_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_audit_by_creator_and_page(creator: str, page: int, page_size: int):
@@ -67,10 +71,11 @@ def get_audit_by_creator_and_page(creator: str, page: int, page_size: int):
     try:
         # Can be iterated by for loop
         result = c.find_all_by_page(audit_document, page, page_size)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_audit_by_supervisor_and_page(supervisor: str, page: int, page_size: int):
@@ -81,10 +86,11 @@ def get_audit_by_supervisor_and_page(supervisor: str, page: int, page_size: int)
     try:
         # Can be iterated by for loop
         result = c.find_all_by_page(audit_document, page, page_size)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def update_audit(new_audit: Audit):
@@ -111,10 +117,11 @@ def update_audit(new_audit: Audit):
     }
     try:
         result = c.update_one(audit_document, new_values)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def delete_audit_by_uuid(uuid: str):
@@ -124,7 +131,8 @@ def delete_audit_by_uuid(uuid: str):
     c = collection.get_collection_instance(collection_audits)
     try:
         result = c.delete_one(audit_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error

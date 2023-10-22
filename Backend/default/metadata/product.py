@@ -4,7 +4,10 @@ import uuid
 import pymongo
 from pymongo.results import InsertOneResult, DeleteResult
 
-from default.db import collectionnames, collection
+from Backend.default.db import collection
+from Backend.default.db.collectionnames import collection_products
+
+from Backend.default.common.error import Error
 
 
 class Product:
@@ -25,7 +28,7 @@ class Product:
 
 
 def insert_product(product: Product) -> InsertOneResult:
-    c = collection.get_collection_instance(collectionnames.collection_products)
+    c = collection.get_collection_instance(collection_products)
 
     product_document = {
         "uuid": product.uuid,
@@ -34,51 +37,55 @@ def insert_product(product: Product) -> InsertOneResult:
     }
     try:
         result = c.insert_one(product_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_product_by_uuid(uuid: str):
     product_document = {
         "uuid": uuid,
     }
-    c = collection.get_collection_instance(collectionnames.collection_products)
+    c = collection.get_collection_instance(collection_products)
     try:
         result = c.find_one(product_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_product_by_creator_and_page(creator: str, page: int, page_size: int):
     product_document = {
         "creator": creator,
     }
-    c = collection.get_collection_instance(collectionnames.collection_products)
+    c = collection.get_collection_instance(collection_products)
     try:
         # Can be iterated by for loop
         result = c.find_all_by_page(product_document, page, page_size)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_product_by_supervisor_and_page(supervisor: str, page: int, page_size: int):
     product_document = {
         "responsible_supervisor": supervisor,
     }
-    c = collection.get_collection_instance(collectionnames.collection_products)
+    c = collection.get_collection_instance(collection_products)
     try:
         # Can be iterated by for loop
         result = c.find_all_by_page(product_document, page, page_size)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def update_product(new_product: Product):
@@ -86,7 +93,7 @@ def update_product(new_product: Product):
         "uuid": new_product.uuid,
     }
 
-    c = collection.get_collection_instance(collectionnames.collection_products)
+    c = collection.get_collection_instance(collection_products)
     original_product = get_product_by_uuid(new_product.uuid)
 
     if new_product.responsible_supervisor is None:
@@ -97,33 +104,36 @@ def update_product(new_product: Product):
         result = c.update_one(product_document,
                               {"$set": {"responsible_supervisor": new_product.responsible_supervisor
                                   , "content": new_product.content}})
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def delete_product_by_uuid(uuid: str) -> DeleteResult:
     product_document = {
         "uuid": uuid,
     }
-    c = collection.get_collection_instance(collectionnames.collection_products)
+    c = collection.get_collection_instance(collection_products)
     try:
         result = c.delete_one(product_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def delete_product_by_creator(creator: str) -> DeleteResult:
     product_document = {
         "creator": creator,
     }
-    c = collection.get_collection_instance(collectionnames.collection_products)
+    c = collection.get_collection_instance(collection_products)
     try:
         result = c.delete_many(product_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error

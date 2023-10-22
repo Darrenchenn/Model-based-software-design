@@ -4,8 +4,10 @@ import pymongo
 from pymongo.results import InsertOneResult
 from pymongo.results import UpdateResult
 
-from default.db import collection
-from default.db.collectionnames import collection_users
+from Backend.default.db import collection
+from Backend.default.db.collectionnames import collection_users
+
+from Backend.default.common.error import Error
 
 
 class ContactInfo:
@@ -65,10 +67,11 @@ def insert_user(user: User) -> InsertOneResult:
 
     try:
         result = c.insert_one(user_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_user_by_username(username: str):
@@ -78,10 +81,11 @@ def get_user_by_username(username: str):
     c = collection.get_collection_instance(collection_users)
     try:
         result = c.find_one(user_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def get_user_by_uuid(uuid: str):
@@ -91,10 +95,11 @@ def get_user_by_uuid(uuid: str):
     c = collection.get_collection_instance(collection_users)
     try:
         result = c.find_one(user_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def update_user(user: User) -> UpdateResult:
@@ -119,10 +124,11 @@ def update_user(user: User) -> UpdateResult:
     }
     try:
         result = c.update_one(user_document, new_user_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def delete_user_by_username(username: str):
@@ -132,10 +138,11 @@ def delete_user_by_username(username: str):
     c = collection.get_collection_instance(collection_users)
     try:
         result = c.delete_one(user_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
 
 
 def delete_user_by_uuid(uuid: str):
@@ -145,7 +152,8 @@ def delete_user_by_uuid(uuid: str):
     c = collection.get_collection_instance(collection_users)
     try:
         result = c.delete_one(user_document)
-    except pymongo.errors.OperationFailure:
-        return None
-    else:
         return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
