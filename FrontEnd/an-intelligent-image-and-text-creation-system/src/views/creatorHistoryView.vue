@@ -12,6 +12,7 @@ onMounted(() => {
   creationHistory.value = [
     {
       id: '1',
+      datetime: 20231020,
       title: 'example title 1',
       contentType: 'poster',
       imgSrc: 'https://i.pinimg.com/originals/0b/94/33/0b943300e968ba78fb55c6dc16b70631.jpg',
@@ -19,6 +20,7 @@ onMounted(() => {
     },
     {
       id: '2',
+      datetime: 20231021,
       title: 'example title 2',
       contentType: 'social media post',
       textOutput: 'Example text output',
@@ -27,6 +29,7 @@ onMounted(() => {
     },
     {
       id: '3',
+      datetime: 20231022,
       title: 'example title 3',
       contentType: 'poster',
       imgSrc: 'https://pbs.twimg.com/media/F2XgDoWaYAE5xKP?format=jpg&name=4096x4096',
@@ -36,6 +39,7 @@ onMounted(() => {
     },
     {
       id: '4',
+      datetime: 20231023,
       title: 'example title 4',
       contentType: 'poster',
       imgSrc: 'https://i.pinimg.com/originals/c3/35/ef/c335ef807fa5693f1c05952759ed2436.jpg',
@@ -45,6 +49,7 @@ onMounted(() => {
     },
     {
       id: '5',
+      datetime: 20231024,
       title: 'example title 5',
       contentType: 'illustration',
       imgSrc: 'https://i.pinimg.com/originals/10/41/52/104152ece82da03225e57a510dcf2b4b.jpg',
@@ -60,13 +65,13 @@ onMounted(() => {
     <div class="row justify-content-center">
       <div class="col-12 col-lg-6 container-fluid row">
         <div class="col-12 display-4 my-3">History</div>
-        <div class="col-12 mt-3 text-center" v-if="isFetchingCreationHistory">
+        <div v-if="isFetchingCreationHistory" class="col-12 mt-3 text-center">
           <div class="mb-3 fs-4">Retrieving history...</div>
           <div class="spinner-border text-warning" role="status">
             <span class="visually-hidden">Loading...</span>
           </div>
         </div>
-        <div class="col-12 fs-4" v-else-if="creationHistory.length === 0">
+        <div v-else-if="creationHistory.length === 0" class="col-12 fs-4">
           <div>Oops! Look like you don't have any creation yet!</div>
           <div>Go create some!</div>
         </div>
@@ -81,7 +86,32 @@ onMounted(() => {
             <div class="col-4 align-self-center">
               <img :src="history.imgSrc" />
             </div>
-            <div class="col-8 pt-2">Title: {{ history.title }}</div>
+            <div class="col-8 py-2 d-flex flex-column">
+              <div>Title: {{ history.title }}</div>
+              <div>Date: {{ history.datetime }}</div>
+              <div class="mb-auto">
+                Content type:
+                {{ history.contentType[0].toUpperCase() + history.contentType.slice(1) }}
+              </div>
+              <div class="text-end mb-3 me-2">
+                <!-- if not audit -->
+                <span
+                  v-if="!history.isAudited"
+                  class="h5 border border-secondary-subtle rounded text-secondary py-2 px-3"
+                  >Not audited</span
+                >
+                <!-- if audit success -->
+                <span
+                  v-else-if="history.isAudited && history.auditResult"
+                  class="h5 border border-success rounded text-success py-2 px-3"
+                  >Pass
+                </span>
+                <!-- if audit fail -->
+                <span v-else class="h5 border border-danger rounded text-danger py-2 px-3"
+                  >Fail</span
+                >
+              </div>
+            </div>
           </div>
         </div>
       </div>
