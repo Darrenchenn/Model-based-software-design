@@ -10,6 +10,15 @@ class Creator(User):
         super().__init__(username, password, user_type, contact_info)
         self.liked_template = liked_templates if liked_templates else []
 
+    def to_dict(self):
+        return {
+            "username": self.username,
+            "password": self.password,
+            "user_type": self.user_type,
+            "contact_info": self.contact_info,
+            "liked_template": self.liked_template
+        }
+
 
 def add_liked_template_by_user_uuid(user_uuid: str, template_uuid: str):
     c = collection.get_collection_instance(collection_users)
