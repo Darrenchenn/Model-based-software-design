@@ -30,9 +30,9 @@ def generate_image(request):
     prompt = body["prompt"] if "prompt" in body else ""
     width = body["width"] if "width" in body else ""
     height = body["height"] if "height" in body else ""
-
+    # init parameters
     sd = stablediffusion.StableDiffusion(api_key, prompt, width, height)
-
+    # if init_image is empty, creating image from only prompt.
     init_image = body["init_image"] if "init_image" in body else ""
     if init_image == "":
         return HttpResponse(sd.text_to_pic())

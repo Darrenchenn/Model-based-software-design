@@ -49,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'default.middlewares.RequestLogMiddleware'
 
 ]
 
@@ -119,10 +120,10 @@ LOGGING = {
     'disable_existing_loggers': False,  # 是否去掉目前项目中其他地方中以及使用的日志功能，但是将来我们可能会引入第三方的模块，里面可能内置了日志功能，所以尽量不要关闭。
     'formatters': {  # 日志记录格式
         'standard': {  # asctime记录时间，filename 表示日志发生的文件名称，funcName模块方法名，lineno行号，levelname等级，message错误信息
-            'format': '%(levelname)s %(asctime)s %(name)s.%(funcName)s:%(lineno)s- %(message)s',
+            'format': '%(hostname)s %(source_ip)s %(levelname)s %(asctime)s %(name)s.%(funcName)s:%(lineno)s- %(message)s',
         },
         'simple': {
-            'format': '%(levelname)s %(asctime)s %(name)s.%(funcName)s:%(lineno)s- %(message)s',
+            'format': '%(hostname)s %(source_ip)s %(levelname)s %(asctime)s %(name)s.%(funcName)s:%(lineno)s- %(message)s',
         },
     },
     'filters': {  # 过滤器：可以对日志进行输出时的过滤用的
@@ -132,11 +133,15 @@ LOGGING = {
         'require_debug_false': {  # 和上面相反
             '()': 'django.utils.log.RequireDebugFalse',
         },
+        'new_add': {
+            '()': 'default.middlewares.RequestLogFilter',
+        },
+
     },
     'handlers': {  # 日志处理方式，日志实例,向哪里输出
         'console': {  # 在控制台输出时的实例
             'level': 'INFO',  # 日志等级；debug是最低等级，那么只要比它高等级的信息都会被记录
-            'filters': ['require_debug_true'],  # 在debug=True下才会打印在控制台
+            'filters': ['require_debug_true', 'new_add'],  # 在debug=True下才会打印在控制台
             'class': 'logging.StreamHandler',  # 使用的python的logging模块中的StreamHandler来进行输出
             'formatter': 'simple'
         },
