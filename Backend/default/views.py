@@ -62,6 +62,7 @@ def get_product(request):
             "uuid": result["uuid"],
             "creator": result["creator"],
             "responsible_supervisor": result["responsible_supervisor"],
+            "content": result["content"],
         }
         return HttpResponse(json.dumps(json_result))
     if page is None:
@@ -83,6 +84,7 @@ def get_product(request):
             "uuid": i["uuid"],
             "creator": i["creator"],
             "responsible_supervisor": i["responsible_supervisor"],
+            "content": i["content"],
         })
     return HttpResponse(json.dumps(json_result))
 

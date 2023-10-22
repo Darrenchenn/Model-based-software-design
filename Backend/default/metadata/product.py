@@ -34,6 +34,7 @@ def insert_product(json_body: dict) -> InsertOneResult:
         "uuid": uuid.uuid4().hex,
         "creator": json_body["creator"],
         "responsible_supervisor": json_body["responsible_supervisor"],
+        "content": json_body["content"],
     }
     try:
         result = c.insert_one(product_document)
