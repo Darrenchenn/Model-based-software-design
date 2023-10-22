@@ -10,6 +10,7 @@ from default.creator import chatgpt, stablediffusion
 from default.common import error
 
 
+# creator interfaces
 def generate_noval_text(request):
     if request.method == "POST":
         error.Error("request method is wrong").http_response_new()
@@ -35,3 +36,14 @@ def generate_image(request):
         return HttpResponse(sd.text_to_pic())
     else:
         return HttpResponse(sd.pic_to_pic(init_image))
+
+# products interfaces
+
+# message interfaces
+
+# archive interfaces
+
+# user interfaces
+
+
+# template interfaces
