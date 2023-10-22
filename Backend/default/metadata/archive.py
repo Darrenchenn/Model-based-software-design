@@ -6,8 +6,8 @@ import uuid
 import pymongo
 from pymongo.results import InsertOneResult
 
-from backend.default.db import collection, collectionnames
-from backend.default.metadata.audit import Audit
+from Backend.default.db import collection, collectionnames
+from Backend.default.metadata.audit import Audit
 
 
 class Archive:

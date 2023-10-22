@@ -20,6 +20,11 @@ from django.urls import path
 from default import views
 
 urlpatterns = [
+    # creator interfaces urls
     path('creator/', views.generate_noval_text),
     path('sd_creator/', views.generate_image),
+
+    # products interfaces urls
+
+    # user interfaces urls
 ]

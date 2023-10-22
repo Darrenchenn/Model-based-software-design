@@ -14,6 +14,7 @@ from default.common import error
 def generate_noval_text(request):
     if request.method == "POST":
         error.Error("request method is wrong").http_response_new()
+    logger.info(request.GET)  # print request parameters which is easy for debugging.
     prompt = request.GET.get("prompt")
     system = request.GET.get("system") if request.GET.get("system") is not None else ""
     gpt = chatgpt.ChatGpt(system)
@@ -23,6 +24,7 @@ def generate_noval_text(request):
 def generate_image(request):
     if request.method == "GET":
         error.Error("request method is wrong").http_response_new()
+    logger.info(request.POST)
     body = json.loads(request.body)
     api_key = body["api_key"] if "api_key" in body else ""
     prompt = body["prompt"] if "prompt" in body else ""
@@ -44,6 +46,5 @@ def generate_image(request):
 # archive interfaces
 
 # user interfaces
-
 
 # template interfaces

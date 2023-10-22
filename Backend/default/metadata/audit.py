@@ -3,8 +3,8 @@ import uuid
 import pymongo
 from pymongo.results import InsertOneResult
 
-from backend.default.db import collection
-from backend.default.db.collectionnames import collection_audits
+from Backend.default.db import collection
+from Backend.default.db.collectionnames import collection_audits
 
 
 class Audit:

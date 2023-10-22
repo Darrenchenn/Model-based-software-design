@@ -1,4 +1,4 @@
-from backend.default.metadata.user import User
+from Backend.default.metadata.user import User
 from default.db import collection
 
 from default.db.collectionnames import collection_users
