@@ -2,8 +2,10 @@ import uuid
 
 import pymongo
 from pymongo.results import InsertOneResult
+
 from backend.default.db import collection
 from backend.default.db import collectionnames
+
 
 class Message:
     """Message metadata class.
@@ -13,7 +15,7 @@ class Message:
     email (str): The message's email.
     wechat (str): The message's wechat."""
 
-    def __init__(self, username:str = None, content: str = None, email: str = None, wechat: str = None) -> None:
+    def __init__(self, username: str = None, content: str = None, email: str = None, wechat: str = None) -> None:
         self.uuid = uuid.uuid4().hex
         self.username = username
         self.content = content
@@ -37,8 +39,9 @@ def insert_message(message: Message) -> InsertOneResult:
         return None
     else:
         return result
-    
-def get_message_by_uuid(uuid:str):
+
+
+def get_message_by_uuid(uuid: str):
     message_document = {
         "uuid": uuid,
     }
@@ -49,8 +52,9 @@ def get_message_by_uuid(uuid:str):
         return None
     else:
         return result
-    
-def get_message_by_username_and_page(username:str, page:int, page_size:int):
+
+
+def get_message_by_username_and_page(username: str, page: int, page_size: int):
     message_document = {
         "username": username,
     }
@@ -62,4 +66,3 @@ def get_message_by_username_and_page(username:str, page:int, page_size:int):
         return None
     else:
         return result
-

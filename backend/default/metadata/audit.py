@@ -1,15 +1,16 @@
-
 import uuid
 
 import pymongo
 from pymongo.results import InsertOneResult
+
 from backend.default.db import collection
 from backend.default.db.collectionnames import collection_audits
 
 
 class Audit:
 
-    def __init__(self, result: bool = False, comment:list = [], creator:str = None, responsible_supervisor:str = None) -> None:
+    def __init__(self, result: bool = False, comment: list = [], creator: str = None,
+                 responsible_supervisor: str = None) -> None:
         self.uuid = uuid.uuid4().hex
         self.result = result
         self.comment = comment
@@ -43,8 +44,9 @@ def insert_audit(audit: Audit) -> InsertOneResult:
         return None
     else:
         return result
-    
-def get_audit_by_uuid(uuid:str):
+
+
+def get_audit_by_uuid(uuid: str):
     audit_document = {
         "uuid": uuid,
     }
@@ -55,8 +57,9 @@ def get_audit_by_uuid(uuid:str):
         return None
     else:
         return result
-    
-def get_audit_by_creator_and_page(creator:str, page:int, page_size:int):
+
+
+def get_audit_by_creator_and_page(creator: str, page: int, page_size: int):
     audit_document = {
         "creator": creator,
     }
@@ -68,8 +71,9 @@ def get_audit_by_creator_and_page(creator:str, page:int, page_size:int):
         return None
     else:
         return result
-    
-def get_audit_by_supervisor_and_page(supervisor:str, page:int, page_size:int):
+
+
+def get_audit_by_supervisor_and_page(supervisor: str, page: int, page_size: int):
     audit_document = {
         "responsible_supervisor": supervisor,
     }
@@ -81,8 +85,9 @@ def get_audit_by_supervisor_and_page(supervisor:str, page:int, page_size:int):
         return None
     else:
         return result
-    
-def update_audit(new_audit:Audit):
+
+
+def update_audit(new_audit: Audit):
     audit_document = {
         "uuid": new_audit.uuid,
     }
@@ -110,8 +115,9 @@ def update_audit(new_audit:Audit):
         return None
     else:
         return result
-    
-def delete_audit_by_uuid(uuid:str):
+
+
+def delete_audit_by_uuid(uuid: str):
     audit_document = {
         "uuid": uuid,
     }
@@ -122,6 +128,3 @@ def delete_audit_by_uuid(uuid:str):
         return None
     else:
         return result
-    
-
-

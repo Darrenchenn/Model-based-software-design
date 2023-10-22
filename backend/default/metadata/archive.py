@@ -1,11 +1,11 @@
 # storage functions of archives.
 
 
-import json
-import bson.json_util as json_util
 import uuid
+
 import pymongo
 from pymongo.results import InsertOneResult
+
 from backend.default.db import collection, collectionnames
 from backend.default.metadata.audit import Audit
 
@@ -16,6 +16,7 @@ class Archive:
     def __init__(self, content: dict = {}) -> None:
         self.uuid = uuid.uuid4().hex
         self.content = content
+
 
 def insert_archive(archive: Archive) -> InsertOneResult:
     c = collection.get_collection_instance(collectionnames.collection_archives)
@@ -36,7 +37,8 @@ def insert_archive(archive: Archive) -> InsertOneResult:
     else:
         return result
 
-def get_archive_by_uuid(uuid:str):
+
+def get_archive_by_uuid(uuid: str):
     archive_document = {
         "uuid": uuid,
     }
@@ -47,8 +49,9 @@ def get_archive_by_uuid(uuid:str):
         return None
     else:
         return result
-    
-def get_archive_content_by_uuid(uuid:str):
+
+
+def get_archive_content_by_uuid(uuid: str):
     archive_document = {
         "uuid": uuid,
     }
@@ -59,14 +62,16 @@ def get_archive_content_by_uuid(uuid:str):
         return None
     else:
         return result.get("content")
-    
-def update_archive(new_archive:Archive):
+
+
+def update_archive(new_archive: Archive):
     c = collection.get_collection_instance(collectionnames.collection_archives)
     original_archive = c.find_one({"uuid": new_archive.uuid})
     if not new_archive.content:
         new_archive.content = original_archive.get("content")
     result = c.update_one({"uuid": new_archive.uuid}, {"$set": {"content": new_archive.content}})
     return result
+
 
 def delete_archive_by_uuid(uuid: str):
     c = collection.get_collection_instance(collectionnames.collection_archives)

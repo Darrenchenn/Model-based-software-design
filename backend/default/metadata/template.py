@@ -60,7 +60,8 @@ def get_all_template_by_page(page: int, page_size: int):
     result = c.find_all_by_page({}, page, page_size)
     return result
 
-def get_content_by_uuid(uuid:str):
+
+def get_content_by_uuid(uuid: str):
     c = collection.get_collection_instance(collection_templates)
     result = c.find_one({"uuid": uuid})
     if result:

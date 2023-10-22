@@ -21,6 +21,7 @@ def add_liked_template_by_user_uuid(user_uuid: str, template_uuid: str):
         result = c.update_one({"uuid": user_uuid}, {"$set": {"liked_templates": liked_templates}})
     return result
 
+
 def add_liked_template_by_username(username: str, template_uuid: str):
     c = collection.get_collection_instance(collection_users)
     result = c.find_one({"username": username})
@@ -43,7 +44,8 @@ def get_liked_template_by_username(username: str):
         return liked_templates
     else:
         return []
-    
+
+
 def get_liked_template_by_user_uuid(uuid: str):
     c = collection.get_collection_instance(collection_users)
     result = c.find_one({"uuid": uuid})
