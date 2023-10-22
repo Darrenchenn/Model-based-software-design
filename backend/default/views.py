@@ -29,4 +29,9 @@ def generate_image(request):
     height = body["height"] if "height" in body else ""
 
     sd = stablediffusion.StableDiffusion(api_key, prompt, width, height)
-    return HttpResponse(sd.text_to_pic())
+
+    init_image = body["init_image"] if "init_image" in body else ""
+    if init_image == "":
+        return HttpResponse(sd.text_to_pic())
+    else:
+        return HttpResponse(sd.pic_to_pic(init_image))
