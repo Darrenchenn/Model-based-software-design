@@ -64,7 +64,7 @@ def get_message_by_username_and_page(username: str, page: int, page_size: int):
     c = collection.get_collection_instance(collection_messages)
     try:
         # Can be iterated by for loop
-        result = c.find_all_by_page(message_document, page, page_size)
+        result = c.find_by_page(message_document, page, page_size)
         return result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")

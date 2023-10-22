@@ -77,7 +77,7 @@ def get_all_template_by_page(page: int, page_size: int):
     c = collection.get_collection_instance(collection_templates)
     try:
     # Can be iterated by for loop
-        result = c.find_all_by_page({}, page, page_size)
+        result = c.find_by_page({}, page, page_size)
         return result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")

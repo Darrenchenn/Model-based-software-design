@@ -65,7 +65,7 @@ def get_product_by_creator_and_page(creator: str, page: int, page_size: int):
     c = collection.get_collection_instance(collection_products)
     try:
         # Can be iterated by for loop
-        result = c.find_all_by_page(product_document, page, page_size)
+        result = c.find_by_page(product_document, page, page_size)
         return result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
@@ -80,7 +80,7 @@ def get_product_by_supervisor_and_page(supervisor: str, page: int, page_size: in
     c = collection.get_collection_instance(collection_products)
     try:
         # Can be iterated by for loop
-        result = c.find_all_by_page(product_document, page, page_size)
+        result = c.find_by_page(product_document, page, page_size)
         return result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")

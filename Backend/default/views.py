@@ -9,6 +9,8 @@ from django.http import HttpResponse
 from default.creator import chatgpt, stablediffusion
 from default.common import error
 
+from Backend.default.metadata import product
+
 
 # creator interfaces
 def generate_noval_text(request):
@@ -39,8 +41,78 @@ def generate_image(request):
     else:
         return HttpResponse(sd.pic_to_pic(init_image))
 
+
 # products interfaces
 
+
+def get_product_by_uuid(request):
+    if request.method != "GET":
+        return HttpResponse(error.Error("request method is wrong").http_response_new())
+    logger.info(request.GET)
+    uuid = request.GET.get("uuid")
+    if uuid is None:
+        return HttpResponse(error.Error("uuid is None").http_response_new())
+    result = product.get_product_by_uuid(uuid)
+    if isinstance(result, error.Error):
+        return HttpResponse(result.http_response_new())
+    json_result = {
+        "uuid": result["uuid"],
+        "creator": result["creator"],
+        "responsible_supervisor": result["responsible_supervisor"],
+    }
+    return HttpResponse(json.dumps(json_result))
+
+
+def get_product_by_creator(request):
+    if request.method != "GET":
+        return HttpResponse(error.Error("request method is wrong").http_response_new())
+    logger.info(request.GET)
+    creator = request.GET.get("creator")
+    page = request.GET.get("page")
+    page_size = request.GET.get("page_size")
+    if creator is None:
+        return HttpResponse(error.Error("Parameters wrong").http_response_new())
+    if page is None:
+        page = 0
+    if page_size is None:
+        page_size = 10
+    result = product.get_product_by_creator_and_page(creator, page, page_size)
+    if isinstance(result, error.Error):
+        return HttpResponse(result.http_response_new())
+    json_result = []
+    for i in result:
+        json_result.append({
+            "uuid": i["uuid"],
+            "creator": i["creator"],
+            "responsible_supervisor": i["responsible_supervisor"],
+        })
+    return HttpResponse(json.dumps(json_result))
+
+
+def get_product_by_supervisor(request):
+    if request.method != "GET":
+        return HttpResponse(error.Error("request method is wrong").http_response_new())
+    logger.info(request.GET)
+    supervisor = request.GET.get("supervisor")
+    page = request.GET.get("page")
+    page_size = request.GET.get("page_size")
+    if supervisor is None:
+        return HttpResponse(error.Error("Parameters wrong").http_response_new())
+    if page is None:
+        page = 0
+    if page_size is None:
+        page_size = 10
+    result = product.get_product_by_supervisor_and_page(supervisor, page, page_size)
+    if isinstance(result, error.Error):
+        return HttpResponse(result.http_response_new())
+    json_result = []
+    for i in result:
+        json_result.append({
+            "uuid": i["uuid"],
+            "creator": i["creator"],
+            "responsible_supervisor": i["responsible_supervisor"],
+        })
+    return HttpResponse(json.dumps(json_result))
 # message interfaces
 
 # archive interfaces
