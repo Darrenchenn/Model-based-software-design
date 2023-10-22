@@ -10,3 +10,5 @@ collection_archives = "archives"
 collection_audits = "audits"
 
 collection_messages = "messages"
+
+collection_forwarding_urls = "forwarding_urls"
