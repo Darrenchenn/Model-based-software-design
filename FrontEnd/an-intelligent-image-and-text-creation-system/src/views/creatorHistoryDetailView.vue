@@ -18,6 +18,12 @@ const onClickSubmitAuditionBtn = () => {
     showValidationFeedback.value = true
     return
   }
+
+  try {
+    // To-do submit audition to server
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 onMounted(() => {
@@ -31,6 +37,7 @@ onMounted(() => {
     imgSrc: 'https://i.pinimg.com/originals/c3/35/ef/c335ef807fa5693f1c05952759ed2436.jpg',
     isAudited: true,
     auditResult: false,
+    auditor: 125125,
     auditComment: 'Your content sucks'
   }
 })
@@ -46,10 +53,25 @@ onMounted(() => {
     </div>
     <div v-else class="row px-3 mx-2 mb-5">
       <div class="col-12 h2 mb-3 px-0">Content Detail</div>
-      <div class="col-12 fs-4 border-bottom border-warning mb-3 px-0 pb-3">
-        <!-- <div v-if="creationDetail.isAudited">Audit Result</div> -->
-        <div>
-          <span class="text-secondary me-3 align-middle">
+      <div class="col-12 border-bottom border-warning mb-3 px-0 pb-3">
+        <div v-if="creationDetail.isAudited">
+          <div class="fs-4">Audit Result</div>
+          <div>
+            <span> Audit: </span>
+            <span v-if="creationDetail.auditResult" class="text-success fs-5 fw-bold">
+              Success
+            </span>
+            <span v-else class="text-danger fs-5 fw-bold"> Fail </span>
+          </div>
+          <div>Auditor: {{ creationDetail.auditor }}</div>
+          <div class="d-flex">
+            <div class="me-1">Comment:</div>
+            <div>{{ creationDetail.auditComment }}</div>
+          </div>
+          <div v-if="!creationDetail.auditResult">To-do: modify btn</div>
+        </div>
+        <div v-else>
+          <span class="text-secondary fs-4 me-3 align-middle">
             This content is not submitted for audition
           </span>
           <!-- Button trigger modal -->
@@ -80,7 +102,7 @@ onMounted(() => {
                     data-bs-dismiss="modal"
                   ></button>
                 </div>
-                <div class="modal-body" style="font-size: 1rem">
+                <div class="modal-body">
                   <div class="my-2">Submit to supervisor for audition</div>
                   <div
                     class="form-floating mb-3 needs-validation"
