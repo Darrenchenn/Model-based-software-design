@@ -245,21 +245,24 @@ const onClickConfirmCreate = () => {
               </div>
               <div class="col-5 container-fluid">
                 <div class="row">
-                  <div
-                    class="col-12 mb-3 needs-validation"
-                    :class="showTitleValidationFeedback ? 'was-validated' : ''"
-                    novalidate
-                  >
-                    <label for="contentTitleInputElement" class="form-label">Content Title</label>
-                    <input
-                      ref="contentTitleInputElement"
-                      v-model="contentTitleInput"
-                      type="text"
-                      class="form-control"
-                      id="contentTitleInputElement"
-                      required
-                    />
-                    <div class="invalid-feedback">Title is required!</div>
+                  <div class="col-12 mb-3">
+                    <div
+                      class="form-floating needs-validation"
+                      :class="showTitleValidationFeedback ? 'was-validated' : ''"
+                      novalidate
+                    >
+                      <input
+                        ref="contentTitleInputElement"
+                        v-model="contentTitleInput"
+                        type="text"
+                        class="form-control"
+                        id="contentTitleInputElement"
+                        placeholder="Title"
+                        required
+                      />
+                      <label for="contentTitleInputElement" class="form-label">Content Title</label>
+                      <div class="invalid-feedback">Title is required!</div>
+                    </div>
                   </div>
                   <div class="col-12 mb-3">
                     <label for="historyContentType" class="form-label">Content Type</label>

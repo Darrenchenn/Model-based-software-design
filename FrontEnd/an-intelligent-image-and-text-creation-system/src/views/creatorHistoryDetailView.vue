@@ -6,13 +6,19 @@ const route = useRoute()
 
 const creationDetail = ref(null)
 const supervisorInput = ref('')
+const showValidationFeedback = ref(false)
 
 const isFetchingCreationDetail = computed(() => {
   if (!creationDetail.value) return true
   else return false
 })
 
-const onClickSubmitAuditionBtn = () => {}
+const onClickSubmitAuditionBtn = () => {
+  if (!supervisorInput.value) {
+    showValidationFeedback.value = true
+    return
+  }
+}
 
 onMounted(() => {
   // id = route.params.id
@@ -67,11 +73,40 @@ onMounted(() => {
               <div class="modal-content">
                 <div class="modal-header">
                   <h1 class="modal-title fs-5">Submit for audition</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  <button
+                    @click="(showValidationFeedback = false), (supervisorInput = '')"
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                  ></button>
                 </div>
-                <div class="modal-body">...</div>
+                <div class="modal-body" style="font-size: 1rem">
+                  <div class="my-2">Submit to supervisor for audition</div>
+                  <div
+                    class="form-floating mb-3 needs-validation"
+                    :class="showValidationFeedback ? 'was-validated' : ''"
+                    novalidate
+                  >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="supervisorIdInput"
+                      placeholder="supervisor Id"
+                      v-model="supervisorInput"
+                      required
+                    />
+                    <label for="supervisorIdInput">Supervisor id</label>
+                    <div class="invalid-feedback">Supervisor id is required</div>
+                    <div class="form-text">Contact your supervisor for supervisor id</div>
+                  </div>
+                </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-outline-warning" data-bs-dismiss="modal">
+                  <button
+                    @click="(showValidationFeedback = false), (supervisorInput = '')"
+                    type="button"
+                    class="btn btn-outline-warning"
+                    data-bs-dismiss="modal"
+                  >
                     Close
                   </button>
                   <button @click="onClickSubmitAuditionBtn" type="button" class="btn btn-warning">
