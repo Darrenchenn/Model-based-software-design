@@ -1,13 +1,11 @@
 # products storage functions
 import uuid
 
-import pymongo
 from pymongo.results import InsertOneResult, DeleteResult
 
-from Backend.default.db import collection
-from Backend.default.db.collectionnames import collection_products
-
-from Backend.default.common.error import Error
+from default.common.error import Error
+from default.db import collection
+from default.db.collectionnames import collection_products
 
 
 class Product:

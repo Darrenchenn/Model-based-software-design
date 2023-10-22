@@ -9,7 +9,7 @@ from django.http import HttpResponse
 from default.creator import chatgpt, stablediffusion
 from default.common import error
 
-from Backend.default.metadata import product
+from default.metadata import product
 
 
 # creator interfaces
@@ -98,7 +98,6 @@ def insert_product(request):
     if isinstance(result, error.Error):
         return HttpResponse(result.http_response_new())
     return HttpResponse()
-
 
 # message interfaces
 

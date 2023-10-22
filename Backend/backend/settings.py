@@ -156,6 +156,7 @@ LOGGING = {
             'backupCount': 10,
             # 日志格式:详细格式
             'formatter': 'standard',
+            'filters': ['require_debug_true', 'new_add'],
             'encoding': 'utf-8',  # 设置默认编码，否则打印出来汉字乱码
         },
     },
