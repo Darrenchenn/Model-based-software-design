@@ -31,5 +31,5 @@ formatted_time = current_time.strftime('%Y-%m-%d %H:%M:%S')
 
 msg = "This is a test msg sent at " + formatted_time
 
-wechat.forward('Riianfar', msg, "wechat",
+wechat.forward('Roy', msg, "wechat",
                'https://push.showdoc.com.cn/server/api/push/ead550a01d50a327901d77036528322a534410924')

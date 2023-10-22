@@ -8,7 +8,7 @@ from django.http import HttpResponse
 
 from default.creator import chatgpt, stablediffusion
 from default.common import error
-
+from default.forwarding import wechat
 from default.metadata import product
 
 
@@ -40,6 +40,20 @@ def generate_image(request):
         return HttpResponse(sd.text_to_pic())
     else:
         return HttpResponse(sd.pic_to_pic(init_image))
+
+
+# forwarding interfaces
+
+def forward_wechat(request):
+    if request.method == "POST":
+        error.Error("request method is wrong").http_response_new()
+    logger.info(request.GET)
+    username = request.GET.get("username")
+    title = request.GET.get("title")
+    msg = request.GET.get("message")
+    url = request.GET.get("url") if request.GET.get("url") is not None else ""
+    wechat.forward(username, title, msg, url)
+    return HttpResponse(wechat.forward(username, title, msg, url))
 
 
 # products interfaces

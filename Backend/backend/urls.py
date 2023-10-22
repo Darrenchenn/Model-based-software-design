@@ -24,6 +24,9 @@ urlpatterns = [
     path('creator/', views.generate_noval_text),
     path('sd_creator/', views.generate_image),
 
+    # forwarding interfaces urls
+    path('forward/wechat', views.forward_wechat),
+
     # products interfaces urls
     path('get_product/', views.get_product),
     path('insert_product/', views.insert_product),
