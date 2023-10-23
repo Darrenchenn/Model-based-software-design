@@ -10,6 +10,14 @@ from default.db.collectionnames import collection_products
 
 def insert_product(json_body: dict) -> InsertOneResult:
     c = collection.get_collection_instance(collection_products)
+    if (not json_body.get("creator_uuid") or
+        not json_body.get("creator_name") or
+        not json_body.get("audition_status") or
+        not json_body.get("content")):
+        error = Error("creator_uuid, creator_name, audition_status, content are required")
+        error.new()
+        return error
+
 
     product_document = {
         "uuid": uuid.uuid4().hex,
