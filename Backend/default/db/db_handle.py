@@ -1,5 +1,6 @@
 import configparser
 import logging
+import sys,os
 
 from pymongo.mongo_client import MongoClient
 
@@ -8,17 +9,19 @@ from default.common import error
 log = logging.getLogger('default')
 
 config = configparser.ConfigParser()
-config.read('config.ini')
+path = os.getcwd()
+config.read(path+'/config.ini')
 
 url = config.get('mongodb', 'url')
-cluster_name = config.get('mongodb', 'cluster_name')
+try:
+    cluster_name = config.get('mongodb', 'cluster_name')
+except configparser.NoOptionError :
+    print('could not read configuration file')
+    sys.exit(1) 
 log.info('url: %s--cluster_name: %s', url, cluster_name)
-print('url: %s--cluster_name: %s' % (url, cluster_name))
 # todo:these statements should be defined in config file.
 db_default_url = url
 db_default_name = cluster_name
-print('url:', db_default_url)
-print('cluster_name:', db_default_name)
 
 
 # Mongo DB handle functions starts here.
