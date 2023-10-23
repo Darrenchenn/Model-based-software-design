@@ -86,8 +86,11 @@ def get_product(request):
             return HttpResponse(result.http_response_new())
         json_result = {
             "uuid": result["uuid"],
-            "creator": result["creator"],
-            "responsible_supervisor": result["responsible_supervisor"],
+            "creator_uuid": result["creator_uuid"],
+            "creator_name": result["creator_name"],
+            "responsible_supervisor_uuid": result["responsible_supervisor_uuid"],
+            "responsible_supervisor_name": result["responsible_supervisor_name"],
+            "audition_status": result["audition_status"],
             "content": result["content"],
         }
         return HttpResponse(json.dumps(json_result))
@@ -110,6 +113,7 @@ def get_product(request):
             "creator_name": i["creator_name"],
             "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
             "responsible_supervisor_name": i["responsible_supervisor_name"],
+            "audition_status": i["audition_status"],
             "content": i["content"],
         })
     return HttpResponse(json.dumps(json_result))
