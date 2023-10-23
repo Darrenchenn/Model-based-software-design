@@ -22,7 +22,7 @@ def insert_product(json_body: dict) -> InsertOneResult:
     }
     try:
         c.insert_one(product_document)
-        return json.dump(product_document["uuid"])
+        return json.dumps(product_document["uuid"])
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
@@ -45,7 +45,7 @@ def get_product_by_uuid(uuid: str):
             "audition_status": result["audition_status"],
             "content": result["content"],
         }
-        return json.dump(json_result)
+        return json.dumps(json_result)
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
@@ -82,7 +82,7 @@ def get_product_by_page(creator_uuid: str,
                 "audition_status": i["audition_status"],
                 "content": i["content"],
             })
-        return json.dump(json_result)
+        return json.dumps(json_result)
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
@@ -108,7 +108,7 @@ def get_product_by_audition_status(audition_status: str, page: int, page_size: i
                 "audition_status": i["audition_status"],
                 "content": i["content"],
             })
-        return json.dump(json_result)
+        return json.dumps(json_result)
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
