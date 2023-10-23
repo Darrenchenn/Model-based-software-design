@@ -1,8 +1,10 @@
 <script setup>
+import axios from 'axios'
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
+const serverAddress = import.meta.env.VITE_serverAddress
 
 const creationDetail = ref(null)
 const supervisorInput = ref('')
@@ -10,6 +12,20 @@ const showValidationFeedback = ref(false)
 
 const isFetchingCreationDetail = computed(() => {
   if (!creationDetail.value) return true
+  else return false
+})
+
+const isAudited = computed(() => {
+  if (!creationDetail.value) return false
+
+  if (creationDetail.value.audition_status === 'no_submitted_for_audition') return false
+  else return true
+})
+
+const auditResult = computed(() => {
+  if (!creationDetail.value) return false
+
+  if (creationDetail.value.audition_status === 'pass') return true
   else return false
 })
 
@@ -28,18 +44,16 @@ const onClickSubmitAuditionBtn = () => {
 
 onMounted(() => {
   // id = route.params.id
-  // To-do: fetch creation detail from server
-  creationDetail.value = {
-    id: '4',
-    datetime: 20231023,
-    title: 'example title 4',
-    contentType: 'poster',
-    imgSrc: 'https://i.pinimg.com/originals/c3/35/ef/c335ef807fa5693f1c05952759ed2436.jpg',
-    isAudited: true,
-    auditResult: false,
-    auditor: 125125,
-    auditComment: 'Your content sucks'
-  }
+  axios
+    .get(serverAddress + `/get_product/?uuid=${route.params.id}`)
+    .then((res) => res.data)
+    .then((res) => {
+      console.log(res)
+      creationDetail.value = res
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 })
 </script>
 
@@ -54,22 +68,23 @@ onMounted(() => {
     <div v-else class="row px-3 mx-2 mb-5">
       <div class="col-12 h2 mb-3 px-0">Content Detail</div>
       <div class="col-12 border-bottom border-warning mb-3 px-0 pb-3">
-        <div v-if="creationDetail.isAudited">
+        <!-- if audited -->
+        <div v-if="isAudited">
           <div class="fs-4">Audit Result</div>
           <div>
             <span> Audit: </span>
-            <span v-if="creationDetail.auditResult" class="text-success fs-5 fw-bold">
-              Success
-            </span>
+            <span v-if="auditResult" class="text-success fs-5 fw-bold"> Success </span>
             <span v-else class="text-danger fs-5 fw-bold"> Fail </span>
           </div>
-          <div>Auditor: {{ creationDetail.auditor }}</div>
+          <div>Auditor: {{ creationDetail.responsible_supervisor_name }}</div>
           <div class="d-flex">
             <div class="me-1">Comment:</div>
-            <div>{{ creationDetail.auditComment }}</div>
+            <div>{{ creationDetail.audit_comment }}</div>
           </div>
-          <div v-if="!creationDetail.auditResult">To-do: modify btn</div>
+          <!-- If fail, show modify btn -->
+          <div v-if="!auditResult">To-do: modify btn</div>
         </div>
+        <!-- If not submitted for audition -->
         <div v-else>
           <span class="text-secondary fs-4 me-3 align-middle">
             This content is not submitted for audition
@@ -142,7 +157,7 @@ onMounted(() => {
       </div>
       <div class="col-8 border-end border-warning px-0">
         <div class="border text-center me-4">
-          <img class="img-fluid" :src="creationDetail.imgSrc" />
+          <img class="img-fluid" :src="creationDetail.content.output[0]" />
         </div>
       </div>
       <div class="col-4">data</div>

@@ -10,6 +10,7 @@ const disableBtnClass = 'btn-secondary text-secondary-emphasis'
 const isSignInSelected = ref(true)
 const emailInput = ref('')
 const passwordInput = ref('')
+const usernameInput = ref('')
 const weChatIdInput = ref('')
 const identitySelect = ref('creator')
 
@@ -34,6 +35,7 @@ const signUpBtnClass = computed(() => {
 const onClickSubmitBtn = () => {
   // To-Do 連結後端登入/註冊
   localStorage.setItem('userName', 'example user name')
+  localStorage.setItem('userId', '1234567890')
   localStorage.setItem('identity', identitySelect.value)
   router.push('/home')
 }
@@ -84,8 +86,18 @@ const onClickSubmitBtn = () => {
           </div>
           <!-- Extra Input if sign up -->
           <div v-if="!isSignInSelected">
-            <!-- WeChat Id Input -->
             <div class="form-floating my-3">
+              <input
+                type="text"
+                v-model="usernameInput"
+                class="form-control"
+                id="usernameInput"
+                placeholder="username"
+              />
+              <label for="usernameInput">Username*</label>
+            </div>
+            <!-- WeChat Id Input -->
+            <div class="form-floating mb-3">
               <input
                 type="text"
                 class="form-control"

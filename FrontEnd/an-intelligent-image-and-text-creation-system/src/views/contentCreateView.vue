@@ -1,11 +1,13 @@
 <script setup>
 import axios from 'axios'
 import { computed, onMounted, ref } from 'vue'
-import { onBeforeRouteLeave } from 'vue-router'
+import { onBeforeRouteLeave, useRouter } from 'vue-router'
 
+const router = useRouter()
 const serverAddress = import.meta.env.VITE_serverAddress
 const finishCreateBtn = ref(null)
 const contentTitleInputElement = ref(null)
+const confirmSubmitModelBackBtn = ref(null)
 
 const contentTypeInput = ref('illustration')
 const promptInput = ref('')
@@ -28,6 +30,7 @@ const showCreateValidationFeedback = ref(false)
 const showTitleValidationFeedback = ref(false)
 
 onBeforeRouteLeave((to, from) => {
+  if ('id' in to.params) return true
   if (!imgOutput.value && !textOutput.value && history.value.length === 0) return true
 
   const answer = window.confirm('The canvas and all history will be discarded! Continue?')
@@ -176,7 +179,6 @@ const onClickModifyBtn = () => {
       .then((res) => {
         imgOutput.value = res
         imgOutput.value['content_type'] = contentType
-        // console.log(JSON.stringify(res))
       })
   } catch (err) {
     console.log(err)
@@ -192,15 +194,33 @@ const onClickFinishCreateBtn = () => {
 
 const onClickConfirmCreate = () => {
   if (!contentTitleInput.value) {
-    // console.log(`contentTitleInput.value = ${contentTitleInput.value}`)
-    // console.log('invliad!')
     showTitleValidationFeedback.value = true
     contentTitleInputElement.value.focus()
     return
   }
 
-  // To do: submit content to server
-  // To do: navigate to history page
+  const product = {}
+  product.content = JSON.parse(JSON.stringify(imgOutput.value))
+  product.content.title = String(contentTitleInput.value)
+  product.creator_uuid = localStorage.getItem('userId')
+  product.creator_name = localStorage.getItem('userName')
+  product.responsible_supervisor_uuid = 'no_submitted_for_audition'
+  product.responsible_supervisor_name = 'no_submitted_for_audition'
+  product.audition_status = 'no_submitted_for_audition'
+  product.audit_comment = 'no_submitted_for_audition'
+
+  axios
+    .post(serverAddress + '/insert_product/', product)
+    .then((res) => res.data)
+    .then((res) => {
+      // res: product uuid
+      confirmSubmitModelBackBtn.value.click()
+      router.push(`/view_create_history/${res}`)
+    })
+    .catch((err) => {
+      console.log(err)
+      window.alert('Something went wrong, please try again later!')
+    })
 }
 </script>
 
@@ -260,7 +280,9 @@ const onClickConfirmCreate = () => {
                         placeholder="Title"
                         required
                       />
-                      <label for="contentTitleInputElement" class="form-label">Content Title</label>
+                      <label for="contentTitleInputElement" class="form-label"
+                        >Content Title*</label
+                      >
                       <div class="invalid-feedback">Title is required!</div>
                     </div>
                   </div>
@@ -326,6 +348,7 @@ const onClickConfirmCreate = () => {
             <div class="modal-footer">
               <button
                 @click="(contentTitleInput = ''), (showTitleValidationFeedback = false)"
+                ref="confirmSubmitModelBackBtn"
                 type="button"
                 class="btn btn-outline-warning"
                 data-bs-dismiss="modal"
