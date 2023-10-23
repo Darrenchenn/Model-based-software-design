@@ -68,7 +68,7 @@ def get_product_by_page(creator_uuid: str,
 def get_product_by_audition_status(audition_status: str, page: int, page_size: int):
     
     product_document = {
-        "audition_status": audition_status if audition_status else "Unaudited",
+        "audition_status": audition_status if audition_status else "unaudited",
     }
     c = collection.get_collection_instance(collection_products)
     try:
