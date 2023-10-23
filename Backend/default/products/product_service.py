@@ -63,8 +63,22 @@ def get_product_by_page(creator_uuid: str,
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
         return error
+    
 
-
+def get_product_by_audition_status(audition_status: str, page: int, page_size: int):
+    
+    product_document = {
+        "audition_status": audition_status if audition_status else "Unaudited",
+    }
+    c = collection.get_collection_instance(collection_products)
+    try:
+        result = c.find_by_page(product_document, page, page_size)
+        return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error
+    
 def update_product(json_body: dict):
     product_document = {
         "uuid": json_body["uuid"],
@@ -114,11 +128,16 @@ def delete_product_by_uuid(uuid: str) -> DeleteResult:
         return error
 
 
-def delete_product_by_creator(creator: str) -> DeleteResult:
-    product_document = {
-        "creator": creator,
-    }
+def delete_product_by_creator(creator_uuid:str=None, creator_name:str=None) -> DeleteResult:
     c = collection.get_collection_instance(collection_products)
+    if creator_uuid:
+        product_document = {
+            "creator_uuid": creator_uuid,
+        }
+    elif creator_name:
+        product_document = {
+            "creator_name": creator_name,
+        }
     try:
         result = c.delete_many(product_document)
         return result

@@ -119,6 +119,36 @@ def get_product(request):
     return HttpResponse(json.dumps(json_result))
 
 
+def get_product_by_audition_status(request):
+    if request.method != "GET":
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new("request method is wrong"),
+        }))
+    logger.info(request.GET)
+
+    audition_status = request.GET.get("audition_status") or None
+    page = int(request.GET.get("page")) if request.GET.get("page") else 0
+    page_size = int(request.GET.get("page_size")) if request.GET.get("page_size") else 10
+
+    result = product_service.get_product_by_audition_status(audition_status, page, page_size)
+    if isinstance(result, error.Error):
+        return HttpResponse(result.http_response_new())
+    json_result = []
+    if result is None:
+        return HttpResponse(json.dumps(json_result))
+    for i in result:
+        json_result.append({
+            "uuid": i["uuid"],
+            "creator_uuid": i["creator_uuid"],
+            "creator_name": i["creator_name"],
+            "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
+            "responsible_supervisor_name": i["responsible_supervisor_name"],
+            "audition_status": i["audition_status"],
+            "content": i["content"],
+        })
+    return HttpResponse(json.dumps(json_result))
+
+
 def insert_product(request):
     if request.method != "POST":
         return HttpResponseBadRequest(JsonResponse({

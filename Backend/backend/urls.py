@@ -29,6 +29,7 @@ urlpatterns = [
 
     # products interfaces urls
     path('get_product/', views.get_product),
+    path('get_product_by_audition_status/', views.get_product_by_audition_status),
     path('insert_product/', views.insert_product),
     path('update_product/', views.update_product),
 

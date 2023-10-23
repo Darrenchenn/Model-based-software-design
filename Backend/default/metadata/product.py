@@ -11,7 +11,7 @@ class Product:
                  creator_name: str, 
                  responsible_supervisor_uuid: str = None, 
                  responsible_supervisor_name: str = None,
-                 audition_status: bool = False,
+                 audition_status: str = "Unaudited",
                  content: str = None) -> None:
         self.uuid = uuid.uuid4().hex
         self.creator_uuid = creator_uuid
