@@ -21,14 +21,15 @@ def insert_product(json_body: dict) -> InsertOneResult:
 
     product_document = {
         "uuid": uuid.uuid4().hex,
-        "creator_uuid": json_body["creator_uuid"],
-        "creator_name": json_body["creator_name"],
-        "responsible_supervisor_uuid": json_body["responsible_supervisor_uuid"],
-        "responsible_supervisor_name": json_body["responsible_supervisor_name"],
-        "audition_status": json_body["audition_status"],
-        "audit_comment": json_body["audit_comment"],
-        "content": json_body["content"],
+        "creator_uuid": json_body.get("creator_uuid", ""),
+        "creator_name": json_body.get("creator_name", ""),
+        "responsible_supervisor_uuid": json_body.get("responsible_supervisor_uuid", ""),
+        "responsible_supervisor_name": json_body.get("responsible_supervisor_name", ""),
+        "audition_status": json_body.get("audition_status", ""),
+        "audit_comment": json_body.get("audit_comment", ""),
+        "content": json_body.get("content", ""),
     }
+
     try:
         c.insert_one(product_document)
         return json.dumps(product_document["uuid"])
