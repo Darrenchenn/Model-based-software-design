@@ -18,6 +18,7 @@ def insert_product(json_body: dict) -> InsertOneResult:
         "responsible_supervisor_uuid": json_body["responsible_supervisor_uuid"],
         "responsible_supervisor_name": json_body["responsible_supervisor_name"],
         "audition_status": json_body["audition_status"],
+        "audit_comment": json_body["audit_comment"],
         "content": json_body["content"],
     }
     try:
@@ -43,6 +44,7 @@ def get_product_by_uuid(uuid: str):
             "responsible_supervisor_uuid": result["responsible_supervisor_uuid"],
             "responsible_supervisor_name": result["responsible_supervisor_name"],
             "audition_status": result["audition_status"],
+            "audit_comment": json_body["audit_comment"],
             "content": result["content"],
         }
         return json.dumps(json_result)
@@ -80,6 +82,7 @@ def get_product_by_page(creator_uuid: str,
                 "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
                 "responsible_supervisor_name": i["responsible_supervisor_name"],
                 "audition_status": i["audition_status"],
+                "audit_comment": i["audit_comment"],
                 "content": i["content"],
             })
         return json.dumps(json_result)
@@ -106,6 +109,7 @@ def get_product_by_audition_status(audition_status: str, page: int, page_size: i
                 "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
                 "responsible_supervisor_name": i["responsible_supervisor_name"],
                 "audition_status": i["audition_status"],
+                "audit_comment": i["audit_comment"],
                 "content": i["content"],
             })
         return json.dumps(json_result)
@@ -130,6 +134,7 @@ def update_product(json_body: dict):
         responsible_supervisor_uuid = json_body["responsible_supervisor_uuid"] if json_body.get("responsible_supervisor_uuid") else original_product["responsible_supervisor_uuid"]
         responsible_supervisor_name = json_body["responsible_supervisor_name"] if json_body.get("responsible_supervisor_name") else original_product["responsible_supervisor_name"]
         audition_status = json_body["audition_status"] if json_body.get("audition_status") else original_product["audition_status"]
+        audit_comment = json_body["audit_comment"] if json_body.get("audit_comment") else original_product["audit_comment"]
         content = json_body["content"] if json_body.get("content") else original_product["content"]
         new_product = {
             "$set": {
@@ -138,6 +143,7 @@ def update_product(json_body: dict):
                 "responsible_supervisor_uuid": responsible_supervisor_uuid,
                 "responsible_supervisor_name": responsible_supervisor_name,
                 "audition_status": audition_status,
+                "audit_comment": audit_comment,
                 "content": content,
             }
         }
