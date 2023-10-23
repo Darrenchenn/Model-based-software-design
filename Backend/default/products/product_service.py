@@ -44,7 +44,7 @@ def get_product_by_uuid(uuid: str):
             "responsible_supervisor_uuid": result["responsible_supervisor_uuid"],
             "responsible_supervisor_name": result["responsible_supervisor_name"],
             "audition_status": result["audition_status"],
-            "audit_comment": json_body["audit_comment"],
+            "audit_comment": result["audit_comment"],
             "content": result["content"],
         }
         return json.dumps(json_result)
