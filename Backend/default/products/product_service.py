@@ -12,8 +12,11 @@ def insert_product(json_body: dict) -> InsertOneResult:
 
     product_document = {
         "uuid": uuid.uuid4().hex,
-        "creator": json_body["creator"],
-        "responsible_supervisor": json_body["responsible_supervisor"],
+        "creator_uuid": json_body["creator_uuid"],
+        "creator_name": json_body["creator_name"],
+        "responsible_supervisor_uuid": json_body["responsible_supervisor_uuid"],
+        "responsible_supervisor_name": json_body["responsible_supervisor_name"],
+        "audition_status": json_body["audition_status"],
         "content": json_body["content"],
     }
     try:
@@ -39,15 +42,18 @@ def get_product_by_uuid(uuid: str):
         return error
 
 
-def get_product_by_page(creator: str, responsible_supervisor: str, page: int, page_size: int):
-    if creator is None:
-        product_document = {
-            "responsible_supervisor": responsible_supervisor,
-        }
-    if responsible_supervisor is None:
-        product_document = {
-            "creator": creator,
-        }
+def get_product_by_page(creator_uuid: str,
+                        creator_name: str,
+                        responsible_supervisor_uuid: str,
+                        responsible_supervisor_name: str,
+                        page: int,
+                        page_size: int):
+    product_document = {
+        "creator_uuid": creator_uuid,
+        "creator_name": creator_name,
+        "responsible_supervisor_uuid": responsible_supervisor_uuid,
+        "responsible_supervisor_name": responsible_supervisor_name,
+    }
     c = collection.get_collection_instance(collection_products)
     try:
         # Can be iterated by for loop
@@ -66,13 +72,27 @@ def update_product(json_body: dict):
     c = collection.get_collection_instance(collection_products)
     try:
         original_product = c.find_one(product_document)
-        if json_body["creator"] is None:
-            json_body["creator"] = original_product.get("creator")
-        if json_body["responsible_supervisor"] is None:
-            json_body["responsible_supervisor"] = original_product.get("responsible_supervisor")
-        if json_body["content"] is None:
-            json_body["content"] = original_product.get("content")
-        result = c.update_one(product_document, {"$set": json_body})
+        if original_product is None:
+            error = Error("Product not found")
+            error.new()
+            return error
+        creator_uuid = json_body["creator_uuid"] if json_body.get("creator_uuid") else original_product["creator_uuid"]
+        creator_name = json_body["creator_name"] if json_body.get("creator_name") else original_product["creator_name"]
+        responsible_supervisor_uuid = json_body["responsible_supervisor_uuid"] if json_body.get("responsible_supervisor_uuid") else original_product["responsible_supervisor_uuid"]
+        responsible_supervisor_name = json_body["responsible_supervisor_name"] if json_body.get("responsible_supervisor_name") else original_product["responsible_supervisor_name"]
+        audition_status = json_body["audition_status"] if json_body.get("audition_status") else original_product["audition_status"]
+        content = json_body["content"] if json_body.get("content") else original_product["content"]
+        new_product = {
+            "$set": {
+                "creator_uuid": creator_uuid,
+                "creator_name": creator_name,
+                "responsible_supervisor_uuid": responsible_supervisor_uuid,
+                "responsible_supervisor_name": responsible_supervisor_name,
+                "audition_status": audition_status,
+                "content": content,
+            }
+        }
+        result = c.update_one(product_document, new_product)
         return result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")

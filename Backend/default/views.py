@@ -71,12 +71,16 @@ def get_product(request):
             "error": error.new("request method is wrong"),
         }))
     logger.info(request.GET)
-    uuid = request.GET.get("uuid")
-    creator = request.GET.get("creator")
-    responsible_supervisor = request.GET.get("responsible_supervisor")
-    page = int(request.GET.get("page"))
-    page_size = int(request.GET.get("page_size"))
-    if uuid is not None and uuid is not '':
+
+    uuid = request.GET.get("uuid") or None
+    page = int(request.GET.get("page")) if request.GET.get("page") else 0
+    page_size = int(request.GET.get("page_size")) if request.GET.get("page_size") else 10
+    creator_uuid = request.GET.get("creator_uuid") or None
+    creator_name = request.GET.get("creator_name") or None
+    responsible_supervisor_uuid = request.GET.get("responsible_supervisor_uuid") or None
+    responsible_supervisor_name = request.GET.get("responsible_supervisor_name") or None
+
+    if uuid:
         result = product_service.get_product_by_uuid(uuid)
         if isinstance(result, error.Error):
             return HttpResponse(result.http_response_new())
@@ -87,15 +91,13 @@ def get_product(request):
             "content": result["content"],
         }
         return HttpResponse(json.dumps(json_result))
-    if page is None:
-        page = 0
-    if page_size is None:
-        page_size = 10
-    if creator is None or creator == '':
-        creator = None
-    if responsible_supervisor is None or responsible_supervisor == '':
-        responsible_supervisor = None
-    result = product_service.get_product_by_page(creator, responsible_supervisor, page, page_size)
+
+    result = product_service.get_product_by_page(creator_uuid,
+                                                    creator_name,
+                                                    responsible_supervisor_uuid,
+                                                    responsible_supervisor_name,
+                                                    page,
+                                                    page_size)
     if isinstance(result, error.Error):
         return HttpResponse(result.http_response_new())
     json_result = []
@@ -104,8 +106,10 @@ def get_product(request):
     for i in result:
         json_result.append({
             "uuid": i["uuid"],
-            "creator": i["creator"],
-            "responsible_supervisor": i["responsible_supervisor"],
+            "creator_uuid": i["creator_uuid"],
+            "creator_name": i["creator_name"],
+            "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
+            "responsible_supervisor_name": i["responsible_supervisor_name"],
             "content": i["content"],
         })
     return HttpResponse(json.dumps(json_result))
@@ -119,6 +123,19 @@ def insert_product(request):
     logger.info(request.POST)
     body = json.loads(request.body)
     result = product_service.insert_product(body)
+    if isinstance(result, error.Error):
+        return HttpResponse(result.http_response_new())
+    return HttpResponse()
+
+
+def update_product(request):
+    if request.method != "POST":
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new("request method is wrong"),
+        }))
+    logger.info(request.POST)
+    body = json.loads(request.body)
+    result = product_service.update_product(body)
     if isinstance(result, error.Error):
         return HttpResponse(result.http_response_new())
     return HttpResponse()

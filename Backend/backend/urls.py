@@ -30,6 +30,7 @@ urlpatterns = [
     # products interfaces urls
     path('get_product/', views.get_product),
     path('insert_product/', views.insert_product),
+    path('update_product/', views.update_product),
 
     # user interfaces urls
 ]
