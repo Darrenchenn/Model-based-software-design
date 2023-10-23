@@ -83,7 +83,9 @@ def get_product(request):
     if uuid:
         result = product_service.get_product_by_uuid(uuid)
         if isinstance(result, error.Error):
-            return HttpResponse(result.http_response_new())
+            return HttpResponseBadRequest(JsonResponse({
+                "error": error.new(),
+            }))
         json_result = {
             "uuid": result["uuid"],
             "creator_uuid": result["creator_uuid"],
@@ -102,7 +104,9 @@ def get_product(request):
                                                     page,
                                                     page_size)
     if isinstance(result, error.Error):
-        return HttpResponse(result.http_response_new())
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new(),
+        }))
     json_result = []
     if result is None:
         return HttpResponse(json.dumps(json_result))
@@ -132,7 +136,9 @@ def get_product_by_audition_status(request):
 
     result = product_service.get_product_by_audition_status(audition_status, page, page_size)
     if isinstance(result, error.Error):
-        return HttpResponse(result.http_response_new())
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new(),
+        }))
     json_result = []
     if result is None:
         return HttpResponse(json.dumps(json_result))
@@ -158,7 +164,9 @@ def insert_product(request):
     body = json.loads(request.body)
     result = product_service.insert_product(body)
     if isinstance(result, error.Error):
-        return HttpResponse(result.http_response_new())
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new(),
+        }))
     return HttpResponse()
 
 
@@ -171,7 +179,9 @@ def update_product(request):
     body = json.loads(request.body)
     result = product_service.update_product(body)
     if isinstance(result, error.Error):
-        return HttpResponse(result.http_response_new())
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new(),
+        }))
     return HttpResponse()
 
 # message interfaces
