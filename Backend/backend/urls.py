@@ -34,4 +34,17 @@ urlpatterns = [
     path('update_product/', views.update_product),
 
     # user interfaces urls
+    path('register_user/',views.register_user),
+    path('login_user/',views.login_user),
+    path('update_user_info/<str:uuid>/',views.update_user_info),
+    path('get_user_info/<str:uuid>/', views.get_user_info,name='get_user_info'),
+
+    # template interfaces urls
+    path('create_template/',views.create_template),
+    path('get_template_content_by_uuid/<str:uuid>/', views.get_template_content_by_uuid, name='get_template_content_by_uuid'),
+    path('update_template_by_uuid/<str:uuid>/', views.update_template_by_uuid),
+    path('delete_template/<str:uuid>/', views.delete_template, name='delete_template'),
+    path('get_all_templates/',views.get_all_templates),
+
+
 ]

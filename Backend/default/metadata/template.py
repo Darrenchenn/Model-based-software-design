@@ -3,10 +3,10 @@ import uuid
 import pymongo
 from pymongo.results import InsertOneResult
 
-from Backend.default.db import collection
-from Backend.default.db.collectionnames import collection_templates
+from default.db import collection
+from default.db.collectionnames import collection_templates
 
-from Backend.default.common.error import Error
+from default.common.error import Error
 
 
 class Template:
