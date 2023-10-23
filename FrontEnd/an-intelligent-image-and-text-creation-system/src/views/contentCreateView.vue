@@ -38,6 +38,7 @@ onBeforeRouteLeave((to, from) => {
 })
 
 onMounted(() => {
+  const datetime = new Date('2020-05-12T23:50:21.817Z').toLocaleString()
   const placeHolder = {
     content_type: 'illustration',
     status: 'success',
@@ -72,30 +73,37 @@ onMounted(() => {
   history.value.push(JSON.parse(JSON.stringify(placeHolder)))
   history.value[0].id = 12202888
   history.value[0].content_type = 'illustration'
+  history.value[0].datetime = datetime
   history.value[0].output[0] =
     'https://pub-8b49af329fae499aa563997f5d4068a4.r2.dev/generations/e5cd86d3-7305-47fc-82c1-7d1a3b130fa4-0.png'
   history.value[1].id = 1
   history.value[1].content_type = 'socialMediaPost'
+  history.value[1].datetime = datetime
   history.value[1].output[0] =
     'https://i.pinimg.com/originals/0b/94/33/0b943300e968ba78fb55c6dc16b70631.jpg'
   history.value[2].id = 2
   history.value[2].content_type = 'icon'
+  history.value[2].datetime = datetime
   history.value[2].output[0] =
     'https://i.pinimg.com/originals/95/74/f4/9574f450742dccfac04c15d71d1f638a.jpg'
   history.value[3].id = 3
   history.value[3].content_type = 'icon'
+  history.value[3].datetime = datetime
   history.value[3].output[0] =
     'https://pbs.twimg.com/media/F2XgDoWaYAE5xKP?format=jpg&name=4096x4096'
   history.value[4].id = 4
   history.value[4].content_type = 'poster'
+  history.value[4].datetime = datetime
   history.value[4].output[0] =
     'https://i.pinimg.com/originals/c3/35/ef/c335ef807fa5693f1c05952759ed2436.jpg'
   history.value[5].id = 5
   history.value[5].content_type = 'poster'
+  history.value[5].datetime = datetime
   history.value[5].output[0] =
     'https://i.pinimg.com/originals/10/41/52/104152ece82da03225e57a510dcf2b4b.jpg'
   imgOutput.value = JSON.parse(JSON.stringify(placeHolder))
   imgOutput.value.id = 6
+  imgOutput.value['datetime'] = datetime
 })
 
 const addCurrentOutputToHistory = () => {
@@ -117,6 +125,7 @@ const moveHistoryToCanvas = (id) => {
 }
 
 const onClickCreateBtn = () => {
+  const datetime = new Date('2020-05-12T23:50:21.817Z').toLocaleString()
   const contentType = contentTypeInput.value
 
   if (isFetchingResult.value) return
@@ -145,7 +154,7 @@ const onClickCreateBtn = () => {
       .then((res) => {
         imgOutput.value = res
         imgOutput.value['content_type'] = contentType
-        // console.log(JSON.stringify(res))
+        imgOutput.value['datetime'] = datetime
       })
   } catch (err) {
     console.log(err)
@@ -155,6 +164,7 @@ const onClickCreateBtn = () => {
 }
 
 const onClickModifyBtn = () => {
+  const datetime = new Date('2020-05-12T23:50:21.817Z').toLocaleString()
   const contentType = contentTypeInput.value
 
   if (isFetchingResult.value) return
@@ -179,6 +189,7 @@ const onClickModifyBtn = () => {
       .then((res) => {
         imgOutput.value = res
         imgOutput.value['content_type'] = contentType
+        imgOutput.value['datetime'] = datetime
       })
   } catch (err) {
     console.log(err)
@@ -204,10 +215,7 @@ const onClickConfirmCreate = () => {
   product.content.title = String(contentTitleInput.value)
   product.creator_uuid = localStorage.getItem('userId')
   product.creator_name = localStorage.getItem('userName')
-  product.responsible_supervisor_uuid = 'no_submitted_for_audition'
-  product.responsible_supervisor_name = 'no_submitted_for_audition'
   product.audition_status = 'no_submitted_for_audition'
-  product.audit_comment = 'no_submitted_for_audition'
 
   axios
     .post(serverAddress + '/insert_product/', product)

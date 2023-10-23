@@ -48,7 +48,7 @@ onMounted(() => {
     .get(serverAddress + `/get_product/?uuid=${route.params.id}`)
     .then((res) => res.data)
     .then((res) => {
-      console.log(res)
+      // console.log(JSON.stringify(res))
       creationDetail.value = res
     })
     .catch((err) => {
@@ -160,7 +160,92 @@ onMounted(() => {
           <img class="img-fluid" :src="creationDetail.content.output[0]" />
         </div>
       </div>
-      <div class="col-4">data</div>
+      <div class="col-4 pe-0">
+        <div class="container-fluid row pe-0">
+          <div class="col-12 mb-3">
+            <label for="contentType" class="form-label">Content type</label>
+            <input
+              class="form-control"
+              id="contentType"
+              :value="
+                creationDetail.content.content_type === 'illustration'
+                  ? 'Illustration'
+                  : creationDetail.content.content_type === 'poster'
+                  ? 'Poster'
+                  : creationDetail.content.content_type === 'icon'
+                  ? 'Icon'
+                  : 'Social media post'
+              "
+              disabled
+              readonly
+            />
+          </div>
+          <div class="col-12 mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input
+              class="form-control"
+              id="title"
+              :value="creationDetail.content.title"
+              disabled
+              readonly
+            />
+          </div>
+          <div class="col-12 mb-3">
+            <label for="datetime" class="form-label">Date</label>
+            <input
+              class="form-control"
+              id="datetime"
+              :value="creationDetail.content.datetime"
+              disabled
+              readonly
+            />
+          </div>
+          <div class="col-12 mb-3">
+            <label for="historyPrompt" class="form-label">Prompt</label>
+            <textarea
+              class="form-control"
+              id="historyPrompt"
+              :value="creationDetail.content.meta.prompt"
+              rows="5"
+              disabled
+              readonly
+            >
+            </textarea>
+          </div>
+          <div class="col-12 mb-3">
+            <label for="historyNegativePrompt" class="form-label">Negative Prompt</label>
+            <textarea
+              class="form-control"
+              id="historyNegativePrompt"
+              :value="creationDetail.content.meta.negative_prompt"
+              rows="5"
+              disabled
+              readonly
+            >
+            </textarea>
+          </div>
+          <div class="col-6 mb-3">
+            <label for="historyHeight" class="form-label">Height</label>
+            <input
+              class="form-control"
+              id="historyHeight"
+              :value="creationDetail.content.meta.H"
+              disabled
+              readonly
+            />
+          </div>
+          <div class="col-6 mb-3">
+            <label for="historyWidth" class="form-label">Width</label>
+            <input
+              class="form-control"
+              id="historyWidth"
+              :value="creationDetail.content.meta.W"
+              disabled
+              readonly
+            />
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>

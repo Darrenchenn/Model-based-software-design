@@ -13,13 +13,16 @@ const passwordInput = ref('')
 const usernameInput = ref('')
 const weChatIdInput = ref('')
 const identitySelect = ref('creator')
+const showValidationFeedback = ref(false)
 
 const onClickLogInBtn = () => {
   isSignInSelected.value = true
+  showValidationFeedback.value = false
 }
 
 const onClickSignUpBtn = () => {
   isSignInSelected.value = false
+  showValidationFeedback.value = false
 }
 
 const logInBtnClass = computed(() => {
@@ -33,9 +36,21 @@ const signUpBtnClass = computed(() => {
 })
 
 const onClickSubmitBtn = () => {
+  if (isSignInSelected.value && (!emailInput.value || !passwordInput.value)) {
+    showValidationFeedback.value = true
+    return
+  } else if (
+    !isSignInSelected.value &&
+    (!emailInput.value || !passwordInput.value || !usernameInput.value)
+  ) {
+    showValidationFeedback.value = true
+    return
+  }
+
   // To-Do 連結後端登入/註冊
   localStorage.setItem('userName', 'example user name')
-  localStorage.setItem('userId', '1234567890')
+  localStorage.setItem('userId', emailInput.value)
+  localStorage.setItem('password', passwordInput.value)
   localStorage.setItem('identity', identitySelect.value)
   router.push('/home')
 }
@@ -45,9 +60,11 @@ const onClickSubmitBtn = () => {
   <div class="container-fluid">
     <div id="fullScreen" class="row justify-content-center align-items-center">
       <div class="col-xl-3 col-lg-4 col-md-5 col-sm-8 col-10">
-        <form
+        <div
           id="loginForm"
-          class="text-center px-4 border border-warning border-2 rounded shadow-lg"
+          class="px-4 border border-warning border-2 rounded shadow-lg needs-validation"
+          :class="showValidationFeedback ? 'was-validated' : ''"
+          novalidate
         >
           <!-- Title  -->
           <div class="mt-3 mb-4 text-warning display-5 fw-medium">AutoPen</div>
@@ -68,10 +85,12 @@ const onClickSubmitBtn = () => {
               id="emailInput"
               placeholder="name@example.com"
               v-model="emailInput"
+              required
             />
             <label for="emailInput">
               {{ isSignInSelected ? 'Email address' : 'Email address*' }}
             </label>
+            <div class="invalid-feedback">Email is required!</div>
           </div>
           <!-- Password Input -->
           <div class="form-floating">
@@ -81,10 +100,13 @@ const onClickSubmitBtn = () => {
               id="passwordInput"
               placeholder="password"
               v-model="passwordInput"
+              required
             />
             <label for="passwordInput">{{ isSignInSelected ? 'Password' : 'Password*' }}</label>
+            <div class="invalid-feedback">Password is required!</div>
           </div>
           <!-- Extra Input if sign up -->
+          <!-- Username -->
           <div v-if="!isSignInSelected">
             <div class="form-floating my-3">
               <input
@@ -93,8 +115,10 @@ const onClickSubmitBtn = () => {
                 class="form-control"
                 id="usernameInput"
                 placeholder="username"
+                required
               />
               <label for="usernameInput">Username*</label>
+              <div class="invalid-feedback">Username is required!</div>
             </div>
             <!-- WeChat Id Input -->
             <div class="form-floating mb-3">
@@ -117,7 +141,7 @@ const onClickSubmitBtn = () => {
             </div>
           </div>
           <!-- Submit Button -->
-          <div class="my-4">
+          <div class="my-4 text-center">
             <button
               id="submitBtn"
               type="submit"
@@ -127,7 +151,7 @@ const onClickSubmitBtn = () => {
               {{ isSignInSelected ? 'Log In' : 'Sign Up' }}
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   </div>
