@@ -20,8 +20,8 @@ def insert_product(json_body: dict) -> InsertOneResult:
         "content": json_body["content"],
     }
     try:
-        result = c.insert_one(product_document)
-        return result
+        c.insert_one(product_document)
+        return product_document["uuid"]
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
@@ -35,7 +35,16 @@ def get_product_by_uuid(uuid: str):
     c = collection.get_collection_instance(collection_products)
     try:
         result = c.find_one(product_document)
-        return result
+        json_result = {
+            "uuid": result["uuid"],
+            "creator_uuid": result["creator_uuid"],
+            "creator_name": result["creator_name"],
+            "responsible_supervisor_uuid": result["responsible_supervisor_uuid"],
+            "responsible_supervisor_name": result["responsible_supervisor_name"],
+            "audition_status": result["audition_status"],
+            "content": result["content"],
+        }
+        return json_result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
@@ -48,17 +57,31 @@ def get_product_by_page(creator_uuid: str,
                         responsible_supervisor_name: str,
                         page: int,
                         page_size: int):
-    product_document = {
-        "creator_uuid": creator_uuid,
-        "creator_name": creator_name,
-        "responsible_supervisor_uuid": responsible_supervisor_uuid,
-        "responsible_supervisor_name": responsible_supervisor_name,
-    }
+    product_document = {}
+    if creator_uuid:
+        product_document["creator_uuid"] = creator_uuid
+    if creator_name:
+        product_document["creator_name"] = creator_name
+    if responsible_supervisor_uuid:
+        product_document["responsible_supervisor_uuid"] = responsible_supervisor_uuid
+    if responsible_supervisor_name:
+        product_document["responsible_supervisor_name"] = responsible_supervisor_name
     c = collection.get_collection_instance(collection_products)
     try:
         # Can be iterated by for loop
         result = c.find_by_page(product_document, page, page_size)
-        return result
+        json_result = []
+        for i in result:
+            json_result.append({
+                "uuid": i["uuid"],
+                "creator_uuid": i["creator_uuid"],
+                "creator_name": i["creator_name"],
+                "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
+                "responsible_supervisor_name": i["responsible_supervisor_name"],
+                "audition_status": i["audition_status"],
+                "content": i["content"],
+            })
+        return json_result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
@@ -73,7 +96,18 @@ def get_product_by_audition_status(audition_status: str, page: int, page_size: i
     c = collection.get_collection_instance(collection_products)
     try:
         result = c.find_by_page(product_document, page, page_size)
-        return result
+        json_result = []
+        for i in result:
+            json_result.append({
+                "uuid": i["uuid"],
+                "creator_uuid": i["creator_uuid"],
+                "creator_name": i["creator_name"],
+                "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
+                "responsible_supervisor_name": i["responsible_supervisor_name"],
+                "audition_status": i["audition_status"],
+                "content": i["content"],
+            })
+        return json_result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
