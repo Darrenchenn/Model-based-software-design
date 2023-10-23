@@ -1,25 +1,22 @@
 import configparser
 import logging
-import sys,os
+import os
+import sys
 
 from pymongo.mongo_client import MongoClient
 
 from default.common import error
 
 log = logging.getLogger('default')
-
 config = configparser.ConfigParser()
-path = os.getcwd()
-config.read(path+'/config.ini')
-
+config.read(os.getcwd() + '/config.ini')
 url = config.get('mongodb', 'url')
 try:
     cluster_name = config.get('mongodb', 'cluster_name')
-except configparser.NoOptionError :
+except configparser.NoOptionError:
     print('could not read configuration file')
-    sys.exit(1) 
+    sys.exit(1)
 log.info('url: %s--cluster_name: %s', url, cluster_name)
-# todo:these statements should be defined in config file.
 db_default_url = url
 db_default_name = cluster_name
 
