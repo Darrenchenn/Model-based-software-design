@@ -9,7 +9,7 @@ from default.metadata.product import Product
 
 
 
-def insert_product(json_body: dict):
+def insert_product(json_body: dict) -> str:
     c = collection.get_collection_instance(collection_products)
     if (not json_body.get("creator_uuid") or
         not json_body.get("creator_name") or
@@ -22,13 +22,13 @@ def insert_product(json_body: dict):
 
     try:
         c.insert_one(product_document)
-        return json.dumps(product_document["uuid"])
+        return json.dumps(product_document.get("uuid"))
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         return error
 
 
-def get_product_by_uuid(uuid: str):
+def get_product_by_uuid(uuid: str) -> str:
     product_document = {
         "uuid": uuid,
     }
@@ -47,7 +47,7 @@ def get_product_by_page(creator_uuid: str,
                         responsible_supervisor_uuid: str,
                         responsible_supervisor_name: str,
                         page: int,
-                        page_size: int):
+                        page_size: int) -> str:
     product_document = {}
     if creator_uuid:
         product_document["creator_uuid"] = creator_uuid
@@ -71,7 +71,7 @@ def get_product_by_page(creator_uuid: str,
         return error
     
 
-def get_product_by_audition_status(audition_status: str, page: int, page_size: int):
+def get_product_by_audition_status(audition_status: str, page: int, page_size: int) -> str:
     
     product_document = {
         "audition_status": audition_status if audition_status else "unaudited",

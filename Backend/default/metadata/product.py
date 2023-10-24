@@ -12,7 +12,7 @@ class Product:
                  creator_name: str = None, 
                  responsible_supervisor_uuid: str = None, 
                  responsible_supervisor_name: str = None,
-                 audition_status: str = "Unaudited",
+                 audition_status: str = None,
                  audit_comment = None,
                  content = None) -> None:
         self.uuid = uuid.uuid4().hex
