@@ -10,6 +10,7 @@ from default.common import error
 log = logging.getLogger('default')
 config = configparser.ConfigParser()
 config.read(os.getcwd() + '/config.ini')
+print(os.getcwd())
 url = config.get('mongodb', 'url')
 try:
     cluster_name = config.get('mongodb', 'cluster_name')
