@@ -71,6 +71,7 @@ def forward_wechat(request):
 # products interfaces
 
 
+
 def get_product(request):
     if request.method != "GET":
         return HttpResponseBadRequest(JsonResponse({
@@ -87,46 +88,24 @@ def get_product(request):
     responsible_supervisor_name = request.GET.get("responsible_supervisor_name") or None
 
     if uuid:
-        result = product_service.get_product_by_uuid(uuid)
-        if isinstance(result, error.Error):
+        json_result = product_service.get_product_by_uuid(uuid)
+        if isinstance(json_result, error.Error):
             return HttpResponseBadRequest(JsonResponse({
                 "error": error.new(),
             }))
-        json_result = {
-            "uuid": result["uuid"],
-            "creator_uuid": result["creator_uuid"],
-            "creator_name": result["creator_name"],
-            "responsible_supervisor_uuid": result["responsible_supervisor_uuid"],
-            "responsible_supervisor_name": result["responsible_supervisor_name"],
-            "audition_status": result["audition_status"],
-            "content": result["content"],
-        }
-        return HttpResponse(json.dumps(json_result))
+        return HttpResponse(json_result)
 
-    result = product_service.get_product_by_page(creator_uuid,
-                                                 creator_name,
-                                                 responsible_supervisor_uuid,
-                                                 responsible_supervisor_name,
-                                                 page,
-                                                 page_size)
-    if isinstance(result, error.Error):
+    json_result = product_service.get_product_by_page(creator_uuid,
+                                                    creator_name,
+                                                    responsible_supervisor_uuid,
+                                                    responsible_supervisor_name,
+                                                    page,
+                                                    page_size)
+    if isinstance(json_result, error.Error):
         return HttpResponseBadRequest(JsonResponse({
             "error": error.new(),
         }))
-    json_result = []
-    if result is None:
-        return HttpResponse(json.dumps(json_result))
-    for i in result:
-        json_result.append({
-            "uuid": i["uuid"],
-            "creator_uuid": i["creator_uuid"],
-            "creator_name": i["creator_name"],
-            "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
-            "responsible_supervisor_name": i["responsible_supervisor_name"],
-            "audition_status": i["audition_status"],
-            "content": i["content"],
-        })
-    return HttpResponse(json.dumps(json_result))
+    return HttpResponse(json_result)
 
 
 def get_product_by_audition_status(request):
@@ -140,25 +119,12 @@ def get_product_by_audition_status(request):
     page = int(request.GET.get("page")) if request.GET.get("page") else 0
     page_size = int(request.GET.get("page_size")) if request.GET.get("page_size") else 10
 
-    result = product_service.get_product_by_audition_status(audition_status, page, page_size)
-    if isinstance(result, error.Error):
+    json_result = product_service.get_product_by_audition_status(audition_status, page, page_size)
+    if isinstance(json_result, error.Error):
         return HttpResponseBadRequest(JsonResponse({
             "error": error.new(),
         }))
-    json_result = []
-    if result is None:
-        return HttpResponse(json.dumps(json_result))
-    for i in result:
-        json_result.append({
-            "uuid": i["uuid"],
-            "creator_uuid": i["creator_uuid"],
-            "creator_name": i["creator_name"],
-            "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
-            "responsible_supervisor_name": i["responsible_supervisor_name"],
-            "audition_status": i["audition_status"],
-            "content": i["content"],
-        })
-    return HttpResponse(json.dumps(json_result))
+    return HttpResponse(json_result)
 
 
 def insert_product(request):
@@ -168,12 +134,12 @@ def insert_product(request):
         }))
     logger.info(request.POST)
     body = json.loads(request.body)
-    result = product_service.insert_product(body)
-    if isinstance(result, error.Error):
+    json_result = product_service.insert_product(body)
+    if isinstance(json_result, error.Error):
         return HttpResponseBadRequest(JsonResponse({
             "error": error.new(),
         }))
-    return HttpResponse()
+    return HttpResponse(json_result)
 
 
 def update_product(request):
