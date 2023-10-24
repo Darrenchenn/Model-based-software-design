@@ -1,6 +1,6 @@
 import json
-import uuid
-from pymongo.results import InsertOneResult, DeleteResult
+
+from pymongo.results import DeleteResult
 
 from default.common.error import Error
 from default.db import collection
@@ -8,13 +8,12 @@ from default.db.collectionnames import collection_products
 from default.metadata.product import Product
 
 
-
 def insert_product(json_body: dict) -> str:
     c = collection.get_collection_instance(collection_products)
     if (not json_body.get("creator_uuid") or
-        not json_body.get("creator_name") or
-        not json_body.get("audition_status") or
-        not json_body.get("content")):
+            not json_body.get("creator_name") or
+            not json_body.get("audition_status") or
+            not json_body.get("content")):
         error = Error("creator_uuid, creator_name, audition_status, content are required")
         return error
 
@@ -69,10 +68,9 @@ def get_product_by_page(creator_uuid: str,
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         return error
-    
+
 
 def get_product_by_audition_status(audition_status: str, page: int, page_size: int) -> str:
-    
     product_document = {
         "audition_status": audition_status if audition_status else "unaudited",
     }
@@ -87,7 +85,8 @@ def get_product_by_audition_status(audition_status: str, page: int, page_size: i
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         return error
-    
+
+
 def update_product(json_body: dict):
     product_document = {
         "uuid": json_body["uuid"],
@@ -98,12 +97,18 @@ def update_product(json_body: dict):
         if original_product is None:
             error = Error("Product not found")
             return error
-        creator_uuid = json_body["creator_uuid"] if json_body.get("creator_uuid") else original_product.get("creator_uuid")
-        creator_name = json_body["creator_name"] if json_body.get("creator_name") else original_product.get("creator_name")
-        responsible_supervisor_uuid = json_body["responsible_supervisor_uuid"] if json_body.get("responsible_supervisor_uuid") else original_product.get("responsible_supervisor_uuid")
-        responsible_supervisor_name = json_body["responsible_supervisor_name"] if json_body.get("responsible_supervisor_name") else original_product.get("responsible_supervisor_name")
-        audition_status = json_body["audition_status"] if json_body.get("audition_status") else original_product.get("audition_status")
-        audit_comment = json_body["audit_comment"] if json_body.get("audit_comment") else original_product.get("audit_comment")
+        creator_uuid = json_body["creator_uuid"] if json_body.get("creator_uuid") else original_product.get(
+            "creator_uuid")
+        creator_name = json_body["creator_name"] if json_body.get("creator_name") else original_product.get(
+            "creator_name")
+        responsible_supervisor_uuid = json_body["responsible_supervisor_uuid"] if json_body.get(
+            "responsible_supervisor_uuid") else original_product.get("responsible_supervisor_uuid")
+        responsible_supervisor_name = json_body["responsible_supervisor_name"] if json_body.get(
+            "responsible_supervisor_name") else original_product.get("responsible_supervisor_name")
+        audition_status = json_body["audition_status"] if json_body.get("audition_status") else original_product.get(
+            "audition_status")
+        audit_comment = json_body["audit_comment"] if json_body.get("audit_comment") else original_product.get(
+            "audit_comment")
         content = json_body["content"] if json_body.get("content") else original_product.get("content")
         new_product = {
             "$set": {
@@ -136,7 +141,7 @@ def delete_product_by_uuid(uuid: str) -> DeleteResult:
         return error
 
 
-def delete_product_by_creator(creator_uuid:str=None, creator_name:str=None) -> DeleteResult:
+def delete_product_by_creator(creator_uuid: str = None, creator_name: str = None) -> DeleteResult:
     c = collection.get_collection_instance(collection_products)
     if creator_uuid:
         product_document = {
