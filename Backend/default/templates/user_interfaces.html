@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Testing</title>
+</head>
+<body>
+    <h1>API Testing</h1>
+
+    <!-- User Registration -->
+    <h2>User Registration</h2>
+    <form action="http://127.0.0.1:8000/register_user/" method="post">
+        <label for="username">Username:</label>
+        <input type="text" name="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required><br>
+        <label for="user_type">User Type:</label>
+        <input type="text" name="user_type"><br>
+        <input type="submit" value="Register">
+    </form>
+
+    <!-- User Login -->
+    <h2>User Login</h2>
+    <form action="http://127.0.0.1:8000/login_user/" method="post">
+        <label for="username">Username:</label>
+        <input type="text" name="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" name="password" required><br>
+        <input type="submit" value="Login">
+    </form>
+
+
+
+    <!-- Update User Data -->
+    <h2>Update User Data</h2>
+    <form action="http://127.0.0.1:8000/update_user_info/4f8126541bd44b09b0d59a5d308ef6a4/" method="POST">
+        <label for="password">Password:</label>
+        <input type="text" name="password" id="password"><br><br>
+
+        <label for="user_type">User Type:</label>
+        <input type="text" name="user_type" id="user_type"><br><br>
+
+        <label for="contact_info">Contact Info:</label>
+        <input type="text" name="contact_info" id="contact_info"><br><br>
+
+        <input type="submit" value="Update User Info">
+    </form>
+
+    <!-- Get User Info -->
+    <h2>Get User Info</h2>
+    <form action="http://127.0.0.1:8000/get_user_info/4f8126541bd44b09b0d59a5d308ef6a4/" method="get">
+    <input type="submit" value="Get Info">
+    </form>
+
+    <script>
+        // 在页面加载时执行的JavaScript代码
+        window.addEventListener('load', function() {
+            // 获取用户信息的URL，替换成你的后端接口URL
+            var apiUrl = 'http://127.0.0.1:8000/get_user_info/4f8126541bd44b09b0d59a5d308ef6a4/';
+
+            // 发送GET请求以获取用户信息
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    // 处理获取的用户信息
+                    if (data.error) {
+                        document.getElementById('user-info').innerText = data.error;
+                    } else {
+                        // 用户信息显示在页面上
+                        var userInfoHtml = '<p><strong>Username:</strong> ' + data.username + '</p>';
+                        userInfoHtml += '<p><strong>User Type:</strong> ' + data.user_type + '</p>';
+                        userInfoHtml += '<p><strong>Contact Info:</strong> ' + data.contact_info + '</p>';
+                        document.getElementById('user-info').innerHTML = userInfoHtml;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('user-info').innerText = 'An error occurred: ' + error.message;
+                });
+        });
+    </script>
+    <div id="user-info">
+        <!-- 用户信息将在此处显示 -->
+    </div>
+    <!-- Other API Endpoints -->
+    <!-- Add more forms for testing other API endpoints -->
+
+</body>
+</html>

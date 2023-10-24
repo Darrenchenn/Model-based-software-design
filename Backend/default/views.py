@@ -2,6 +2,8 @@
 import json
 import logging
 
+from default.metadata.template import get_content_by_uuid
+
 logger = logging.getLogger('django')
 
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
@@ -10,6 +12,10 @@ from default.creator import chatgpt, stablediffusion
 from default.common import error
 from default.forwarding import wechat
 from default.products import product_service
+from default.metadata.template import Template, insert_template, get_template, update_template, \
+    delete_template_by_uuid, get_all_template_by_page
+from default.metadata.user import User,insert_user, get_user_by_username, update_user, get_user_by_uuid
+from default.common.error import Error
 
 
 # creator interfaces
@@ -81,24 +87,46 @@ def get_product(request):
     responsible_supervisor_name = request.GET.get("responsible_supervisor_name") or None
 
     if uuid:
-        json_result = product_service.get_product_by_uuid(uuid)
-        if isinstance(json_result, error.Error):
+        result = product_service.get_product_by_uuid(uuid)
+        if isinstance(result, error.Error):
             return HttpResponseBadRequest(JsonResponse({
                 "error": error.new(),
             }))
-        return HttpResponse(json_result)
+        json_result = {
+            "uuid": result["uuid"],
+            "creator_uuid": result["creator_uuid"],
+            "creator_name": result["creator_name"],
+            "responsible_supervisor_uuid": result["responsible_supervisor_uuid"],
+            "responsible_supervisor_name": result["responsible_supervisor_name"],
+            "audition_status": result["audition_status"],
+            "content": result["content"],
+        }
+        return HttpResponse(json.dumps(json_result))
 
-    json_result = product_service.get_product_by_page(creator_uuid,
-                                                    creator_name,
-                                                    responsible_supervisor_uuid,
-                                                    responsible_supervisor_name,
-                                                    page,
-                                                    page_size)
-    if isinstance(json_result, error.Error):
+    result = product_service.get_product_by_page(creator_uuid,
+                                                 creator_name,
+                                                 responsible_supervisor_uuid,
+                                                 responsible_supervisor_name,
+                                                 page,
+                                                 page_size)
+    if isinstance(result, error.Error):
         return HttpResponseBadRequest(JsonResponse({
             "error": error.new(),
         }))
-    return HttpResponse(json_result)
+    json_result = []
+    if result is None:
+        return HttpResponse(json.dumps(json_result))
+    for i in result:
+        json_result.append({
+            "uuid": i["uuid"],
+            "creator_uuid": i["creator_uuid"],
+            "creator_name": i["creator_name"],
+            "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
+            "responsible_supervisor_name": i["responsible_supervisor_name"],
+            "audition_status": i["audition_status"],
+            "content": i["content"],
+        })
+    return HttpResponse(json.dumps(json_result))
 
 
 def get_product_by_audition_status(request):
@@ -112,12 +140,25 @@ def get_product_by_audition_status(request):
     page = int(request.GET.get("page")) if request.GET.get("page") else 0
     page_size = int(request.GET.get("page_size")) if request.GET.get("page_size") else 10
 
-    json_result = product_service.get_product_by_audition_status(audition_status, page, page_size)
-    if isinstance(json_result, error.Error):
+    result = product_service.get_product_by_audition_status(audition_status, page, page_size)
+    if isinstance(result, error.Error):
         return HttpResponseBadRequest(JsonResponse({
             "error": error.new(),
         }))
-    return HttpResponse(json_result)
+    json_result = []
+    if result is None:
+        return HttpResponse(json.dumps(json_result))
+    for i in result:
+        json_result.append({
+            "uuid": i["uuid"],
+            "creator_uuid": i["creator_uuid"],
+            "creator_name": i["creator_name"],
+            "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
+            "responsible_supervisor_name": i["responsible_supervisor_name"],
+            "audition_status": i["audition_status"],
+            "content": i["content"],
+        })
+    return HttpResponse(json.dumps(json_result))
 
 
 def insert_product(request):
@@ -127,12 +168,12 @@ def insert_product(request):
         }))
     logger.info(request.POST)
     body = json.loads(request.body)
-    json_result = product_service.insert_product(body)
-    if isinstance(json_result, error.Error):
+    result = product_service.insert_product(body)
+    if isinstance(result, error.Error):
         return HttpResponseBadRequest(JsonResponse({
             "error": error.new(),
         }))
-    return HttpResponse(json_result)
+    return HttpResponse()
 
 
 def update_product(request):
@@ -149,10 +190,239 @@ def update_product(request):
         }))
     return HttpResponse()
 
+
 # message interfaces
 
 # archive interfaces
 
 # user interfaces
+# User register interfaces
+def register_user(request):
+    if request.method == "POST":
+        try:
+            # 访问表单字段而不是尝试解析 JSON 数据
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+            user_type = request.POST.get("user_type")
+
+            if username and password:
+                # 创建注册
+                user = User(username, password, user_type)
+                # 插入用户
+                result = insert_user(user)
+                if isinstance(result,Error):
+                    return JsonResponse({"error": result.message})
+                else:
+                    return JsonResponse({"message": "User registered successfully"})
+            else:
+                return JsonResponse({"error": "Username and Password are required"})
+        except Exception as e:
+            return JsonResponse({"error": "An error occurred: " + str(e)})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
+
+
+
+# User Login interfaces
+def login_user(request):
+    if request.method == "POST":
+        try:
+            # analyse request data
+            #data = json.loads(request.body)
+            username = request.POST.get("username")
+            password = request.POST.get("password")
+
+            # capture user information
+            if username and password:
+                user = get_user_by_username(username)
+                # user do not exist
+                if not user:
+                    return JsonResponse({"error": "User not found"})
+                # validate password
+                if user["password"] == password:
+                    return JsonResponse({"message": "login successful"})
+                else:
+                    return JsonResponse({"error": "Invalid password"})
+            else:
+                return JsonResponse({"error": "Username and Password are required"})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
+
+
+# User update interfaces
+def update_user_info(request, uuid):
+    if request.method == "POST":
+        try:
+            # 解析请求中的POST数据
+
+            # 获取要更新的用户信息，基于UUID
+            user_data = get_user_by_uuid(uuid)
+
+            if not isinstance(user_data, dict):
+                return JsonResponse({"error": "User not found"})
+
+            # 创建 User 对象
+            user = User(
+                username=user_data.get("username"),
+                password=user_data.get("password"),
+                user_type=user_data.get("user_type"),
+                contact_info=user_data.get("contact_info")
+            )
+
+            # 更新用户信息
+            if "password" in request.POST:
+                user.password = request.POST["password"]
+            if "user_type" in request.POST:
+                user.user_type = request.POST["user_type"]
+            if "contact_info" in request.POST:
+                user.contact_info = request.POST["contact_info"]
+
+            # 执行更新操作
+            result = update_user(user)  # 实现此方法来更新用户信息
+
+            if result:
+                return JsonResponse({"message": "User data updated successfully"})
+            else:
+                return JsonResponse({"error": "Failed to update user data"})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data"})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
+
+
+
+
+
+
+# get user info
+def get_user_info(request, uuid):
+    if request.method == "GET":
+        # Get user information based on username
+        user = get_user_by_uuid(uuid)
+        if user:
+            # Create a JSON response that contains user information
+            user_info = {
+                "username": user["username"],
+                "user_type": user["user_type"],
+                "contact_info": user["contact_info"]
+            }
+            return JsonResponse(user_info)
+        else:
+            return JsonResponse({"error": "User not found"})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
+
 
 # template interfaces
+# create template interface
+def create_template(request):
+    if request.method == "POST":
+        # get template data from the request
+        data = request.POST
+        content = data.get("content", [])
+
+        # create template object
+        template = Template(content=content)
+
+        # insert template to database
+        result = insert_template(template)
+
+        if result:
+            return JsonResponse({"message": "Template created successfully"})
+        else:
+            return JsonResponse({"error": "Failed to create template"})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
+
+
+# obtain template interface
+def get_template_content_by_uuid(request, uuid):
+    if request.method == "GET":
+        template_content = get_content_by_uuid(uuid)
+
+        if template_content:
+            return JsonResponse(template_content, safe=False)
+        else:
+            return JsonResponse({"error": "Template not found"})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
+
+
+
+# update template interface
+def update_template_by_uuid(request, uuid):
+    if request.method == "POST":
+        # 获取请求中的内容
+        content = request.POST.get("content", [])
+
+        # 创建一个新的 Template 对象
+        existing_template = Template(content=content)
+
+        # 手动设置 uuid 属性
+        existing_template.uuid = uuid
+
+        # 更新模板
+        result = update_template(existing_template)
+
+        if result:
+            return JsonResponse({"message": "Template updated successfully"})
+        else:
+            return JsonResponse({"error": "Failed to update template"})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
+
+
+# delete template interface
+def delete_template(request, uuid):
+    if request.method == "GET":
+        result = delete_template_by_uuid(uuid)  # 调用你之前定义的函数
+
+        if result.deleted_count > 0:
+            return JsonResponse({"message": "Template deleted successfully"})
+        else:
+            return JsonResponse({"error": "Template not found for UUID: " + uuid}, status=404)
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+
+
+
+# obtain all templates interface
+from django.http import JsonResponse
+
+
+from django.http import JsonResponse
+
+def get_all_templates(request):
+    if request.method == "GET":
+        try:
+            page = request.GET.get("page", 1)
+            page_size = request.GET.get("page_size", 10)
+
+            page = int(page) if page.isdigit() else 1
+            page_size = int(page_size) if page_size.isdigit() else 10
+
+            cursor = get_all_template_by_page(page, page_size)
+
+            if isinstance(cursor, Error):
+                return JsonResponse({"error": str(cursor)}, status=400)
+
+            # 将Cursor对象中的数据转换为列表，同时将ObjectId对象转换为字符串
+            templates = []
+            for document in cursor:
+                template = {
+                    "uuid": str(document.get("uuid")),  # 将ObjectId转换为字符串
+                    "content": document.get("content", [])
+                }
+                templates.append(template)
+
+            return JsonResponse(templates, safe=False)
+        except Exception as e:
+            error_message = str(e)
+            return JsonResponse({"error": error_message}, status=400)
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=405)
+

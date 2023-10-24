@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h2>Create Template</h2>
+    <form action="http://127.0.0.1:8000/create_template/" method="POST">
+        <label for="content">Content:</label>
+        <textarea name="content" id="content"></textarea><br><br>
+        <input type="submit" value="Create Template">
+    </form>
+    <h2>Get Template by UUID</h2>
+    <form action="http://127.0.0.1:8000/get_template_content_by_uuid/6c0d108698d84c399aea5343fc96c3be/" method="get">
+    <input type="submit" value="Get Info">
+    </form>
+    <h2>Update Template by UUID</h2>
+    <form action="http://127.0.0.1:8000/update_template_by_uuid/6c0d108698d84c399aea5343fc96c3be/" method="POST">
+        <label for="content">New Content:</label>
+        <input type="text" name="content" id="content"><br><br>
+        <input type="submit" value="Update Template">
+    </form>
+    <h2>Delete Template by UUID</h2>
+    <form action="http://127.0.0.1:8000/delete_template/" method="GET">
+        <label for="uuid">UUID:</label>
+        <input type="text" name="uuid" id="uuid"><br><br>
+        <input type="submit" value="Delete Template">
+    </form>
+    <h2>Get All Templates</h2>
+    <form action="http://127.0.0.1:8000/get_all_templates/" method="GET">
+        <label for="page">Page:</label>
+        <input type="text" name="page" id="page"><br><br>
+        <label for="page_size">Page Size:</label>
+        <input type="text" name="page_size" id="page_size"><br><br>
+        <input type="submit" value="Get All Templates">
+    </form>
+
+
+</body>
+</html>

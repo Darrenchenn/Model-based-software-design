@@ -4,10 +4,10 @@ import pymongo
 from pymongo.results import InsertOneResult
 from pymongo.results import UpdateResult
 
-from Backend.default.db import collection
-from Backend.default.db.collectionnames import collection_users
+from default.db import collection
+from default.db.collectionnames import collection_users
 
-from Backend.default.common.error import Error
+from default.common.error import Error
 
 
 class ContactInfo:
