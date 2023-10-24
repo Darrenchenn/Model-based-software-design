@@ -4,6 +4,8 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
+const isCreator = localStorage.getItem('identity') === 'creator'
+
 const currentRoute = computed(() => {
   return route.name
 })
@@ -33,7 +35,7 @@ const isNavItemActive = (NavItemRouteName) => {
               >Home</router-link
             >
           </li>
-          <li class="nav-item">
+          <li v-if="isCreator" class="nav-item">
             <router-link
               to="/content_create"
               class="nav-link"
@@ -41,11 +43,24 @@ const isNavItemActive = (NavItemRouteName) => {
               >Content Create</router-link
             >
           </li>
-          <li class="nav-item">
+          <li v-if="isCreator" class="nav-item">
             <router-link
               to="/view_create_history"
               class="nav-link"
               :class="isNavItemActive('View Create History')"
+              >View History</router-link
+            >
+          </li>
+          <li v-if="!isCreator" class="nav-item">
+            <router-link to="/audition" class="nav-link" :class="isNavItemActive('Audition')"
+              >Audition</router-link
+            >
+          </li>
+          <li v-if="!isCreator" class="nav-item">
+            <router-link
+              to="/audition_history"
+              class="nav-link"
+              :class="isNavItemActive('View Audition History')"
               >View History</router-link
             >
           </li>

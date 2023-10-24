@@ -12,7 +12,7 @@ const emailInput = ref('')
 const passwordInput = ref('')
 const usernameInput = ref('')
 const weChatIdInput = ref('')
-const identitySelect = ref('creator')
+const identitySelect = ref('supervisor')
 const showValidationFeedback = ref(false)
 
 const onClickLogInBtn = () => {

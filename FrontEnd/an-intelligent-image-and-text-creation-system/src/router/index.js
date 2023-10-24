@@ -7,6 +7,8 @@ import ViewCreateHistory from '../views/creatorHistoryView.vue'
 import CreateHistoryDetail from '../views/creatorHistoryDetailView.vue'
 import AccountView from '../views/accountView.vue'
 import IndexView from '../views/indexView.vue'
+import AuditionView from '../views/auditionView.vue'
+import AuditionHistoryView from '../views/auditionHistoryView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -51,6 +53,16 @@ const router = createRouter({
       path: '/account',
       name: 'Account',
       component: AccountView
+    },
+    {
+      path: '/audition',
+      name: 'Audition',
+      component: AuditionView
+    },
+    {
+      path: '/audition_history',
+      name: 'View Audition History',
+      component: AuditionHistoryView
     }
   ]
 })
