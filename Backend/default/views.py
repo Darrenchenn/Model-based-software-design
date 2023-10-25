@@ -206,7 +206,7 @@ def login_user(request):
                     return JsonResponse({"error": "User not found"})
                 # validate password
                 if user["password"] == password:
-                    return JsonResponse({"message": "login successful"})
+                    return JsonResponse({"uuid": user["uuid"],"username":user["username"],"user_type":user["user_type"],"contact_info":user["contact_info"]})
                 else:
                     return JsonResponse({"error": "Invalid password"})
             else:
