@@ -239,7 +239,8 @@ def update_user_info(request, uuid):
                 username=user_data.get("username"),
                 password=user_data.get("password"),
                 user_type=user_data.get("user_type"),
-                contact_info=user_data.get("contact_info")
+                contact_info=user_data.get("contact_info"),
+
             )
 
             # 更新用户信息
@@ -247,14 +248,19 @@ def update_user_info(request, uuid):
                 user.password = request.POST["password"]
             if "user_type" in request.POST:
                 user.user_type = request.POST["user_type"]
-            if "contact_info" in request.POST:
-                user.contact_info = request.POST["contact_info"]
-
+            if "email" in request.POST:
+                email = request.POST["email"]
+            if "wechat_id" in request.POST:
+                wechat_id = request.POST["wechat_id"]
+            contact_info_new = ContactInfo(email=email, wechat_id=wechat_id)
+            user.contact_info = contact_info_new
             # 执行更新操作
             result = update_user(user)  # 实现此方法来更新用户信息
 
             if result:
-                return JsonResponse({"message": "User data updated successfully"})
+                user = get_user_by_uuid(uuid)
+                return JsonResponse({"uuid": user["uuid"], "username": user["username"], "user_type": user["user_type"],
+                                     "contact_info": user["contact_info"]})
             else:
                 return JsonResponse({"error": "Failed to update user data"})
         except json.JSONDecodeError:
