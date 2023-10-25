@@ -8,15 +8,15 @@ from default.metadata.product import Product
 
 logger = logging.getLogger('django')
 
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 
 from default.creator import chatgpt, stablediffusion
 from default.common import error
 from default.forwarding import wechat
-from default.products import product_service
-from default.metadata.template import Template, insert_template, get_template, update_template, \
+from default.services import product_service
+from default.metadata.template import Template, insert_template, update_template, \
     delete_template_by_uuid, get_all_template_by_page
-from default.metadata.user import User,insert_user, get_user_by_username, update_user, get_user_by_uuid
+from default.metadata.user import User, insert_user, get_user_by_username, update_user, get_user_by_uuid
 from default.common.error import Error
 
 
@@ -73,7 +73,6 @@ def forward_wechat(request):
 # products interfaces
 
 
-
 def get_product(request):
     if request.method != "GET":
         return HttpResponseBadRequest(JsonResponse({
@@ -98,11 +97,11 @@ def get_product(request):
         return HttpResponse(json_result)
 
     json_result = product_service.get_product_by_page(creator_uuid,
-                                                    creator_name,
-                                                    responsible_supervisor_uuid,
-                                                    responsible_supervisor_name,
-                                                    page,
-                                                    page_size)
+                                                      creator_name,
+                                                      responsible_supervisor_uuid,
+                                                      responsible_supervisor_name,
+                                                      page,
+                                                      page_size)
     if isinstance(json_result, error.Error):
         return HttpResponseBadRequest(JsonResponse({
             "error": error.new(),
@@ -179,7 +178,7 @@ def register_user(request):
                 user = User(username, password, user_type,contact_info)
                 # 插入用户
                 result = insert_user(user)
-                if isinstance(result,Error):
+                if isinstance(result, Error):
                     return JsonResponse({"error": result.message})
                 else:
                     return JsonResponse({"message": "User registered successfully"})
@@ -191,13 +190,12 @@ def register_user(request):
         return JsonResponse({"error": "Invalid request method"})
 
 
-
 # User Login interfaces
 def login_user(request):
     if request.method == "POST":
         try:
             # analyse request data
-            #data = json.loads(request.body)
+            # data = json.loads(request.body)
             username = request.POST.get("username")
             password = request.POST.get("password")
 
@@ -261,10 +259,6 @@ def update_user_info(request, uuid):
         return JsonResponse({"error": "Invalid request method"})
 
 
-
-
-
-
 # get user info
 def get_user_info(request, uuid):
     if request.method == "GET":
@@ -319,7 +313,6 @@ def get_template_content_by_uuid(request, uuid):
         return JsonResponse({"error": "Invalid request method"})
 
 
-
 # update template interface
 def update_template_by_uuid(request, uuid):
     if request.method == "POST":
@@ -356,14 +349,10 @@ def delete_template(request, uuid):
         return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
-
-
-
 # obtain all templates interface
-from django.http import JsonResponse
-
 
 from django.http import JsonResponse
+
 
 def get_all_templates(request):
     if request.method == "GET":
@@ -394,4 +383,3 @@ def get_all_templates(request):
             return JsonResponse({"error": error_message}, status=400)
     else:
         return JsonResponse({"error": "Invalid request method"}, status=405)
-

@@ -1,3 +1,4 @@
+import json
 import uuid
 
 import pymongo
@@ -23,41 +24,61 @@ class Message:
         self.email = email
         self.wechat = wechat
 
+    def to_dict(self) -> dict:
+        return {
+            "uuid": self.uuid,
+            "username": self.username,
+            "content": self.content,
+            "email": self.email,
+            "wechat": self.wechat,
+        }
+    
+    def from_result_to_message(self, result):
+        self.uuid = result.get("uuid", uuid.uuid4().hex)
+        self.username = result.get("username", "")
+        self.content = result.get("content", "")
+        self.email = result.get("email", "")
+        self.wechat = result.get("wechat", "")
+        return self
 
-def insert_message(message: Message) -> InsertOneResult:
+
+def insert_message(json_body: dict) -> str:
+    if not json_body.get("uuid"):
+        return Error("uuid is required")
+    if not json_body.get("content"):
+        return Error("content is required")
+    if not json_body.get("email") and not json_body.get("wechat"):
+        return Error("email or wechat is required")
     c = collection.get_collection_instance(collection_messages)
 
-    message_document = {
-        "uuid": message.uuid,
-        "content": message.content,
-        "email": message.email,
-        "wechat": message.wechat,
-    }
+    message = Message().from_result_to_message(json_body).to_dict()
 
     try:
-        result = c.insert_one(message_document)
-        return result
+        c.insert_one(message)
+        return_uuid = json_body.get("uuid")
+        return json.dumps(return_uuid)
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
         return error
 
 
-def get_message_by_uuid(uuid: str):
+def get_message_by_uuid(uuid: str) -> str:
     message_document = {
         "uuid": uuid,
     }
     c = collection.get_collection_instance(collection_messages)
     try:
         result = c.find_one(message_document)
-        return result
+        message = Message().from_result_to_message(result).to_dict()
+        return json.dumps(message)
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
         return error
 
 
-def get_message_by_username_and_page(username: str, page: int, page_size: int):
+def get_message_by_username_and_page(username: str, page: int = 0, page_size: int = 10) -> str:
     message_document = {
         "username": username,
     }
@@ -65,7 +86,11 @@ def get_message_by_username_and_page(username: str, page: int, page_size: int):
     try:
         # Can be iterated by for loop
         result = c.find_by_page(message_document, page, page_size)
-        return result
+        messages = []
+        for message in result:
+            message = Message().from_result_to_message(message).to_dict()
+            messages.append(message)
+        return json.dumps(messages)
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()

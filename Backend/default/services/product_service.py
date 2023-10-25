@@ -1,65 +1,43 @@
 import json
-import uuid
-from pymongo.results import InsertOneResult, DeleteResult
+
+from pymongo.results import DeleteResult
 
 from default.common.error import Error
 from default.db import collection
 from default.db.collectionnames import collection_products
+from default.metadata.product import Product
 
 
-
-def insert_product(json_body: dict) -> InsertOneResult:
+def insert_product(json_body: dict) -> str:
     c = collection.get_collection_instance(collection_products)
     if (not json_body.get("creator_uuid") or
-        not json_body.get("creator_name") or
-        not json_body.get("audition_status") or
-        not json_body.get("content")):
+            not json_body.get("creator_name") or
+            not json_body.get("audition_status") or
+            not json_body.get("content")):
         error = Error("creator_uuid, creator_name, audition_status, content are required")
-        error.new()
         return error
 
-
-    product_document = {
-        "uuid": uuid.uuid4().hex,
-        "creator_uuid": json_body.get("creator_uuid", ""),
-        "creator_name": json_body.get("creator_name", ""),
-        "responsible_supervisor_uuid": json_body.get("responsible_supervisor_uuid", ""),
-        "responsible_supervisor_name": json_body.get("responsible_supervisor_name", ""),
-        "audition_status": json_body.get("audition_status", ""),
-        "audit_comment": json_body.get("audit_comment", ""),
-        "content": json_body.get("content", ""),
-    }
+    product_document = Product().from_result_to_product(json_body).to_dict()
 
     try:
         c.insert_one(product_document)
-        return json.dumps(product_document["uuid"])
+        return json.dumps(product_document.get("uuid"))
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
-        error.new()
         return error
 
 
-def get_product_by_uuid(uuid: str):
+def get_product_by_uuid(uuid: str) -> str:
     product_document = {
         "uuid": uuid,
     }
     c = collection.get_collection_instance(collection_products)
     try:
         result = c.find_one(product_document)
-        json_result = {
-            "uuid": result["uuid"],
-            "creator_uuid": result["creator_uuid"],
-            "creator_name": result["creator_name"],
-            "responsible_supervisor_uuid": result["responsible_supervisor_uuid"],
-            "responsible_supervisor_name": result["responsible_supervisor_name"],
-            "audition_status": result["audition_status"],
-            "audit_comment": result["audit_comment"],
-            "content": result["content"],
-        }
-        return json.dumps(json_result)
+        json_product = Product().from_result_to_product(result).to_dict()
+        return json.dumps(json_product)
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
-        error.new()
         return error
 
 
@@ -68,7 +46,7 @@ def get_product_by_page(creator_uuid: str,
                         responsible_supervisor_uuid: str,
                         responsible_supervisor_name: str,
                         page: int,
-                        page_size: int):
+                        page_size: int) -> str:
     product_document = {}
     if creator_uuid:
         product_document["creator_uuid"] = creator_uuid
@@ -84,25 +62,15 @@ def get_product_by_page(creator_uuid: str,
         result = c.find_by_page(product_document, page, page_size)
         json_result = []
         for i in result:
-            json_result.append({
-                "uuid": i["uuid"],
-                "creator_uuid": i["creator_uuid"],
-                "creator_name": i["creator_name"],
-                "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
-                "responsible_supervisor_name": i["responsible_supervisor_name"],
-                "audition_status": i["audition_status"],
-                "audit_comment": i["audit_comment"],
-                "content": i["content"],
-            })
+            json_product = Product().from_result_to_product(i).to_dict()
+            json_result.append(json_product)
         return json.dumps(json_result)
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
-        error.new()
         return error
-    
 
-def get_product_by_audition_status(audition_status: str, page: int, page_size: int):
-    
+
+def get_product_by_audition_status(audition_status: str, page: int, page_size: int) -> str:
     product_document = {
         "audition_status": audition_status if audition_status else "unaudited",
     }
@@ -111,22 +79,14 @@ def get_product_by_audition_status(audition_status: str, page: int, page_size: i
         result = c.find_by_page(product_document, page, page_size)
         json_result = []
         for i in result:
-            json_result.append({
-                "uuid": i["uuid"],
-                "creator_uuid": i["creator_uuid"],
-                "creator_name": i["creator_name"],
-                "responsible_supervisor_uuid": i["responsible_supervisor_uuid"],
-                "responsible_supervisor_name": i["responsible_supervisor_name"],
-                "audition_status": i["audition_status"],
-                "audit_comment": i["audit_comment"],
-                "content": i["content"],
-            })
+            json_product = Product().from_result_to_product(i).to_dict()
+            json_result.append(json_product)
         return json.dumps(json_result)
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
-        error.new()
         return error
-    
+
+
 def update_product(json_body: dict):
     product_document = {
         "uuid": json_body["uuid"],
@@ -136,15 +96,20 @@ def update_product(json_body: dict):
         original_product = c.find_one(product_document)
         if original_product is None:
             error = Error("Product not found")
-            error.new()
             return error
-        creator_uuid = json_body["creator_uuid"] if json_body.get("creator_uuid") else original_product["creator_uuid"]
-        creator_name = json_body["creator_name"] if json_body.get("creator_name") else original_product["creator_name"]
-        responsible_supervisor_uuid = json_body["responsible_supervisor_uuid"] if json_body.get("responsible_supervisor_uuid") else original_product["responsible_supervisor_uuid"]
-        responsible_supervisor_name = json_body["responsible_supervisor_name"] if json_body.get("responsible_supervisor_name") else original_product["responsible_supervisor_name"]
-        audition_status = json_body["audition_status"] if json_body.get("audition_status") else original_product["audition_status"]
-        audit_comment = json_body["audit_comment"] if json_body.get("audit_comment") else original_product["audit_comment"]
-        content = json_body["content"] if json_body.get("content") else original_product["content"]
+        creator_uuid = json_body["creator_uuid"] if json_body.get("creator_uuid") else original_product.get(
+            "creator_uuid")
+        creator_name = json_body["creator_name"] if json_body.get("creator_name") else original_product.get(
+            "creator_name")
+        responsible_supervisor_uuid = json_body["responsible_supervisor_uuid"] if json_body.get(
+            "responsible_supervisor_uuid") else original_product.get("responsible_supervisor_uuid")
+        responsible_supervisor_name = json_body["responsible_supervisor_name"] if json_body.get(
+            "responsible_supervisor_name") else original_product.get("responsible_supervisor_name")
+        audition_status = json_body["audition_status"] if json_body.get("audition_status") else original_product.get(
+            "audition_status")
+        audit_comment = json_body["audit_comment"] if json_body.get("audit_comment") else original_product.get(
+            "audit_comment")
+        content = json_body["content"] if json_body.get("content") else original_product.get("content")
         new_product = {
             "$set": {
                 "creator_uuid": creator_uuid,
@@ -160,7 +125,6 @@ def update_product(json_body: dict):
         return result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
-        error.new()
         return error
 
 
@@ -174,11 +138,10 @@ def delete_product_by_uuid(uuid: str) -> DeleteResult:
         return result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
-        error.new()
         return error
 
 
-def delete_product_by_creator(creator_uuid:str=None, creator_name:str=None) -> DeleteResult:
+def delete_product_by_creator(creator_uuid: str = None, creator_name: str = None) -> DeleteResult:
     c = collection.get_collection_instance(collection_products)
     if creator_uuid:
         product_document = {
@@ -193,5 +156,4 @@ def delete_product_by_creator(creator_uuid:str=None, creator_name:str=None) -> D
         return result
     except Exception as e:
         error = Error(f"An unexpected error occurred: {str(e)}")
-        error.new()
         return error

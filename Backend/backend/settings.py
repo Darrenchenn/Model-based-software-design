@@ -9,8 +9,9 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import configparser
 import os
+import sys
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -76,6 +77,16 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+config = configparser.ConfigParser()
+config.read(os.getcwd() + '/config.ini')
+
+try:
+    url = config.get('mongodb', 'url')
+    cluster_name = config.get('mongodb', 'cluster_name')
+except configparser.NoOptionError:
+    print('could not read configuration file')
+    sys.exit(1)
+
 DATABASES = {
     # 'default': {
     #    'ENGINE': 'django.db.backends.sqlite3',
@@ -83,10 +94,10 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'Cluster0',
+        'NAME': cluster_name,
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': 'mongodb+srv://c1125105680:chen9611@cluster0.zluvrrd.mongodb.net/?retryWrites=true&w=majority'
+            'host': url
         }
     }
 }
