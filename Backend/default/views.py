@@ -183,7 +183,8 @@ def register_user(request):
                 if isinstance(result,Error):
                     return JsonResponse({"error": result.message})
                 else:
-                    return JsonResponse({"message": "User registered successfully"})
+                    user = get_user_by_username(username)
+                    return JsonResponse({"uuid": user["uuid"],"username":user["username"],"user_type":user["user_type"],"contact_info":user["contact_info"]})
             else:
                 return JsonResponse({"error": "Username and Password are required"})
         except Exception as e:
