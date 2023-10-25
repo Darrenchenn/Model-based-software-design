@@ -4,6 +4,8 @@ import logging
 
 from default.metadata.template import get_content_by_uuid
 
+from default.metadata.product import Product
+
 logger = logging.getLogger('django')
 
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
@@ -170,10 +172,11 @@ def register_user(request):
             username = request.POST.get("username")
             password = request.POST.get("password")
             user_type = request.POST.get("user_type")
+            contact_info = request.POST.get("contact_info")
 
             if username and password:
                 # 创建注册
-                user = User(username, password, user_type)
+                user = User(username, password, user_type,contact_info)
                 # 插入用户
                 result = insert_user(user)
                 if isinstance(result,Error):
