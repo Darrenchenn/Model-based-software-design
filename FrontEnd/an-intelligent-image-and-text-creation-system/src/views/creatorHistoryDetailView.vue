@@ -7,7 +7,7 @@ const route = useRoute()
 const serverAddress = import.meta.env.VITE_serverAddress
 
 const creationDetail = ref(null)
-const supervisorInput = ref('')
+const supervisorIdInput = ref('')
 const showValidationFeedback = ref(false)
 
 const isFetchingCreationDetail = computed(() => {
@@ -29,14 +29,23 @@ const auditResult = computed(() => {
   else return false
 })
 
+const isSupervisorIdValid = () => {}
+
 const onClickSubmitAuditionBtn = () => {
-  if (!supervisorInput.value) {
+  if (!supervisorIdInput.value) {
+    showValidationFeedback.value = true
+    return
+  }
+
+  if (!isSupervisorIdValid) {
     showValidationFeedback.value = true
     return
   }
 
   try {
     // To-do check if supervisor email is correct
+    axios.post(serverAddress + '/login_user/')
+
     // To-do submit audition to server
   } catch (err) {
     console.log(err)
@@ -111,7 +120,7 @@ onMounted(() => {
                 <div class="modal-header">
                   <h1 class="modal-title fs-5">Submit for audition</h1>
                   <button
-                    @click="(showValidationFeedback = false), (supervisorInput = '')"
+                    @click="(showValidationFeedback = false), (supervisorIdInput = '')"
                     type="button"
                     class="btn-close"
                     data-bs-dismiss="modal"
@@ -129,17 +138,17 @@ onMounted(() => {
                       class="form-control"
                       id="supervisorIdInput"
                       placeholder="supervisor Id"
-                      v-model="supervisorInput"
+                      v-model="supervisorIdInput"
                       required
                     />
-                    <label for="supervisorIdInput">Supervisor email</label>
-                    <div class="invalid-feedback">Supervisor email is required</div>
-                    <div class="form-text">Contact your supervisor for supervisor email</div>
+                    <label for="supervisorIdInput">Supervisor Id</label>
+                    <div class="invalid-feedback">Supervisor Id is required</div>
+                    <div class="form-text">Contact your supervisor for supervisor Id</div>
                   </div>
                 </div>
                 <div class="modal-footer">
                   <button
-                    @click="(showValidationFeedback = false), (supervisorInput = '')"
+                    @click="(showValidationFeedback = false), (supervisorIdInput = '')"
                     type="button"
                     class="btn btn-outline-warning"
                     data-bs-dismiss="modal"
