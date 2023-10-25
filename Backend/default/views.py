@@ -14,7 +14,7 @@ from default.forwarding import wechat
 from default.products import product_service
 from default.metadata.template import Template, insert_template, get_template, update_template, \
     delete_template_by_uuid, get_all_template_by_page
-from default.metadata.user import User,insert_user, get_user_by_username, update_user, get_user_by_uuid
+from default.metadata.user import User,insert_user, get_user_by_username, update_user, get_user_by_uuid, ContactInfo
 from default.common.error import Error
 
 
@@ -170,10 +170,14 @@ def register_user(request):
             username = request.POST.get("username")
             password = request.POST.get("password")
             user_type = request.POST.get("user_type")
+            email = request.POST.get("email")
+            wechat_id = request.POST.get("wechat_id")
 
             if username and password:
+                contact_info = ContactInfo(email = email,wechat_id = wechat_id)
                 # 创建注册
-                user = User(username, password, user_type)
+                user = User(username, password, user_type,contact_info.to_dict())
+
                 # 插入用户
                 result = insert_user(user)
                 if isinstance(result,Error):
