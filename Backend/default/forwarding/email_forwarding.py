@@ -13,10 +13,13 @@ smtp_protocol = "TLS"  # Choose between SSL or TLS
 
 def forward_email(recipient_email: str, subject: str, message: str):
     try:
+        if not recipient_email or not subject or not message:
+            return error.Error("Invalid email parameters")
+        
         # Choose to use SSL or TLS
         if smtp_protocol == "TLS":
             server = smtplib.SMTP(smtp_server, port=587)
-            server.starttls()  # 启用 TLS 加密
+            server.starttls()
         elif smtp_protocol == "SSL":
             server = smtplib.SMTP_SSL(smtp_server, port=465)
         else:
@@ -43,7 +46,9 @@ def forward_email(recipient_email: str, subject: str, message: str):
         return "Email forwarded successfully"
     
     except Exception as e:
-        return f"Failed to forward email, error: {str(e)}"
+        return error.Error(f"Failed to forward email, error: {str(e)}")
+
+
 
 # Example usage:
 recipient_email = ""
