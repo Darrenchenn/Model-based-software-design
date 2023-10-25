@@ -1,5 +1,5 @@
 <script setup>
-const userName = localStorage.getItem('userName')
+const userName = localStorage.getItem('username')
 </script>
 
 <template>

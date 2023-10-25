@@ -38,7 +38,7 @@ onBeforeRouteLeave((to, from) => {
 })
 
 onMounted(() => {
-  const datetime = new Date('2020-05-12T23:50:21.817Z').toLocaleString()
+  const datetime = new Date().toLocaleString()
   const placeHolder = {
     content_type: 'illustration',
     status: 'success',
@@ -125,7 +125,7 @@ const moveHistoryToCanvas = (id) => {
 }
 
 const onClickCreateBtn = () => {
-  const datetime = new Date('2020-05-12T23:50:21.817Z').toLocaleString()
+  const datetime = new Date().toLocaleString()
   const contentType = contentTypeInput.value
 
   if (isFetchingResult.value) return
@@ -164,7 +164,7 @@ const onClickCreateBtn = () => {
 }
 
 const onClickModifyBtn = () => {
-  const datetime = new Date('2020-05-12T23:50:21.817Z').toLocaleString()
+  const datetime = new Date().toLocaleString()
   const contentType = contentTypeInput.value
 
   if (isFetchingResult.value) return
@@ -213,15 +213,14 @@ const onClickConfirmCreate = () => {
   const product = {}
   product.content = JSON.parse(JSON.stringify(imgOutput.value))
   product.content.title = String(contentTitleInput.value)
-  product.creator_uuid = localStorage.getItem('userEmail')
-  product.creator_name = localStorage.getItem('userName')
+  product.creator_uuid = localStorage.getItem('userId')
+  product.creator_name = localStorage.getItem('username')
   product.audition_status = 'no_submitted_for_audition'
 
   axios
     .post(serverAddress + '/insert_product/', product)
     .then((res) => res.data)
     .then((res) => {
-      // res: product uuid
       confirmSubmitModelBackBtn.value.click()
       router.push(`/view_create_history/${res}`)
     })

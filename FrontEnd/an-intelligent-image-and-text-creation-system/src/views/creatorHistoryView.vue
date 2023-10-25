@@ -43,32 +43,40 @@ onMounted(() => {
         <RouterLink
           v-else
           v-for="history in creationHistory"
-          v-bind:key="history.id"
-          :to="`/view_create_history/${history.id}`"
+          v-bind:key="history.uuid"
+          :to="`/view_create_history/${history.uuid}`"
           class="container col-12 border border-warning rounded mb-4 ps-0"
           id="hideOverflow"
         >
           <div class="row" id="fullHeight">
             <div class="col-4 align-self-center">
-              <img :src="history.imgSrc" />
+              <img :src="history.content.output[0]" />
             </div>
             <div class="col-8 py-2 d-flex flex-column">
-              <div>Title: {{ history.title }}</div>
-              <div>Date: {{ history.datetime }}</div>
+              <div>Title: {{ history.content.title }}</div>
+              <div>Date: {{ history.content.datetime }}</div>
               <div class="mb-auto">
                 Content type:
-                {{ history.contentType[0].toUpperCase() + history.contentType.slice(1) }}
+                {{
+                  history.content.content_type === 'illustration'
+                    ? 'Illustration'
+                    : history.content.content_type === 'poster'
+                    ? 'Poster'
+                    : history.content.content_type === 'icon'
+                    ? 'Icon'
+                    : 'Social media post'
+                }}
               </div>
               <div class="text-end mb-3 me-2">
                 <!-- if not audit -->
                 <span
-                  v-if="!history.isAudited"
+                  v-if="history.audition_status === 'no_submitted_for_audition'"
                   class="h5 bg-secondary-subtle text-white rounded text-secondary py-2 px-3"
                   >Not audited</span
                 >
                 <!-- if audit success -->
                 <span
-                  v-else-if="history.isAudited && history.auditResult"
+                  v-else-if="history.audition_status === 'pass'"
                   class="h5 bg-success text-white rounded text-success py-2 px-3"
                   >Pass
                 </span>
