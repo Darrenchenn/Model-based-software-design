@@ -10,10 +10,8 @@ from default.common import error
 log = logging.getLogger('default')
 config = configparser.ConfigParser()
 config.read(os.getcwd() + '/config.ini')
-print("current running directory is :" + os.getcwd())
-
+url = config.get('mongodb', 'url')
 try:
-    url = config.get('mongodb', 'url')
     cluster_name = config.get('mongodb', 'cluster_name')
 except configparser.NoOptionError:
     print('could not read configuration file')
