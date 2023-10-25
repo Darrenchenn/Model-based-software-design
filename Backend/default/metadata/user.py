@@ -41,8 +41,9 @@ class User:
         self.username = username
         self.password = password
         self.user_type = user_type
-        if contact_info is None:
-            self.contact_info = ContactInfo().to_dict()
+        self.contact_info = contact_info
+        # if contact_info is None:
+        #     self.contact_info = ContactInfo().to_dict()
 
 
 def insert_user(user: User) -> InsertOneResult:
