@@ -213,7 +213,7 @@ const onClickConfirmCreate = () => {
   const product = {}
   product.content = JSON.parse(JSON.stringify(imgOutput.value))
   product.content.title = String(contentTitleInput.value)
-  product.creator_uuid = localStorage.getItem('userId')
+  product.creator_uuid = localStorage.getItem('userEmail')
   product.creator_name = localStorage.getItem('userName')
   product.audition_status = 'no_submitted_for_audition'
 

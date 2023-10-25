@@ -1,6 +1,6 @@
 const isAuthenticate = () => {
   // return false
-  if (localStorage.getItem('userName') === null) return false
+  if (localStorage.getItem('username') === null) return false
   else return true
 }
 

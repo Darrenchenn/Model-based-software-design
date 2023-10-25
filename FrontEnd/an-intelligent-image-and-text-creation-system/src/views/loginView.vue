@@ -1,9 +1,11 @@
 <script setup>
+import axios from 'axios'
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
+const serverAddress = import.meta.env.VITE_serverAddress
 const activeBtnClass = 'btn-warning text-white'
 const disableBtnClass = 'btn-secondary text-secondary-emphasis'
 
@@ -15,12 +17,12 @@ const weChatIdInput = ref('')
 const identitySelect = ref('supervisor')
 const showValidationFeedback = ref(false)
 
-const onClickLogInBtn = () => {
+const onClickSelectLogInBtn = () => {
   isSignInSelected.value = true
   showValidationFeedback.value = false
 }
 
-const onClickSignUpBtn = () => {
+const onClickSelectSignUpBtn = () => {
   isSignInSelected.value = false
   showValidationFeedback.value = false
 }
@@ -35,24 +37,73 @@ const signUpBtnClass = computed(() => {
   else return activeBtnClass
 })
 
-const onClickSubmitBtn = () => {
-  if (isSignInSelected.value && (!emailInput.value || !passwordInput.value)) {
-    showValidationFeedback.value = true
-    return
-  } else if (
-    !isSignInSelected.value &&
-    (!emailInput.value || !passwordInput.value || !usernameInput.value)
-  ) {
+const onClickLogInBtn = () => {
+  if (!usernameInput.value || !passwordInput.value) {
     showValidationFeedback.value = true
     return
   }
 
-  // To-Do 連結後端登入/註冊
-  localStorage.setItem('userName', 'example user name')
-  localStorage.setItem('userId', emailInput.value)
-  localStorage.setItem('password', passwordInput.value)
-  localStorage.setItem('identity', identitySelect.value)
-  router.push('/home')
+  const form = new FormData()
+  form.append('username', String(usernameInput.value))
+  form.append('password', String(passwordInput.value))
+
+  axios
+    .post(serverAddress + '/login_user/', form)
+    .then((res) => res.data)
+    .then((res) => {
+      if ('uuid' in res) {
+        localStorage.setItem('userId', res.uuid)
+        localStorage.setItem('username', res.username)
+        localStorage.setItem('userEmail', res.contact_info.email)
+        localStorage.setItem('userWeChatId', res.contact_info.wechat_id)
+        localStorage.setItem('identity', res.user_type)
+        router.push('/home')
+      } else {
+        passwordInput.value = ''
+        window.alert('Username or password incorrect!')
+      }
+    })
+    .catch((err) => {
+      window.alert('Something went wrong. Please try again later!')
+      console.log(err)
+    })
+}
+
+const onClickSignUpBtn = () => {
+  if (!usernameInput.value || !passwordInput.value) {
+    showValidationFeedback.value = true
+    return
+  }
+
+  const form = new FormData()
+  form.append('username', String(usernameInput.value))
+  form.append('password', String(passwordInput.value))
+  form.append('email', String(emailInput.value))
+  form.append('wechat_id', String(weChatIdInput.value))
+  form.append('user_type', String(identitySelect.value))
+
+  axios
+    .post(serverAddress + '/register_user/', form)
+    .then((res) => {
+      return res.data
+    })
+    .then((res) => {
+      if ('uuid' in res) {
+        localStorage.setItem('userId', res.uuid)
+        localStorage.setItem('username', res.username)
+        localStorage.setItem('userEmail', res.contact_info.email)
+        localStorage.setItem('userWeChatId', res.contact_info.wechat_id)
+        localStorage.setItem('identity', res.user_type)
+        router.push('/home')
+      } else {
+        window.alert('Something went wrong. Please try again later!')
+        console.log(res)
+      }
+    })
+    .catch((err) => {
+      window.alert('Something went wrong. Please try again later!')
+      console.log(err)
+    })
 }
 </script>
 
@@ -67,30 +118,35 @@ const onClickSubmitBtn = () => {
           novalidate
         >
           <!-- Title  -->
-          <div class="mt-3 mb-4 text-warning display-5 fw-medium">AutoPen</div>
+          <div class="text-center mt-3 mb-4 text-warning display-5 fw-medium">AutoPen</div>
           <!-- Login or Sign up Button -->
           <div class="btn-group mb-4" role="group">
-            <button type="button" class="btn" :class="logInBtnClass" @click="onClickLogInBtn">
+            <button type="button" class="btn" :class="logInBtnClass" @click="onClickSelectLogInBtn">
               Log in
             </button>
-            <button type="button" class="btn" :class="signUpBtnClass" @click="onClickSignUpBtn">
+            <button
+              type="button"
+              class="btn"
+              :class="signUpBtnClass"
+              @click="onClickSelectSignUpBtn"
+            >
               Sign Up
             </button>
           </div>
-          <!-- Email Input -->
+          <!-- Username -->
           <div class="form-floating mb-3">
             <input
-              type="email"
+              type="text"
+              v-model="usernameInput"
               class="form-control"
-              id="emailInput"
-              placeholder="name@example.com"
-              v-model="emailInput"
+              id="usernameInput"
+              placeholder="username"
               required
             />
-            <label for="emailInput">
-              {{ isSignInSelected ? 'Email address' : 'Email address*' }}
+            <label for="usernameInput">
+              {{ isSignInSelected ? 'Username' : 'Username*' }}
             </label>
-            <div class="invalid-feedback">Email is required!</div>
+            <div class="invalid-feedback">Username is required!</div>
           </div>
           <!-- Password Input -->
           <div class="form-floating">
@@ -106,19 +162,17 @@ const onClickSubmitBtn = () => {
             <div class="invalid-feedback">Password is required!</div>
           </div>
           <!-- Extra Input if sign up -->
-          <!-- Username -->
           <div v-if="!isSignInSelected">
+            <!-- Email Input -->
             <div class="form-floating my-3">
               <input
-                type="text"
-                v-model="usernameInput"
+                type="email"
                 class="form-control"
-                id="usernameInput"
-                placeholder="username"
-                required
+                id="emailInput"
+                placeholder="name@example.com"
+                v-model="emailInput"
               />
-              <label for="usernameInput">Username*</label>
-              <div class="invalid-feedback">Username is required!</div>
+              <label for="emailInput"> Email address </label>
             </div>
             <!-- WeChat Id Input -->
             <div class="form-floating mb-3">
@@ -146,7 +200,15 @@ const onClickSubmitBtn = () => {
               id="submitBtn"
               type="submit"
               class="btn btn-outline-warning"
-              @click="onClickSubmitBtn"
+              @click="
+                () => {
+                  if (isSignInSelected) {
+                    onClickLogInBtn()
+                  } else {
+                    onClickSignUpBtn()
+                  }
+                }
+              "
             >
               {{ isSignInSelected ? 'Log In' : 'Sign Up' }}
             </button>

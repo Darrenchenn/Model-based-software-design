@@ -1,6 +1,10 @@
 <script setup>
+import axios from 'axios'
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+
+const serverAddress = import.meta.env.VITE_serverAddress
+const userId = localStorage.getItem('userId')
 
 const creationHistory = ref(null)
 
@@ -9,57 +13,15 @@ const isFetchingCreationHistory = computed(() => {
 })
 
 onMounted(() => {
-  // To-do: fetch history from server
-  creationHistory.value = [
-    {
-      id: '1',
-      datetime: 20231020,
-      title: 'example title 1',
-      contentType: 'poster',
-      imgSrc: 'https://i.pinimg.com/originals/0b/94/33/0b943300e968ba78fb55c6dc16b70631.jpg',
-      isAudited: false
-    },
-    {
-      id: '2',
-      datetime: 20231021,
-      title: 'example title 2',
-      contentType: 'social media post',
-      textOutput: 'Example text output',
-      imgSrc: 'https://i.pinimg.com/originals/95/74/f4/9574f450742dccfac04c15d71d1f638a.jpg',
-      isAudited: false
-    },
-    {
-      id: '3',
-      datetime: 20231022,
-      title: 'example title 3',
-      contentType: 'poster',
-      imgSrc: 'https://pbs.twimg.com/media/F2XgDoWaYAE5xKP?format=jpg&name=4096x4096',
-      isAudited: true,
-      supervisor: 'example supervisor 1',
-      auditResult: true,
-      auditComment: ''
-    },
-    {
-      id: '4',
-      datetime: 20231023,
-      title: 'example title 4',
-      contentType: 'poster',
-      imgSrc: 'https://i.pinimg.com/originals/c3/35/ef/c335ef807fa5693f1c05952759ed2436.jpg',
-      isAudited: true,
-      supervisor: 'example supervisor 2',
-      auditResult: false,
-      auditComment: 'Your content sucks'
-    },
-    {
-      id: '5',
-      datetime: 20231024,
-      title: 'example title 5',
-      contentType: 'illustration',
-      imgSrc: 'https://i.pinimg.com/originals/10/41/52/104152ece82da03225e57a510dcf2b4b.jpg',
-      isAudited: false
-    }
-  ]
-  // creationHistory.value = []
+  axios
+    .get(serverAddress + `/get_product/?creator_uuid=${userId}`)
+    .then((res) => res.data)
+    .then((res) => {
+      creationHistory.value = res
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 })
 </script>
 

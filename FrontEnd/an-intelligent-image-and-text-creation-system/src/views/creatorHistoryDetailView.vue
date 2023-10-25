@@ -36,6 +36,7 @@ const onClickSubmitAuditionBtn = () => {
   }
 
   try {
+    // To-do check if supervisor email is correct
     // To-do submit audition to server
   } catch (err) {
     console.log(err)
@@ -48,7 +49,6 @@ onMounted(() => {
     .get(serverAddress + `/get_product/?uuid=${route.params.id}`)
     .then((res) => res.data)
     .then((res) => {
-      // console.log(JSON.stringify(res))
       creationDetail.value = res
     })
     .catch((err) => {
@@ -118,7 +118,7 @@ onMounted(() => {
                   ></button>
                 </div>
                 <div class="modal-body">
-                  <div class="my-2">Submit to supervisor for audition</div>
+                  <div class="my-2">Submit to your supervisor for audition</div>
                   <div
                     class="form-floating mb-3 needs-validation"
                     :class="showValidationFeedback ? 'was-validated' : ''"
@@ -132,9 +132,9 @@ onMounted(() => {
                       v-model="supervisorInput"
                       required
                     />
-                    <label for="supervisorIdInput">Supervisor id</label>
-                    <div class="invalid-feedback">Supervisor id is required</div>
-                    <div class="form-text">Contact your supervisor for supervisor id</div>
+                    <label for="supervisorIdInput">Supervisor email</label>
+                    <div class="invalid-feedback">Supervisor email is required</div>
+                    <div class="form-text">Contact your supervisor for supervisor email</div>
                   </div>
                 </div>
                 <div class="modal-footer">
