@@ -13,9 +13,10 @@ from default.common import error
 from default.forwarding import wechat
 from default.forwarding import email_forwarding
 from default.products import product_service
-from default.metadata.template import Template, insert_template, get_template, update_template, \
+from default.metadata.template import Template, insert_template, update_template, \
     delete_template_by_uuid, get_all_template_by_page
-from default.metadata.user import User,insert_user, get_user_by_username, update_user, get_user_by_uuid, ContactInfo,get_all_users_by_page
+from default.metadata.user import User, insert_user, get_user_by_username, update_user, get_user_by_uuid, ContactInfo, \
+    get_all_users_by_page
 from default.common.error import Error
 
 
@@ -65,8 +66,8 @@ def forward_wechat(request):
     title = request.GET.get("title")
     msg = request.GET.get("message")
     url = request.GET.get("url") if request.GET.get("url") is not None else ""
-    wechat.forward(username, title, msg, url)
     return HttpResponse(wechat.forward(username, title, msg, url))
+
 
 def forward_email(request):
     if request.method != "GET":
@@ -81,7 +82,6 @@ def forward_email(request):
 
 
 # products interfaces
-
 
 
 def get_product(request):
@@ -108,11 +108,11 @@ def get_product(request):
         return HttpResponse(json_result)
 
     json_result = product_service.get_product_by_page(creator_uuid,
-                                                    creator_name,
-                                                    responsible_supervisor_uuid,
-                                                    responsible_supervisor_name,
-                                                    page,
-                                                    page_size)
+                                                      creator_name,
+                                                      responsible_supervisor_uuid,
+                                                      responsible_supervisor_name,
+                                                      page,
+                                                      page_size)
     if isinstance(json_result, error.Error):
         return HttpResponseBadRequest(JsonResponse({
             "error": error.new(),
@@ -186,17 +186,19 @@ def register_user(request):
             wechat_id = request.POST.get("wechat_id")
 
             if username and password:
-                contact_info = ContactInfo(email = email,wechat_id = wechat_id)
+                contact_info = ContactInfo(email=email, wechat_id=wechat_id)
                 # 创建注册
-                user = User(username, password, user_type,contact_info.to_dict())
+                user = User(username, password, user_type, contact_info.to_dict())
 
                 # 插入用户
                 result = insert_user(user)
-                if isinstance(result,Error):
+                if isinstance(result, Error):
                     return JsonResponse({"error": result.message})
                 else:
                     user = get_user_by_username(username)
-                    return JsonResponse({"uuid": user["uuid"],"username":user["username"],"user_type":user["user_type"],"contact_info":user["contact_info"]})
+                    return JsonResponse(
+                        {"uuid": user["uuid"], "username": user["username"], "user_type": user["user_type"],
+                         "contact_info": user["contact_info"]})
             else:
                 return JsonResponse({"error": "Username and Password are required"})
         except Exception as e:
@@ -205,13 +207,12 @@ def register_user(request):
         return JsonResponse({"error": "Invalid request method"})
 
 
-
 # User Login interfaces
 def login_user(request):
     if request.method == "POST":
         try:
             # analyse request data
-            #data = json.loads(request.body)
+            # data = json.loads(request.body)
             username = request.POST.get("username")
             password = request.POST.get("password")
 
@@ -223,7 +224,9 @@ def login_user(request):
                     return JsonResponse({"error": "User not found"})
                 # validate password
                 if user["password"] == password:
-                    return JsonResponse({"uuid": user["uuid"],"username":user["username"],"user_type":user["user_type"],"contact_info":user["contact_info"]})
+                    return JsonResponse(
+                        {"uuid": user["uuid"], "username": user["username"], "user_type": user["user_type"],
+                         "contact_info": user["contact_info"]})
                 else:
                     return JsonResponse({"error": "Invalid password"})
             else:
@@ -281,23 +284,26 @@ def update_user_info(request, uuid):
         return JsonResponse({"error": "Invalid request method"})
 
 
-def verify_supervisor(request,uuid):
+def verify_supervisor(request, uuid):
     if request.method == "GET":
         try:
             user = get_user_by_uuid(uuid)
             if user:
                 user_type = user['user_type']
                 if user_type == "supervisor":
-                    return JsonResponse({"message":"success","supervisor_id": user["uuid"], "supervisor_namae": user["username"], "user_type": user["user_type"],
-                                         "contact_info": user["contact_info"]})
+                    return JsonResponse(
+                        {"message": "success", "supervisor_id": user["uuid"], "supervisor_namae": user["username"],
+                         "user_type": user["user_type"],
+                         "contact_info": user["contact_info"]})
                 else:
-                    return JsonResponse({"error":"not a valid supervisor id"})
+                    return JsonResponse({"error": "not a valid supervisor id"})
             else:
-                return JsonResponse({"error":"not a valid supervisor id"})
+                return JsonResponse({"error": "not a valid supervisor id"})
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid request method"})
     else:
         return JsonResponse({"error": "Invalid request method"})
+
 
 # get all users
 def get_all_users(request):
@@ -320,8 +326,8 @@ def get_all_users(request):
                 user = {
                     "uuid": str(document.get("uuid")),  # 将ObjectId转换为字符串
                     "username": str(document.get("username")),
-                    "user_type":str(document.get("user_type")),
-                    "contact_info":str(document.get("user_type")),
+                    "user_type": str(document.get("user_type")),
+                    "contact_info": str(document.get("user_type")),
                     # "email":document.get("contact_info",[]),
                     # "wechat_id":document.get("contact_info",[])
                 }
@@ -333,6 +339,7 @@ def get_all_users(request):
             return JsonResponse({"error": error_message}, status=400)
     else:
         return JsonResponse({"error": "Invalid request method"}, status=405)
+
 
 # get user info
 def get_user_info(request, uuid):
@@ -388,7 +395,6 @@ def get_template_content_by_uuid(request, uuid):
         return JsonResponse({"error": "Invalid request method"})
 
 
-
 # update template interface
 def update_template_by_uuid(request, uuid):
     if request.method == "POST":
@@ -425,9 +431,6 @@ def delete_template(request, uuid):
         return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
-
-
-
 # obtain all templates interface
 
 def get_all_templates(request):
@@ -459,4 +462,3 @@ def get_all_templates(request):
             return JsonResponse({"error": error_message}, status=400)
     else:
         return JsonResponse({"error": "Invalid request method"}, status=405)
-
