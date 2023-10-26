@@ -158,3 +158,14 @@ def delete_user_by_uuid(uuid: str):
         error = Error(f"An unexpected error occurred: {str(e)}")
         error.new()
         return error
+
+def get_all_users_by_page(page: int, page_size: int):
+    c = collection.get_collection_instance(collection_users)
+    try:
+    # Can be iterated by for loop
+        result = c.find_by_page({}, page, page_size)
+        return result
+    except Exception as e:
+        error = Error(f"An unexpected error occurred: {str(e)}")
+        error.new()
+        return error

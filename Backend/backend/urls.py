@@ -38,6 +38,8 @@ urlpatterns = [
     path('login_user/',views.login_user),
     path('update_user_info/<str:uuid>/',views.update_user_info),
     path('get_user_info/<str:uuid>/', views.get_user_info,name='get_user_info'),
+    path('verify_supervisor/<str:uuid>/', views.verify_supervisor, name='verify_superviorr'),
+    path('get_all_users/',views.get_all_users),
 
     # template interfaces urls
     path('create_template/',views.create_template),
@@ -45,6 +47,7 @@ urlpatterns = [
     path('update_template_by_uuid/<str:uuid>/', views.update_template_by_uuid),
     path('delete_template/<str:uuid>/', views.delete_template, name='delete_template'),
     path('get_all_templates/',views.get_all_templates),
+
 
 
 ]

@@ -14,7 +14,7 @@ from default.forwarding import wechat
 from default.products import product_service
 from default.metadata.template import Template, insert_template, get_template, update_template, \
     delete_template_by_uuid, get_all_template_by_page
-from default.metadata.user import User,insert_user, get_user_by_username, update_user, get_user_by_uuid, ContactInfo
+from default.metadata.user import User,insert_user, get_user_by_username, update_user, get_user_by_uuid, ContactInfo,get_all_users_by_page
 from default.common.error import Error
 
 
@@ -253,7 +253,7 @@ def update_user_info(request, uuid):
             if "wechat_id" in request.POST:
                 wechat_id = request.POST["wechat_id"]
             contact_info_new = ContactInfo(email=email, wechat_id=wechat_id)
-            user.contact_info = contact_info_new
+            user.contact_info = contact_info_new.to_dict()
             # 执行更新操作
             result = update_user(user)  # 实现此方法来更新用户信息
 
@@ -269,9 +269,56 @@ def update_user_info(request, uuid):
         return JsonResponse({"error": "Invalid request method"})
 
 
+def verify_supervisor(request,uuid):
+    if request.method == "GET":
+        user = get_user_by_uuid(uuid)
+        if user:
+            user_type = user['user_type']
+            if user_type == "supervisor":
+                return  JsonResponse({"message":"success","supervisor_id": user["uuid"], "supervisor_namae": user["username"], "user_type": user["user_type"],
+                                     "contact_info": user["contact_info"]})
+            else:
+                return JsonResponse({"error":"not a valid supervisor id"})
+        else:
+            JsonResponse({"error":"not a valid supervisor id"})
+    else:
+        return JsonResponse({"error": "Invalid request method"})
 
 
+# get all users
+def get_all_users(request):
+    if request.method == "GET":
+        try:
+            page = request.GET.get("page", 1)
+            page_size = request.GET.get("page_size", 10)
 
+            page = int(page) if page.isdigit() else 1
+            page_size = int(page_size) if page_size.isdigit() else 10
+
+            cursor = get_all_users_by_page(page, page_size)
+
+            if isinstance(cursor, Error):
+                return JsonResponse({"error": str(cursor)}, status=400)
+
+            # 将Cursor对象中的数据转换为列表，同时将ObjectId对象转换为字符串
+            users = []
+            for document in cursor:
+                user = {
+                    "uuid": str(document.get("uuid")),  # 将ObjectId转换为字符串
+                    "username": str(document.get("username")),
+                    "user_type":str(document.get("user_type")),
+                    "contact_info":str(document.get("user_type")),
+                    # "email":document.get("contact_info",[]),
+                    # "wechat_id":document.get("contact_info",[])
+                }
+                users.append(user)
+
+            return JsonResponse(users, safe=False)
+        except Exception as e:
+            error_message = str(e)
+            return JsonResponse({"error": error_message}, status=400)
+    else:
+        return JsonResponse({"error": "Invalid request method"}, status=405)
 
 # get user info
 def get_user_info(request, uuid):
@@ -368,10 +415,6 @@ def delete_template(request, uuid):
 
 
 # obtain all templates interface
-from django.http import JsonResponse
-
-
-from django.http import JsonResponse
 
 def get_all_templates(request):
     if request.method == "GET":
