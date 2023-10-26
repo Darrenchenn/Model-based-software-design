@@ -11,6 +11,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from default.creator import chatgpt, stablediffusion
 from default.common import error
 from default.forwarding import wechat
+from default.forwarding import email_forwarding
 from default.products import product_service
 from default.metadata.template import Template, insert_template, get_template, update_template, \
     delete_template_by_uuid, get_all_template_by_page
@@ -66,6 +67,17 @@ def forward_wechat(request):
     url = request.GET.get("url") if request.GET.get("url") is not None else ""
     wechat.forward(username, title, msg, url)
     return HttpResponse(wechat.forward(username, title, msg, url))
+
+def forward_email(request):
+    if request.method != "GET":
+        return HttpResponseBadRequest(JsonResponse({
+            "error": error.new("request method is wrong"),
+        }))
+    logger.info(request.GET)
+    recipient_email = request.GET.get("recipient_email")
+    subject = request.GET.get("subject")
+    message = request.GET.get("message")
+    return HttpResponse(email_forwarding.forward_email(recipient_email, subject, message))
 
 
 # products interfaces

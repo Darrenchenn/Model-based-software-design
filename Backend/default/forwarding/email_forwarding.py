@@ -1,27 +1,41 @@
+import configparser
+import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 from default.common import error
 
-# SMTP server settings
-sender_email = ""
-smtp_server = "smtp.example.com"
-smtp_username = ""
-smtp_password = ""
-smtp_protocol = "TLS"  # Choose between SSL or TLS
+config = configparser.ConfigParser()
+config.read(os.getcwd() + '/config.ini')
+sender_email = config.get('smtp', 'sender_email')
+smtp_server = config.get('smtp', 'host')
+smtp_port = config.get('smtp', 'port')
+smtp_username = config.get('smtp', 'username')
+smtp_password = config.get('smtp', 'password')
+smtp_protocol = config.get('smtp', 'protocol')
+
 
 def forward_email(recipient_email: str, subject: str, message: str):
+    if not sender_email or \
+        not smtp_server or \
+            not smtp_port or \
+                not smtp_username or \
+                    not smtp_password or \
+                        not smtp_protocol:
+        return error.Error("Invalid SMTP configuration")
+    if not recipient_email or \
+        not subject or \
+            not message:
+        return error.Error("Invalid email parameters")
     try:
-        if not recipient_email or not subject or not message:
-            return error.Error("Invalid email parameters")
         
         # Choose to use SSL or TLS
         if smtp_protocol == "TLS":
-            server = smtplib.SMTP(smtp_server, port=587)
+            server = smtplib.SMTP(smtp_server, smtp_port)
             server.starttls()
         elif smtp_protocol == "SSL":
-            server = smtplib.SMTP_SSL(smtp_server, port=465)
+            server = smtplib.SMTP_SSL(smtp_server, smtp_port)
         else:
             return error.Error("Invalid SMTP protocol")
 

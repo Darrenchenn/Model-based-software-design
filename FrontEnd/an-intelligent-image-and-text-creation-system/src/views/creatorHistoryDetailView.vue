@@ -5,9 +5,11 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const serverAddress = import.meta.env.VITE_serverAddress
+let supervisorName = ''
 
 const creationDetail = ref(null)
-const supervisorInput = ref('')
+const supervisorIdInput = ref('')
+const supervisorIdInputInvalidFeedback = ref('Supervisor Id is required!')
 const showValidationFeedback = ref(false)
 
 const isFetchingCreationDetail = computed(() => {
@@ -29,18 +31,57 @@ const auditResult = computed(() => {
   else return false
 })
 
-const onClickSubmitAuditionBtn = () => {
-  if (!supervisorInput.value) {
+const isSupervisorIdValid = async (supervisorId) => {
+  const form = new FormData()
+  form.append('supervisor_id', supervisorId)
+
+  axios
+    .post(serverAddress + `/verify_supervisor/`, form)
+    .then((res) => res.data)
+    .then((res) => {
+      if (res.status === 'success') {
+        supervisorName = res.content
+        return true
+      } else return false
+    })
+    .catch((err) => {
+      console.log(err)
+      return false
+    })
+}
+
+const onClickSubmitAuditionBtn = async () => {
+  if (!supervisorIdInput.value) {
+    supervisorIdInputInvalidFeedback.value = 'Supervisor Id is required!'
     showValidationFeedback.value = true
     return
   }
 
-  try {
-    // To-do check if supervisor email is correct
-    // To-do submit audition to server
-  } catch (err) {
-    console.log(err)
+  if (!(await isSupervisorIdValid(supervisorIdInput.value))) {
+    supervisorIdInputInvalidFeedback.value = 'Supervisor Id is incorrect!'
+    supervisorIdInput.value = ''
+    showValidationFeedback.value = true
+    return
   }
+
+  axios
+    .post(serverAddress + '/update_product/', {
+      uuid: String(creationDetail.value.uuid),
+      creator_uuid: String(creationDetail.value.creator_uuid),
+      creator_name: String(creationDetail.value.creator_name),
+      responsible_supervisor_uuid: String(supervisorIdInput.value),
+      responsible_supervisor_name: String(supervisorName),
+      audition_status: String('await audition'),
+      audit_comment: '',
+      content: 'new_content'
+    })
+    .then((res) => res.data)
+    .then((res) => {
+      console.log(res)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
 }
 
 onMounted(() => {
@@ -50,6 +91,7 @@ onMounted(() => {
     .then((res) => res.data)
     .then((res) => {
       creationDetail.value = res
+      console.log(JSON.parse(JSON.stringify(creationDetail.value)))
     })
     .catch((err) => {
       console.log(err)
@@ -111,7 +153,7 @@ onMounted(() => {
                 <div class="modal-header">
                   <h1 class="modal-title fs-5">Submit for audition</h1>
                   <button
-                    @click="(showValidationFeedback = false), (supervisorInput = '')"
+                    @click="(showValidationFeedback = false), (supervisorIdInput = '')"
                     type="button"
                     class="btn-close"
                     data-bs-dismiss="modal"
@@ -129,17 +171,17 @@ onMounted(() => {
                       class="form-control"
                       id="supervisorIdInput"
                       placeholder="supervisor Id"
-                      v-model="supervisorInput"
+                      v-model="supervisorIdInput"
                       required
                     />
-                    <label for="supervisorIdInput">Supervisor email</label>
-                    <div class="invalid-feedback">Supervisor email is required</div>
-                    <div class="form-text">Contact your supervisor for supervisor email</div>
+                    <label for="supervisorIdInput">Supervisor Id</label>
+                    <div class="invalid-feedback">{{ supervisorIdInputInvalidFeedback }}</div>
+                    <div class="form-text">Contact your supervisor for supervisor Id</div>
                   </div>
                 </div>
                 <div class="modal-footer">
                   <button
-                    @click="(showValidationFeedback = false), (supervisorInput = '')"
+                    @click="(showValidationFeedback = false), (supervisorIdInput = '')"
                     type="button"
                     class="btn btn-outline-warning"
                     data-bs-dismiss="modal"
