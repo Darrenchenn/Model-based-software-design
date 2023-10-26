@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios'
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -37,76 +37,9 @@ onBeforeRouteLeave((to, from) => {
   if (!answer) return false
 })
 
-onMounted(() => {
-  const datetime = new Date().toLocaleString()
-  const placeHolder = {
-    content_type: 'illustration',
-    status: 'success',
-    generationTime: 1.3200268745422363,
-    id: 12202888,
-    output: ['https://pbs.twimg.com/media/Fa7BgJ7VsAIELjd?format=jpg&name=large'],
-    meta: {
-      H: 512,
-      W: 512,
-      enable_attention_slicing: 'true',
-      file_prefix: 'e5cd86d3-7305-47fc-82c1-7d1a3b130fa4',
-      guidance_scale: 7.5,
-      model: 'runwayml/stable-diffusion-v1-5',
-      n_samples: 1,
-      negative_prompt:
-        ' ((out of frame)), ((extra fingers)), mutated hands, ((poorly drawn hands)), ((poorly drawn face)), (((mutation))), (((deformed))), (((tiling))), ((naked)), ((tile)), ((fleshpile)), ((ugly)), (((abstract))), blurry, ((bad anatomy)), ((bad proportions)), ((extra limbs)), cloned face, glitchy, ((extra breasts)), ((double torso)), ((extra arms)), ((extra hands)), ((mangled fingers)), ((missing breasts)), (missing lips), ((ugly face)), ((fat)), ((extra legs))',
-      outdir: 'out',
-      prompt:
-        'ultra realistic close up portrait ((beautiful pale cyberpunk female with heavy black eyeliner)) DSLR photography, sharp focus, Unreal Engine 5, Octane Render, Redshift, ((cinematic lighting)), f/1.4, ISO 200, 1/160s, 8K, RAW, unedited, symmetrical balance, in-frame',
-      revision: 'fp16',
-      safetychecker: 'no',
-      seed: 3499575229,
-      steps: 20,
-      vae: 'stabilityai/sd-vae-ft-mse'
-    }
-  }
-  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
-  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
-  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
-  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
-  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
-  history.value.push(JSON.parse(JSON.stringify(placeHolder)))
-  history.value[0].id = 12202888
-  history.value[0].content_type = 'illustration'
-  history.value[0].datetime = datetime
-  history.value[0].output[0] =
-    'https://pub-8b49af329fae499aa563997f5d4068a4.r2.dev/generations/e5cd86d3-7305-47fc-82c1-7d1a3b130fa4-0.png'
-  history.value[1].id = 1
-  history.value[1].content_type = 'socialMediaPost'
-  history.value[1].datetime = datetime
-  history.value[1].output[0] =
-    'https://i.pinimg.com/originals/0b/94/33/0b943300e968ba78fb55c6dc16b70631.jpg'
-  history.value[2].id = 2
-  history.value[2].content_type = 'icon'
-  history.value[2].datetime = datetime
-  history.value[2].output[0] =
-    'https://i.pinimg.com/originals/95/74/f4/9574f450742dccfac04c15d71d1f638a.jpg'
-  history.value[3].id = 3
-  history.value[3].content_type = 'icon'
-  history.value[3].datetime = datetime
-  history.value[3].output[0] =
-    'https://pbs.twimg.com/media/F2XgDoWaYAE5xKP?format=jpg&name=4096x4096'
-  history.value[4].id = 4
-  history.value[4].content_type = 'poster'
-  history.value[4].datetime = datetime
-  history.value[4].output[0] =
-    'https://i.pinimg.com/originals/c3/35/ef/c335ef807fa5693f1c05952759ed2436.jpg'
-  history.value[5].id = 5
-  history.value[5].content_type = 'poster'
-  history.value[5].datetime = datetime
-  history.value[5].output[0] =
-    'https://i.pinimg.com/originals/10/41/52/104152ece82da03225e57a510dcf2b4b.jpg'
-  imgOutput.value = JSON.parse(JSON.stringify(placeHolder))
-  imgOutput.value.id = 6
-  imgOutput.value['datetime'] = datetime
-})
-
 const addCurrentOutputToHistory = () => {
+  if (!imgOutput.value) return
+
   history.value.push(imgOutput.value)
   imgOutput.value = ''
   textOutput.value = ''
@@ -139,31 +72,38 @@ const onClickCreateBtn = () => {
   // api_key: 'd1hcN8m8Pm0dUy80WUGZ574PviR0gZXfBH2ddXywr9rTlLBmCq3XetMhroHi
   // prompt: 'studying at university of sydney at friday night'
 
-  try {
-    addCurrentOutputToHistory()
-    isFetchingResult.value = true
-    showCreateValidationFeedback.value = false
-    axios
-      .post(serverAddress + '/sd_creator/', {
-        api_key: String(keyInput.value),
-        prompt: String(promptInput.value),
-        width: String(widthInput.value),
-        height: String(heightInput.value)
-      })
-      .then((res) => res.data)
-      .then((res) => {
+  addCurrentOutputToHistory()
+  isFetchingResult.value = true
+  showCreateValidationFeedback.value = false
+  axios
+    .post(serverAddress + '/sd_creator/', {
+      api_key: String(keyInput.value),
+      prompt: String(promptInput.value),
+      width: String(widthInput.value),
+      height: String(heightInput.value)
+    })
+    .then((res) => res.data)
+    .then((res) => {
+      if (res.status === 'success') {
         imgOutput.value = res
         imgOutput.value['content_type'] = contentType
         imgOutput.value['datetime'] = datetime
-      })
-  } catch (err) {
-    console.log(err)
-  } finally {
-    isFetchingResult.value = false
-  }
+        isFetchingResult.value = false
+        console.log(JSON.parse(JSON.stringify(imgOutput.value)))
+      } else {
+        window.alert('Error!')
+        isFetchingResult.value = false
+        console.log(JSON.parse(JSON.stringify(res)))
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+      isFetchingResult.value = false
+    })
 }
 
 const onClickModifyBtn = () => {
+  const initImgUrl = imgOutput.value.output[0]
   const datetime = new Date().toLocaleString()
   const contentType = contentTypeInput.value
 
@@ -173,29 +113,37 @@ const onClickModifyBtn = () => {
     return
   }
 
-  try {
-    addCurrentOutputToHistory()
-    isFetchingResult.value = true
-    showCreateValidationFeedback.value = false
-    axios
-      .post(serverAddress + '/sd_creator/', {
-        api_key: String(keyInput.value),
-        prompt: String(promptInput.value),
-        width: String(widthInput.value),
-        height: String(heightInput.value),
-        init_image: String(imgOutput.value.output[0])
-      })
-      .then((res) => res.data)
-      .then((res) => {
+  console.log(`img: ${JSON.stringify(imgOutput.value)}`)
+
+  addCurrentOutputToHistory()
+  isFetchingResult.value = true
+  showCreateValidationFeedback.value = false
+  axios
+    .post(serverAddress + '/sd_creator/', {
+      api_key: String(keyInput.value),
+      prompt: String(promptInput.value),
+      width: String(widthInput.value),
+      height: String(heightInput.value),
+      init_image: String(initImgUrl)
+    })
+    .then((res) => res.data)
+    .then((res) => {
+      if (res.status === 'success') {
         imgOutput.value = res
         imgOutput.value['content_type'] = contentType
         imgOutput.value['datetime'] = datetime
-      })
-  } catch (err) {
-    console.log(err)
-  } finally {
-    isFetchingResult.value = false
-  }
+        isFetchingResult.value = false
+        console.log(JSON.parse(JSON.stringify(imgOutput.value)))
+      } else {
+        window.alert('Error!')
+        isFetchingResult.value = false
+        console.log(JSON.parse(JSON.stringify(res)))
+      }
+    })
+    .catch((err) => {
+      console.log(err)
+      isFetchingResult.value = false
+    })
 }
 
 const onClickFinishCreateBtn = () => {
@@ -204,6 +152,9 @@ const onClickFinishCreateBtn = () => {
 }
 
 const onClickConfirmCreate = () => {
+  if (isFetchingResult.value) return
+  isFetchingResult.value = true
+
   if (!contentTitleInput.value) {
     showTitleValidationFeedback.value = true
     contentTitleInputElement.value.focus()
@@ -362,7 +313,12 @@ const onClickConfirmCreate = () => {
               >
                 Back
               </button>
-              <button @click="onClickConfirmCreate" type="button" class="btn btn-warning">
+              <button
+                :disabled="isFetchingResult"
+                @click="onClickConfirmCreate"
+                type="button"
+                class="btn btn-warning"
+              >
                 Confirm
               </button>
             </div>

@@ -9,6 +9,7 @@ const serverAddress = import.meta.env.VITE_serverAddress
 const activeBtnClass = 'btn-warning text-white'
 const disableBtnClass = 'btn-secondary text-secondary-emphasis'
 
+const isFetching = ref(false)
 const isSignInSelected = ref(true)
 const emailInput = ref('')
 const passwordInput = ref('')
@@ -38,6 +39,9 @@ const signUpBtnClass = computed(() => {
 })
 
 const onClickLogInBtn = () => {
+  if (isFetching.value) return
+  isFetching.value = true
+
   if (!usernameInput.value || !passwordInput.value) {
     showValidationFeedback.value = true
     return
@@ -57,19 +61,25 @@ const onClickLogInBtn = () => {
         localStorage.setItem('userEmail', res.contact_info.email)
         localStorage.setItem('userWeChatId', res.contact_info.wechat_id)
         localStorage.setItem('identity', res.user_type)
+        isFetching.value = false
         router.push('/home')
       } else {
         passwordInput.value = ''
+        isFetching.value = false
         window.alert('Username or password incorrect!')
       }
     })
     .catch((err) => {
+      isFetching.value = false
       window.alert('Something went wrong. Please try again later!')
       console.log(err)
     })
 }
 
 const onClickSignUpBtn = () => {
+  if (isFetching.value) return
+  isFetching.value = true
+
   if (!usernameInput.value || !passwordInput.value) {
     showValidationFeedback.value = true
     return
@@ -84,9 +94,7 @@ const onClickSignUpBtn = () => {
 
   axios
     .post(serverAddress + '/register_user/', form)
-    .then((res) => {
-      return res.data
-    })
+    .then((res) => res.data)
     .then((res) => {
       if ('uuid' in res) {
         localStorage.setItem('userId', res.uuid)
@@ -94,13 +102,16 @@ const onClickSignUpBtn = () => {
         localStorage.setItem('userEmail', res.contact_info.email)
         localStorage.setItem('userWeChatId', res.contact_info.wechat_id)
         localStorage.setItem('identity', res.user_type)
+        isFetching.value = false
         router.push('/home')
       } else {
+        isFetching.value = false
         window.alert('Something went wrong. Please try again later!')
         console.log(res)
       }
     })
     .catch((err) => {
+      isFetching.value = false
       window.alert('Something went wrong. Please try again later!')
       console.log(err)
     })
@@ -210,7 +221,10 @@ const onClickSignUpBtn = () => {
                 }
               "
             >
-              {{ isSignInSelected ? 'Log In' : 'Sign Up' }}
+              <div v-if="isFetching" class="align-middle spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <div v-else>{{ isSignInSelected ? 'Log In' : 'Sign Up' }}</div>
             </button>
           </div>
         </div>

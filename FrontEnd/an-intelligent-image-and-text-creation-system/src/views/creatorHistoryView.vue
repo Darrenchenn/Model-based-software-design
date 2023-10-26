@@ -74,6 +74,12 @@ onMounted(() => {
                   class="h5 bg-secondary-subtle text-white rounded text-secondary py-2 px-3"
                   >Not audited</span
                 >
+                <!-- if await audition -->
+                <span
+                  v-else-if="history.audition_status === 'await_audition'"
+                  class="h5 bg-secondary text-white rounded text-secondary py-2 px-3"
+                  >Await audition</span
+                >
                 <!-- if audit success -->
                 <span
                   v-else-if="history.audition_status === 'pass'"
