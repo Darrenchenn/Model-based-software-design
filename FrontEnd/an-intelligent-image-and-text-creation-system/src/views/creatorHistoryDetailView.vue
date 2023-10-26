@@ -1,9 +1,10 @@
 <script setup>
 import axios from 'axios'
 import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 const serverAddress = import.meta.env.VITE_serverAddress
 let supervisorName = ''
 
@@ -20,8 +21,24 @@ const isFetchingCreationDetail = computed(() => {
 const isAudited = computed(() => {
   if (!creationDetail.value) return false
 
-  if (creationDetail.value.audition_status === 'no_submitted_for_audition') return false
+  if (
+    creationDetail.value.audition_status === 'no_submitted_for_audition' ||
+    creationDetail.value.audition_status === 'await_audition'
+  )
+    return false
   else return true
+})
+
+const isAwaitAudition = computed(() => {
+  if (!creationDetail.value) return false
+  else if (creationDetail.value.audition_status === 'await_audition') return true
+  return false
+})
+
+const isNotSubmittedForAudition = computed(() => {
+  if (!creationDetail.value) return false
+  else if (creationDetail.value.audition_status === 'no_submitted_for_audition') return true
+  return false
 })
 
 const auditResult = computed(() => {
@@ -32,22 +49,23 @@ const auditResult = computed(() => {
 })
 
 const isSupervisorIdValid = async (supervisorId) => {
-  const form = new FormData()
-  form.append('supervisor_id', supervisorId)
+  let result
 
-  axios
-    .post(serverAddress + `/verify_supervisor/`, form)
+  await axios
+    .get(serverAddress + `/verify_supervisor/${supervisorId}`)
     .then((res) => res.data)
     .then((res) => {
-      if (res.status === 'success') {
-        supervisorName = res.content
-        return true
-      } else return false
+      if (res.message === 'success') {
+        supervisorName = res.supervisor_namae
+        result = true
+      } else result = false
     })
     .catch((err) => {
       console.log(err)
-      return false
+      result = false
     })
+
+  return result
 }
 
 const onClickSubmitAuditionBtn = async () => {
@@ -57,7 +75,9 @@ const onClickSubmitAuditionBtn = async () => {
     return
   }
 
-  if (!(await isSupervisorIdValid(supervisorIdInput.value))) {
+  const isValid = await isSupervisorIdValid(supervisorIdInput.value)
+
+  if (!isValid) {
     supervisorIdInputInvalidFeedback.value = 'Supervisor Id is incorrect!'
     supervisorIdInput.value = ''
     showValidationFeedback.value = true
@@ -71,16 +91,21 @@ const onClickSubmitAuditionBtn = async () => {
       creator_name: String(creationDetail.value.creator_name),
       responsible_supervisor_uuid: String(supervisorIdInput.value),
       responsible_supervisor_name: String(supervisorName),
-      audition_status: String('await audition'),
+      audition_status: String('await_audition'),
       audit_comment: '',
-      content: 'new_content'
+      content: creationDetail.value.content
     })
-    .then((res) => res.data)
     .then((res) => {
-      console.log(res)
+      if (res.status === 200) {
+        router.go()
+      } else {
+        console.log(JSON.parse(JSON.stringify(res)))
+        window.alert('Something went wrong. Please try again later!')
+      }
     })
     .catch((err) => {
       console.log(err)
+      window.alert('Something went wrong. Please try again later!')
     })
 }
 
@@ -119,6 +144,7 @@ onMounted(() => {
             <span v-else class="text-danger fs-5 fw-bold"> Fail </span>
           </div>
           <div>Auditor: {{ creationDetail.responsible_supervisor_name }}</div>
+          <div>Auditor Id: {{ creationDetail.responsible_supervisor_uuid }}</div>
           <div class="d-flex">
             <div class="me-1">Comment:</div>
             <div>{{ creationDetail.audit_comment }}</div>
@@ -126,8 +152,13 @@ onMounted(() => {
           <!-- If fail, show modify btn -->
           <div v-if="!auditResult">To-do: modify btn</div>
         </div>
+        <div v-else-if="isAwaitAudition">
+          <div class="text-warning fs-4 me-3 align-middle">Awaiting audition</div>
+          <div>Auditor: {{ creationDetail.responsible_supervisor_name }}</div>
+          <div>Auditor Id: {{ creationDetail.responsible_supervisor_uuid }}</div>
+        </div>
         <!-- If not submitted for audition -->
-        <div v-else>
+        <div v-else-if="isNotSubmittedForAudition">
           <span class="text-secondary fs-4 me-3 align-middle">
             This content is not submitted for audition
           </span>
