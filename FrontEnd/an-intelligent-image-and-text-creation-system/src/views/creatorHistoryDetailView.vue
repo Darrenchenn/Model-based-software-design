@@ -12,6 +12,7 @@ const creationDetail = ref(null)
 const supervisorIdInput = ref('')
 const supervisorIdInputInvalidFeedback = ref('Supervisor Id is required!')
 const showValidationFeedback = ref(false)
+const fetching = ref(false)
 
 const isFetchingCreationDetail = computed(() => {
   if (!creationDetail.value) return true
@@ -69,6 +70,9 @@ const isSupervisorIdValid = async (supervisorId) => {
 }
 
 const onClickSubmitAuditionBtn = async () => {
+  if (fetching.value) return
+  fetching.value = true
+
   if (!supervisorIdInput.value) {
     supervisorIdInputInvalidFeedback.value = 'Supervisor Id is required!'
     showValidationFeedback.value = true
@@ -97,13 +101,16 @@ const onClickSubmitAuditionBtn = async () => {
     })
     .then((res) => {
       if (res.status === 200) {
+        fetching.value = false
         router.go()
       } else {
+        fetching.value = false
         console.log(JSON.parse(JSON.stringify(res)))
         window.alert('Something went wrong. Please try again later!')
       }
     })
     .catch((err) => {
+      fetching.value = false
       console.log(err)
       window.alert('Something went wrong. Please try again later!')
     })
@@ -149,8 +156,6 @@ onMounted(() => {
             <div class="me-1">Comment:</div>
             <div>{{ creationDetail.audit_comment }}</div>
           </div>
-          <!-- If fail, show modify btn -->
-          <div v-if="!auditResult">To-do: modify btn</div>
         </div>
         <div v-else-if="isAwaitAudition">
           <div class="text-warning fs-4 me-3 align-middle">Awaiting audition</div>
