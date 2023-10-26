@@ -283,19 +283,21 @@ def update_user_info(request, uuid):
 
 def verify_supervisor(request,uuid):
     if request.method == "GET":
-        user = get_user_by_uuid(uuid)
-        if user:
-            user_type = user['user_type']
-            if user_type == "supervisor":
-                return  JsonResponse({"message":"success","supervisor_id": user["uuid"], "supervisor_namae": user["username"], "user_type": user["user_type"],
-                                     "contact_info": user["contact_info"]})
+        try:
+            user = get_user_by_uuid(uuid)
+            if user:
+                user_type = user['user_type']
+                if user_type == "supervisor":
+                    return JsonResponse({"message":"success","supervisor_id": user["uuid"], "supervisor_namae": user["username"], "user_type": user["user_type"],
+                                         "contact_info": user["contact_info"]})
+                else:
+                    return JsonResponse({"error":"not a valid supervisor id"})
             else:
                 return JsonResponse({"error":"not a valid supervisor id"})
-        else:
-            JsonResponse({"error":"not a valid supervisor id"})
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid request method"})
     else:
         return JsonResponse({"error": "Invalid request method"})
-
 
 # get all users
 def get_all_users(request):
