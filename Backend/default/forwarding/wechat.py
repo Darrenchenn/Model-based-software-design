@@ -20,6 +20,8 @@ def forward(username, title, msg, url):
             else:
                 return error.Error('url is None').new()
         else:
+            if ret['url'] is not None:
+                return error.new('The user has not registered.')
             return http.request(ret['url'], 'GET', json.dumps({
                 "title": title,
                 "content": msg,
