@@ -32,4 +32,4 @@ def forward(username, title, msg, url):
                 "content": msg,
             }))
     except error.Error as e:
-        error.new("Failed to forward,err: %s" % e.message)
+        return error.new("Failed to forward,err: %s" % e.message)
