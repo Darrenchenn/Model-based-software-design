@@ -16,7 +16,12 @@ def forward(username, title, msg, url):
         ret = conn.find_one({"name": username})
         if ret is None:
             if url is not None:
+                # save and forward
                 conn.insert_one({"name": username, "url": url})
+                return http.request(url, 'GET', json.dumps({
+                    "title": title,
+                    "content": msg,
+                }))
             else:
                 return error.Error('url is None').new()
         else:
