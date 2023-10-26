@@ -16,13 +16,20 @@ def forward(username, title, msg, url):
         ret = conn.find_one({"name": username})
         if ret is None:
             if url is not None:
+                # save and forward
                 conn.insert_one({"name": username, "url": url})
+                return http.request(url, 'GET', json.dumps({
+                    "title": title,
+                    "content": msg,
+                }))
             else:
                 return error.Error('url is None').new()
         else:
+            if ret['url'] is None:
+                return error.Error('The user has not registered.').new()
             return http.request(ret['url'], 'GET', json.dumps({
                 "title": title,
                 "content": msg,
             }))
     except error.Error as e:
-        error.new("Failed to forward,err: %s" % e.message)
+        return error.new("Failed to forward,err: %s" % e.message)
