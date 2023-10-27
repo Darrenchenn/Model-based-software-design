@@ -78,7 +78,7 @@ const onClickCreateBtn = () => {
   axios
     .post(serverAddress + '/sd_creator/', {
       api_key: String(keyInput.value),
-      prompt: String(promptInput.value),
+      prompt: String(contentTypeInput.value + ' ' + promptInput.value),
       width: String(widthInput.value),
       height: String(heightInput.value)
     })
@@ -121,7 +121,7 @@ const onClickModifyBtn = () => {
   axios
     .post(serverAddress + '/sd_creator/', {
       api_key: String(keyInput.value),
-      prompt: String(promptInput.value),
+      prompt: String(contentTypeInput.value + ' ' + promptInput.value),
       width: String(widthInput.value),
       height: String(heightInput.value),
       init_image: String(initImgUrl)
@@ -332,7 +332,7 @@ const onClickConfirmCreate = () => {
             <label for="createIllustration" class="form-label d-block col-12 px-0"
               >What are we creating today?</label
             >
-            <div class="form-check col-12 col-xl-3">
+            <div class="form-check col-12 col-xl-4">
               <input
                 v-model="contentTypeInput"
                 class="form-check-input"
@@ -343,7 +343,7 @@ const onClickConfirmCreate = () => {
               />
               <label class="form-check-label" for="createIllustration"> Illustration </label>
             </div>
-            <div class="form-check col-12 col-xl-3">
+            <div class="form-check col-12 col-xl-4">
               <input
                 v-model="contentTypeInput"
                 class="form-check-input"
@@ -354,7 +354,7 @@ const onClickConfirmCreate = () => {
               />
               <label class="form-check-label" for="createPoster"> Poster </label>
             </div>
-            <div class="form-check col-12 col-xl-3">
+            <div class="form-check col-12 col-xl-4">
               <input
                 v-model="contentTypeInput"
                 class="form-check-input"
@@ -365,7 +365,7 @@ const onClickConfirmCreate = () => {
               />
               <label class="form-check-label" for="createIcon"> Icon </label>
             </div>
-            <div class="form-check col-12 col-xl-3 mb-3">
+            <!-- <div class="form-check col-12 col-xl-3 mb-3">
               <input
                 v-model="contentTypeInput"
                 class="form-check-input"
@@ -377,7 +377,7 @@ const onClickConfirmCreate = () => {
               <label class="form-check-label" for="createSocialMediaPost">
                 Social Media Post
               </label>
-            </div>
+            </div> -->
             <form
               class="col-12 container-fluid row needs-validation"
               :class="showCreateValidationFeedback ? 'was-validated' : ''"
