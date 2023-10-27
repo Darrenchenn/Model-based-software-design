@@ -5,14 +5,17 @@ import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
 const router = useRouter()
+
 const serverAddress = import.meta.env.VITE_serverAddress
 let supervisorName = ''
 
 const creationDetail = ref(null)
+const weChatForwardExitBtn = ref(null)
 const supervisorIdInput = ref('')
 const supervisorIdInputInvalidFeedback = ref('Supervisor Id is required!')
 const showValidationFeedback = ref(false)
 const fetching = ref(false)
+const weChatForwardUsernameInput = ref('')
 
 const isFetchingCreationDetail = computed(() => {
   if (!creationDetail.value) return true
@@ -116,6 +119,37 @@ const onClickSubmitAuditionBtn = async () => {
     })
 }
 
+const onClickWeChatForwardBtn = () => {
+  if (fetching.value) return
+  fetching.value = true
+
+  axios
+    .get(
+      serverAddress +
+        `/forward/wechat?username=${weChatForwardUsernameInput.value}&title=Forwarding from AutoPen&message=<img src='${creationDetail.value.content.output[0]}'>`
+    )
+    .then((res) => res.data)
+    .then((res) => {
+      if ('error_message' in res && res.error_message === 'ok') {
+        weChatForwardUsernameInput.value = ''
+        fetching.value = false
+        console.log(`weChatForwardExitBtn.value = ${weChatForwardExitBtn.value}`)
+        weChatForwardExitBtn.value.click()
+      } else {
+        console.log(res)
+        fetching.value = false
+        weChatForwardExitBtn.value.click()
+        console.log(`weChatForwardExitBtn.value = ${weChatForwardExitBtn.value}`)
+        window.alert('Something went wrong, please try again later!')
+      }
+    })
+    .catch((err) => {
+      fetching.value = false
+      console.log(err)
+      window.alert('Something went wrong, please try again later!')
+    })
+}
+
 onMounted(() => {
   // id = route.params.id
   axios
@@ -141,6 +175,68 @@ onMounted(() => {
     </div>
     <div v-else class="row px-3 mx-2 mb-5">
       <div class="col-12 h2 mb-3 px-0">Content Detail</div>
+      <div class="col-12 mb-3">
+        <button
+          type="button"
+          class="btn btn-outline-warning"
+          data-bs-toggle="modal"
+          data-bs-target="#weChatForwardingBtn"
+        >
+          WeChat forwarding
+        </button>
+        <div class="modal fade" id="weChatForwardingBtn" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">WeChat forwarding</h1>
+                <button
+                  ref="weChatForwardExitBtn"
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <div class="mb-3">
+                  <label for="weChatForwardingUserNameInput" class="form-label">Username</label>
+                  <input
+                    v-model="weChatForwardUsernameInput"
+                    type="text"
+                    class="form-control"
+                    id="weChatForwardingUserNameInput"
+                  />
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  :disabled="fetching"
+                  type="button"
+                  class="btn btn-outline-warning"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button
+                  :disabled="fetching"
+                  @click="onClickWeChatForwardBtn"
+                  type="button"
+                  class="btn btn-warning"
+                >
+                  <div
+                    v-if="fetching"
+                    class="spinner-border text-light text-center align-middle"
+                    role="status"
+                  >
+                    <span class="visually-hidden">Loading...</span>
+                  </div>
+                  <div v-else>Forward</div>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="col-12 border-bottom border-warning mb-3 px-0 pb-3">
         <!-- if audited -->
         <div v-if="isAudited">

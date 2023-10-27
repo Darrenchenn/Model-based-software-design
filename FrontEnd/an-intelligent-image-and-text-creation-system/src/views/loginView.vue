@@ -11,10 +11,8 @@ const disableBtnClass = 'btn-secondary text-secondary-emphasis'
 
 const isFetching = ref(false)
 const isSignInSelected = ref(true)
-const emailInput = ref('')
 const passwordInput = ref('')
 const usernameInput = ref('')
-const weChatIdInput = ref('')
 const identitySelect = ref('creator')
 const showValidationFeedback = ref(false)
 
@@ -58,8 +56,6 @@ const onClickLogInBtn = () => {
       if ('uuid' in res) {
         localStorage.setItem('userId', res.uuid)
         localStorage.setItem('username', res.username)
-        localStorage.setItem('userEmail', res.contact_info.email)
-        localStorage.setItem('userWeChatId', res.contact_info.wechat_id)
         localStorage.setItem('identity', res.user_type)
         isFetching.value = false
         router.push('/home')
@@ -88,8 +84,8 @@ const onClickSignUpBtn = () => {
   const form = new FormData()
   form.append('username', String(usernameInput.value))
   form.append('password', String(passwordInput.value))
-  form.append('email', String(emailInput.value))
-  form.append('wechat_id', String(weChatIdInput.value))
+  form.append('email', String(''))
+  form.append('wechat_id', String(''))
   form.append('user_type', String(identitySelect.value))
 
   axios
@@ -99,8 +95,6 @@ const onClickSignUpBtn = () => {
       if ('uuid' in res) {
         localStorage.setItem('userId', res.uuid)
         localStorage.setItem('username', res.username)
-        localStorage.setItem('userEmail', res.contact_info.email)
-        localStorage.setItem('userWeChatId', res.contact_info.wechat_id)
         localStorage.setItem('identity', res.user_type)
         isFetching.value = false
         router.push('/home')
@@ -160,7 +154,7 @@ const onClickSignUpBtn = () => {
             <div class="invalid-feedback">Username is required!</div>
           </div>
           <!-- Password Input -->
-          <div class="form-floating">
+          <div class="form-floating mb-3">
             <input
               type="password"
               class="form-control"
@@ -174,28 +168,6 @@ const onClickSignUpBtn = () => {
           </div>
           <!-- Extra Input if sign up -->
           <div v-if="!isSignInSelected">
-            <!-- Email Input -->
-            <div class="form-floating my-3">
-              <input
-                type="email"
-                class="form-control"
-                id="emailInput"
-                placeholder="name@example.com"
-                v-model="emailInput"
-              />
-              <label for="emailInput"> Email address </label>
-            </div>
-            <!-- WeChat Id Input -->
-            <div class="form-floating mb-3">
-              <input
-                type="text"
-                class="form-control"
-                id="weChatIdInput"
-                placeholder="WeChat ID"
-                v-model="weChatIdInput"
-              />
-              <label for="weChatIdInput">WeChat ID</label>
-            </div>
             <!-- Select creator or supervisor -->
             <div class="input-group mb-3">
               <span class="input-group-text">I am a</span>
