@@ -46,7 +46,7 @@ and create template. Like the pre-defined creator account, the pre-defined super
 
   [Documentation service deployed on cloud vm.](http://40.76.249.160:8001/)
 
-  You can use username `test` and password `test` to login documentation service where parts of our project API are
+  You can use username `test` and password `test` to login documentation service where **parts** of our project API are
   displayed.
 
 ```
