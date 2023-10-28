@@ -1,6 +1,6 @@
 <script setup>
 import axios from 'axios'
-import { computed, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { onBeforeRouteLeave, useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -10,6 +10,7 @@ const contentTitleInputElement = ref(null)
 const confirmSubmitModelBackBtn = ref(null)
 
 const contentTypeInput = ref('illustration')
+const templateInput = ref('no template')
 const promptInput = ref('')
 const negativePromptInput = ref('')
 const heightInput = ref(520)
@@ -20,6 +21,7 @@ const contentTitleInput = ref('')
 const imgOutput = ref('')
 const textOutput = ref('')
 const history = ref([])
+const templates = ref([])
 
 const isFetchingResult = ref(false)
 const isCreateInputInvalid = computed(() => {
@@ -80,7 +82,16 @@ const onClickCreateBtn = () => {
   axios
     .post(serverAddress + '/sd_creator/', {
       api_key: String(keyInput.value),
-      prompt: String(contentTypeInput.value + ' ' + promptInput.value),
+      prompt: String(
+        contentTypeInput.value +
+          ' ' +
+          (templateInput.value === 'no template'
+            ? ''
+            : templates.value.filter((template) => template.uuid === templateInput.value)[0]
+                .content) +
+          ' ' +
+          promptInput.value
+      ),
       width: String(widthInput.value),
       height: String(heightInput.value)
     })
@@ -127,7 +138,16 @@ const onClickModifyBtn = () => {
   axios
     .post(serverAddress + '/sd_creator/', {
       api_key: String(keyInput.value),
-      prompt: String(contentTypeInput.value + ' ' + promptInput.value),
+      prompt: String(
+        contentTypeInput.value +
+          ' ' +
+          (templateInput.value === 'no template'
+            ? ''
+            : templates.value.filter((template) => template.uuid === templateInput.value)[0]
+                .content) +
+          ' ' +
+          promptInput.value
+      ),
       width: String(widthInput.value),
       height: String(heightInput.value),
       init_image: String(initImgUrl)
@@ -188,6 +208,19 @@ const onClickConfirmCreate = () => {
       window.alert('Something went wrong, please try again later!')
     })
 }
+
+onMounted(() => {
+  axios
+    .get(serverAddress + '/get_all_templates/?page=0&page_size=100')
+    .then((res) => res.data)
+    .then((res) => {
+      templates.value = res
+      // console.log(templates.value)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+})
 </script>
 
 <template>
@@ -340,7 +373,7 @@ const onClickConfirmCreate = () => {
             <label for="createIllustration" class="form-label d-block col-12 px-0"
               >What are we creating today?</label
             >
-            <div class="form-check col-12 col-xl-4">
+            <div class="form-check col-12 col-xl-4 mb-3">
               <input
                 v-model="contentTypeInput"
                 class="form-check-input"
@@ -451,6 +484,24 @@ const onClickConfirmCreate = () => {
                 />
                 <label for="Key">Key*</label>
                 <div class="invalid-feedback">Key is required!</div>
+              </div>
+              <select v-model="templateInput" class="form-select mb-3 col-12">
+                <option value="no template">Don't use template</option>
+                <option v-for="template in templates" :key="template.uuid" :value="template.uuid">
+                  Template {{ template.uuid }}
+                </option>
+              </select>
+              <div v-if="templateInput !== 'no template'" class="mb-3 col-12 p-0">
+                <label for="templateContent" class="form-label">Template Content</label>
+                <input
+                  class="form-control"
+                  id="templateContent "
+                  :value="
+                    templates.filter((template) => template.uuid === templateInput)[0].content
+                  "
+                  disabled
+                  readonly
+                />
               </div>
             </form>
             <!-- Create Button -->
