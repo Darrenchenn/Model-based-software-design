@@ -105,8 +105,12 @@ const onClickCreateBtn = () => {
         imgOutput.value.meta.negative_prompt = negativePrompt
         isFetchingResult.value = false
         console.log(JSON.parse(JSON.stringify(imgOutput.value)))
+      } else if (res.status === 'failed') {
+        window.alert('External stable diffusion API error! Please try again!')
+        isFetchingResult.value = false
+        console.log(JSON.parse(JSON.stringify(res)))
       } else {
-        window.alert('Error!')
+        window.alert('API key exceeds monthly limit! Please use another key!')
         isFetchingResult.value = false
         console.log(JSON.parse(JSON.stringify(res)))
       }
@@ -162,8 +166,12 @@ const onClickModifyBtn = () => {
         imgOutput.value.meta.negative_prompt = negativePrompt
         isFetchingResult.value = false
         console.log(JSON.parse(JSON.stringify(imgOutput.value)))
+      } else if (res.status === 'failed') {
+        window.alert('External stable diffusion API error! Please try again!')
+        isFetchingResult.value = false
+        console.log(JSON.parse(JSON.stringify(res)))
       } else {
-        window.alert('Error!')
+        window.alert('API key exceeds monthly limit! Please use another key!')
         isFetchingResult.value = false
         console.log(JSON.parse(JSON.stringify(res)))
       }
