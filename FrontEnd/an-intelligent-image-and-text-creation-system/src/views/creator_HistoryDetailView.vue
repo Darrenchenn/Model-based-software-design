@@ -126,20 +126,18 @@ const onClickWeChatForwardBtn = () => {
   axios
     .get(
       serverAddress +
-        `/forward/wechat?username=${weChatForwardUsernameInput.value}&title=Forwarding from AutoPen&message=<img src='${creationDetail.value.content.output[0]}'>`
+        `/forward/wechat?username=${weChatForwardUsernameInput.value}&title=Forwarding from AutoPen&message=<div>${creationDetail.value.content.title}</div><img src='${creationDetail.value.content.output[0]}'>`
     )
     .then((res) => res.data)
     .then((res) => {
       if ('error_message' in res && res.error_message === 'ok') {
         weChatForwardUsernameInput.value = ''
         fetching.value = false
-        console.log(`weChatForwardExitBtn.value = ${weChatForwardExitBtn.value}`)
         weChatForwardExitBtn.value.click()
       } else {
         console.log(res)
         fetching.value = false
         weChatForwardExitBtn.value.click()
-        console.log(`weChatForwardExitBtn.value = ${weChatForwardExitBtn.value}`)
         window.alert('Something went wrong, please try again later!')
       }
     })

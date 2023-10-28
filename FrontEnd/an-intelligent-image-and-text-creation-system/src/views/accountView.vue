@@ -31,7 +31,6 @@ onMounted(() => {
     .then((res) => res.data)
     .then((res) => {
       history.value = res
-      console.log(JSON.stringify(history.value))
       isFetching.value = false
     })
     .catch((err) => {

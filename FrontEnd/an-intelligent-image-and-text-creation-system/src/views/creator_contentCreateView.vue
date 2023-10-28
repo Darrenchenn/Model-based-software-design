@@ -60,6 +60,8 @@ const moveHistoryToCanvas = (id) => {
 const onClickCreateBtn = () => {
   const datetime = new Date().toLocaleString()
   const contentType = contentTypeInput.value
+  const prompt = promptInput.value
+  const negativePrompt = negativePromptInput.value
 
   if (isFetchingResult.value) return
   if (isCreateInputInvalid.value) {
@@ -86,8 +88,10 @@ const onClickCreateBtn = () => {
     .then((res) => {
       if (res.status === 'success') {
         imgOutput.value = res
-        imgOutput.value['content_type'] = contentType
-        imgOutput.value['datetime'] = datetime
+        imgOutput.value.content_type = contentType
+        imgOutput.value.datetime = datetime
+        imgOutput.value.meta.prompt = prompt
+        imgOutput.value.meta.negative_prompt = negativePrompt
         isFetchingResult.value = false
         console.log(JSON.parse(JSON.stringify(imgOutput.value)))
       } else {
@@ -106,6 +110,8 @@ const onClickModifyBtn = () => {
   const initImgUrl = imgOutput.value.output[0]
   const datetime = new Date().toLocaleString()
   const contentType = contentTypeInput.value
+  const prompt = promptInput.value
+  const negativePrompt = negativePromptInput.value
 
   if (isFetchingResult.value) return
   if (isCreateInputInvalid.value) {
@@ -130,8 +136,10 @@ const onClickModifyBtn = () => {
     .then((res) => {
       if (res.status === 'success') {
         imgOutput.value = res
-        imgOutput.value['content_type'] = contentType
-        imgOutput.value['datetime'] = datetime
+        imgOutput.value.content_type = contentType
+        imgOutput.value.datetime = datetime
+        imgOutput.value.meta.prompt = prompt
+        imgOutput.value.meta.negative_prompt = negativePrompt
         isFetchingResult.value = false
         console.log(JSON.parse(JSON.stringify(imgOutput.value)))
       } else {

@@ -64,6 +64,14 @@ const isNavItemActive = (NavItemRouteName) => {
               >View History</router-link
             >
           </li>
+          <li v-if="!isCreator" class="nav-item">
+            <router-link
+              to="/create_template"
+              class="nav-link"
+              :class="isNavItemActive('Create Template')"
+              >Create Template</router-link
+            >
+          </li>
         </ul>
         <router-link to="/account" class="d-flex nav-link me-3" :class="isNavItemActive('Account')"
           >Account</router-link

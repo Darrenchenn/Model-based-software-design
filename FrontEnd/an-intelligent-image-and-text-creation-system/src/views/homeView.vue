@@ -31,7 +31,7 @@ const onClickWeChatForwarding = () => {
 </script>
 
 <template>
-  <div class="container-fluid mx-5">
+  <div class="container-fluid px-5">
     <div class="mt-3 display-5">Welcome Back, {{ userName }}!</div>
     <div class="mt-3">
       <div class="mb-3">
