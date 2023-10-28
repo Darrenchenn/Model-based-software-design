@@ -29,7 +29,7 @@ or copy the ip address to browse.
 
   [Documentation servie deployed on cloud vm.](http://40.76.249.160:8001/)
 
-  You can use username `test` and password `test` to login documentation service where parts of our project API are
+  You can use username `test` and password `test` to login documentation service where **parts** of our project API are
   displayed.
 
 ```
