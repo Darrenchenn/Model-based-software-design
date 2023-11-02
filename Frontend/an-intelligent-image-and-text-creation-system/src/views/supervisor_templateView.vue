@@ -11,11 +11,12 @@ const reviewText = ref('')
 const auditStatus = ref('') // 添加审核状态变量
 const pageSize = ref('10')
 const currentPage = ref('0')
+const serverAddress = import.meta.env.VITE_serverAddress
 
 onMounted(() => {
   axios
     .get(
-      `http://127.0.0.1:8000/get_all_templates/?page=${currentPage.value}&page_size=${pageSize.value}`
+      serverAddress + `/get_all_templates/?page=${currentPage.value}&page_size=${pageSize.value}`
     )
     .then((res) => {
       templates.value = res.data
@@ -40,7 +41,7 @@ const addTemplate = () => {
   newTemplateData.append('content', newTemplateContent.value) // 将 content 添加到 FormData 对象中
 
   axios
-    .post('http://127.0.0.1:8000/create_template/', newTemplateData, {
+    .post(serverAddress + '/create_template/', newTemplateData, {
       headers: {
         'Content-Type': 'multipart/form-data' // 设置请求头
       }
@@ -67,10 +68,7 @@ const submitReview = () => {
     reviewData.append('content', reviewText.value)
 
     axios
-      .post(
-        `http://127.0.0.1:8000/update_template_by_uuid/${selectedTemplate.value.uuid}/`,
-        reviewData
-      )
+      .post(serverAddress + `update_template_by_uuid/${selectedTemplate.value.uuid}/`, reviewData)
       .then((res) => {
         console.log('Review submitted successfully')
         getTemplates() // 更新模板列表
@@ -97,7 +95,7 @@ const deleteTemplate = () => {
     // 使用 HTTP DELETE 请求来删除模板
     console.log(selectedTemplate.value.uuid)
     axios
-      .get(`http://127.0.0.1:8000/delete_template/${selectedTemplate.value.uuid}`)
+      .get(serverAddress + `/delete_template/${selectedTemplate.value.uuid}`)
       .then((res) => {
         if (res.status === 200) {
           console.log('Template deleted successfully')
@@ -120,7 +118,7 @@ const getTemplates = () => {
   console.log(`pageSize = ${pageSize.value}`)
   axios
     .get(
-      `http://127.0.0.1:8000/get_all_templates/?page=${currentPage.value}&page_size=${pageSize.value}`
+      serverAddress + `/get_all_templates/?page=${currentPage.value}&page_size=${pageSize.value}`
     )
     .then((res) => {
       templates.value = res.data

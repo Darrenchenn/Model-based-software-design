@@ -1,6 +1,7 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import axios from 'axios'
+const serverAddress = import.meta.env.VITE_serverAddress
 const supervisor_username = localStorage.getItem('username')
 const supervisor_userId = localStorage.getItem('userId')
 const products = ref([]) // 未审核产品列表
@@ -12,7 +13,7 @@ const auditStatus = ref('false') // 默认选择审核通过
 
 onMounted(() => {
   axios
-    .get('http://127.0.0.1:8000/get_product/')
+    .get(serverAddress + '/get_product/')
     .then((res) => res.data)
     .then((res) => {
       products.value = res
@@ -38,7 +39,7 @@ const submitReview = () => {
   }
 
   axios
-    .post('http://127.0.0.1:8000/update_product/', reviewData)
+    .post(serverAddress + '/update_product/', reviewData)
     .then((res) => {
       // 处理成功响应，可以根据后端返回的数据进行操作
       console.log('Review submitted successfully')
@@ -64,7 +65,7 @@ const openReviewDialog = (product) => {
 const getProducts = () => {
   //获取更新列表
   axios
-    .get('http://127.0.0.1:8000/get_product/')
+    .get(serverAddress + '/get_product/')
     .then((res) => res.data)
     .then((res) => {
       products.value = res
@@ -104,7 +105,7 @@ const cancelAudition = (product) => {
 
         // 向后端发送请求以更新产品的审核状态和评论内容
         axios
-          .post('http://127.0.0.1:8000/update_product/', {
+          .post(serverAddress + '/update_product/', {
             uuid: product.uuid,
             audit_comment: '',
             audition_status: 'no_submitted_for_audition'
@@ -128,7 +129,7 @@ const cancelAudition = (product) => {
 
     // 向后端发送请求以更新产品的审核状态和评论内容
     axios
-      .post('http://127.0.0.1:8000/update_product/', {
+      .post(serverAddress + '/update_product/', {
         uuid: product.uuid,
         audit_comment: '',
         audition_status: 'await_audition'
@@ -153,7 +154,7 @@ const cancelAudition = (product) => {
 const getProducts1 = () => {
   // 获取更新列表，并筛选出特定条件的产品
   axios
-    .get('http://127.0.0.1:8000/get_product/')
+    .get(serverAddress + '/get_product/')
     .then((res) => res.data)
     .then((res) => {
       // 使用 filter 方法筛选产品
