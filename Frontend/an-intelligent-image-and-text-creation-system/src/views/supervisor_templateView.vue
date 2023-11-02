@@ -68,7 +68,7 @@ const submitReview = () => {
     reviewData.append('content', reviewText.value)
 
     axios
-      .post(serverAddress + `update_template_by_uuid/${selectedTemplate.value.uuid}/`, reviewData)
+      .post(serverAddress + `/update_template_by_uuid/${selectedTemplate.value.uuid}/`, reviewData)
       .then((res) => {
         console.log('Review submitted successfully')
         getTemplates() // 更新模板列表
