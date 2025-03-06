@@ -12,7 +12,7 @@ pip isntall openai django djongo pymongo pytz django-cors-headers
 ```
 
 - Add current IP to cloud mongodb allow list.
-- Modify config.ini to your cloud service url and cluster name.
+- Modify config.ini and setting.py by your cloud service url and cluster name.
 - enter Backend directory.
 
 ```
