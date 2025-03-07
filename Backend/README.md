@@ -10,17 +10,22 @@
 ```
 pip install openai django djongo pymongo pytz django-cors-headers 
 ```
+Change to the compatible django version by command:
+```
+pip list --outdated
+pip install --upgrade <package-name>
+```
 
 - Add current IP to cloud mongodb allow list.
-- Modify config.ini and setting.py by your cloud service url and cluster name.
-- enter Backend directory.
+- Modify config.ini and /Backend/backend/setting.py by your cloud service url and cluster name.
+- enter Backend directory and run server.
 
 ```
 python manage.py runserver 0.0.0.0: 8000
 ```
 
-## use nginx to reverse proxy for the frontend to connect
-In the OPtion section, nginx needs to hadle CROS issue
+## Using nginx as a reverse proxy for the frontend to connect
+In the nginx configuration OPTION section, nginx needs to handle CROSS issue
 ```
 # Respond to preflight requests
             add_header 'Access-Control-Allow-Origin' 'http://localhost:3001';
