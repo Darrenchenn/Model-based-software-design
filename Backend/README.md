@@ -8,7 +8,7 @@
     - docker
 
 ```
-pip isntall openai django djongo pymongo pytz django-cors-headers 
+pip install openai django djongo pymongo pytz django-cors-headers 
 ```
 
 - Add current IP to cloud mongodb allow list.
@@ -18,6 +18,9 @@ pip isntall openai django djongo pymongo pytz django-cors-headers
 ```
 python manage.py runserver 0.0.0.0: 8000
 ```
+
+use nginx to reverse proxy for the frontend to connect
+
 
 - There's a third-party service, which is a documentation service that helps developers communicate with each other.
 
