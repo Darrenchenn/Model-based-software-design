@@ -19,7 +19,16 @@ pip install openai django djongo pymongo pytz django-cors-headers
 python manage.py runserver 0.0.0.0: 8000
 ```
 
-use nginx to reverse proxy for the frontend to connect
+## use nginx to reverse proxy for the frontend to connect
+In the OPtion section, nginx needs to hadle CROS issue
+```
+# Respond to preflight requests
+            add_header 'Access-Control-Allow-Origin' 'http://localhost:3001';
+            add_header 'Access-Control-Allow-Methods' 'GET, POST, PUT, DELETE, OPTIONS';
+            add_header 'Access-Control-Allow-Headers' 'Content-Type, Authorization';
+            add_header 'Access-Control-Max-Age' 3600;  # Cache preflight response
+            return 204;
+```
 
 
 - There's a third-party service, which is a documentation service that helps developers communicate with each other.
